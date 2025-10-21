@@ -44,5 +44,32 @@ PUT /service-tickets/<ticket_id>/remove-mechanic/<mechanic_id> - Remove mechanic
 7. Assign Mechanic to Ticket
 8. Remove Mechanic from Ticket
 
+## Rate Limiting and Caching
+
+This API includes rate limiting and caching for improved performance and security:
+
+### Rate Limited Endpoints:
+- `POST /mechanics/` - 5 requests per minute
+- `PUT /mechanics/<id>` - 10 requests per minute  
+- `DELETE /mechanics/<id>` - 3 requests per minute
+- `POST /service-tickets/` - 10 requests per minute
+- Assignment/Removal endpoints - 20 requests per minute
+
+### Cached Endpoints:
+- `GET /mechanics/` - Cached for 60 seconds
+- `GET /service-tickets/` - Cached for 30 seconds
+
+### Why These Choices:
+
+**Rate Limiting Reasons:**
+- **Creation endpoints**: Prevent spam and automated data injection
+- **Update endpoints**: Prevent rapid, potentially malicious modifications
+- **Deletion endpoints**: Protect against mass deletion attacks
+- **Assignment endpoints**: Control frequent relationship changes
+
+**Caching Reasons:**
+- **GET /mechanics**: Mechanic data changes infrequently, longer cache period
+- **GET /service-tickets**: Ticket data changes more often, shorter cache period
+- Both reduce database load and improve response times for frequently accessed data
 
 this assignment was created with :heart: Justin Wold
