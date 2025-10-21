@@ -36,7 +36,18 @@ def create_app():
     
     app.register_blueprint(mechanic_bp, url_prefix='/mechanics')
     app.register_blueprint(service_ticket_bp, url_prefix='/service-tickets')
-    
+
+@app.route('/clear-cache', methods=['POST'])
+def clear_cache():
+    """
+    Manual cache clearing endpoint for administrative purposes
+    """
+    try:
+        cache.clear()
+        return jsonify({"message": "Cache cleared successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
     # Create tables
     with app.app_context():
         db.create_all()
