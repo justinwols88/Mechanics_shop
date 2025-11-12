@@ -259,12 +259,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"email\":\"customer@example.com\",\"password\":\"password123\"}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"customer1@example.com\",\"password\":\"password123\"}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/customers/",
