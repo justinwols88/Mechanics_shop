@@ -1,0 +1,1346 @@
+{
+	"info": {
+		"_postman_id": "49025644-c4af3ed2-a04e-4be4-bcd7-0786a12b2178",
+		"name": "Auto Repair Shop API",
+		"description": "Complete API for managing auto repair shop operations including mechanics, customers, inventory, and service tickets",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Customer Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Customers - Login tests with robust handling and safe token persistence",
+									"",
+									"// Assert status is 200 OK or 401 Unauthorized with clear message",
+									"pm.test('Status is 200 OK or 401 Unauthorized', function () {",
+									"  pm.expect(pm.response.code, 'Expected 200 for success or 401 for invalid credentials').to.be.oneOf([200, 401]);",
+									"});",
+									"",
+									"// Capture metadata for debugging",
+									"pm.test('Capture debug metadata', function () {",
+									"  pm.expect(true).to.be.true;",
+									"  pm.environment.set('last_request_url', pm.request.url.toString());",
+									"  pm.environment.set('last_request_method', pm.request.method);",
+									"  pm.environment.set('last_request_body', pm.request.body ? pm.request.body.raw : '');",
+									"  pm.environment.set('last_response_status', String(pm.response.code));",
+									"  pm.environment.set('last_response_body', pm.response.text());",
+									"});",
+									"",
+									"let json = null;",
+									"try {",
+									"  if (pm.response.headers.has('Content-Type') && pm.response.headers.get('Content-Type').includes('application/json')) {",
+									"    json = pm.response.json();",
+									"  }",
+									"  pm.test('Response is JSON when Content-Type is application/json', function () {",
+									"    if (pm.response.headers.has('Content-Type') && pm.response.headers.get('Content-Type').includes('application/json')) {",
+									"      pm.expect(json).to.be.an('object');",
+									"    } else {",
+									"      pm.expect(true, 'Non-JSON response allowed but not expected').to.be.true;",
+									"    }",
+									"  });",
+									"} catch (e) {",
+									"  pm.test('Response JSON parseable', function () {",
+									"    pm.expect.fail('Response is not valid JSON: ' + e.message);",
+									"  });",
+									"}",
+									"",
+									"if (pm.response.code === 200) {",
+									"  pm.test('Success body includes token (string)', function () {",
+									"    pm.expect(json, 'JSON body expected on success').to.be.an('object');",
+									"    pm.expect(json).to.have.property('token');",
+									"    pm.expect(json.token).to.be.a('string').and.not.empty;",
+									"  });",
+									"  // Save token only when present",
+									"  if (json && typeof json.token === 'string' && json.token.length > 0) {",
+									"    pm.collectionVariables.set('customerToken', json.token);",
+									"    pm.environment.set('jwt', json.token);",
+									"  }",
+									"  // Optional: echo email if present",
+									"  pm.test('If email present, it matches the request', function () {",
+									"    if (json && json.email) {",
+									"      const req = JSON.parse(pm.environment.get('last_request_body') || '{}');",
+									"      pm.expect(json.email).to.equal(req.email);",
+									"    } else {",
+									"      pm.expect(true).to.be.true;",
+									"    }",
+									"  });",
+									"} else if (pm.response.code === 401) {",
+									"  // Ensure we do NOT persist token on failure",
+									"  pm.collectionVariables.unset('customerToken');",
+									"  // Do not override env jwt on failure",
+									"  pm.test('Failure body contains helpful message', function () {",
+									"    if (json && json.message) {",
+									"      pm.expect(json.message).to.be.a('string');",
+									"    } else {",
+									"      pm.expect(true, 'No message field present').to.be.true;",
+									"    }",
+									"  });",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"id": "49025644-50ddf77b-95fe-489b-afd3-7d33c2258c9a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customers/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mechanic Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('mechanicToken', response.token);",
+									"    console.log('Mechanic token set:', response.token);",
+									"}"
+								],
+								"type": "text/javascript",
+								"id": "c5107229-9921-4d75-9c7a-da46498512f8"
+							}
+						}
+					],
+					"id": "49025644-ea4ddbeb-1ae0-4d5a-a8c0-af51da56cef2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"mechanic@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-a526c3df-0138-4538-a4c1-a5ad3726a3c6"
+		},
+		{
+			"name": "Customers",
+			"item": [
+				{
+					"name": "Register Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c9aefb7e-a209-4f02-b2d8-989d4059d0f5",
+								"exec": [
+									"// Enhanced debug-friendly tests for Customers - Register",
+									"",
+									"// Always capture metadata for debugging",
+									"pm.test('Capture debug metadata', function () {",
+									"  pm.expect(true).to.be.true; // placeholder to always run",
+									"  pm.environment.set('last_request_url', pm.request.url.toString());",
+									"  pm.environment.set('last_request_method', pm.request.method);",
+									"  pm.environment.set('last_request_body', pm.request.body ? pm.request.body.raw : '');",
+									"  pm.environment.set('last_response_status', String(pm.response.code));",
+									"  pm.environment.set('last_response_body', pm.response.text());",
+									"});",
+									"",
+									"// Fail if status is not 201",
+									"pm.test('Status is 201 Created', function () {",
+									"  pm.expect(pm.response.code, 'Expected 201 Created').to.equal(201);",
+									"});",
+									"",
+									"// If server error, surface hint about DB migrations",
+									"if (pm.response.code >= 500) {",
+									"  pm.test('Server error - likely DB/migration issue', function () {",
+									"    const body = pm.response.text();",
+									"    pm.expect.fail('Server returned ' + pm.response.code + ' — inspect server logs. Common cause: missing DB table/migration. Body: ' + body.substring(0, 1000));",
+									"  });",
+									"}",
+									"",
+									"// Validate minimal JSON shape on success",
+									"if (pm.response.code === 201 && pm.response.headers.get('Content-Type') && pm.response.headers.get('Content-Type').includes('application/json')) {",
+									"  const json = pm.response.json();",
+									"  pm.test('Response contains id (number or string)', function () {",
+									"    pm.expect(json).to.have.property('id');",
+									"    pm.expect(['number','string']).to.include(typeof json.id);",
+									"  });",
+									"  pm.test('Response echoes email matching request body', function () {",
+									"    try {",
+									"      const req = JSON.parse(pm.environment.get('last_request_body') || '{}');",
+									"      pm.expect(json.email, 'email should match request').to.eql(req.email);",
+									"    } catch (e) {",
+									"      pm.expect.fail('Could not parse saved request body for comparison');",
+									"    }",
+									"  });",
+									"}",
+									"",
+									"// Optional: surface sqlite hint if present in response",
+									"(function(){",
+									"  const text = pm.response.text().toLowerCase();",
+									"  if (text.includes('sqlite') && text.includes('no such table')) {",
+									"    pm.test('Detected SQLite missing table error', function(){",
+									"      pm.expect.fail('Backend indicates SQLite schema missing: \"no such table\". Ensure migrations ran and the table exists.');",
+									"    });",
+									"  }",
+									"})();"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"id": "49025644-0d2da620-922b-4899-bf3f-311271861950",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/AI-Debug"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"customer@example.com\",\"password\":\"password123\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customers/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Customers",
+					"id": "49025644-2781e286-70e2-49eb-aca8-773969b1671f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/customers/?page=1&per_page=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer Profile",
+					"id": "49025644-884e4b7f-cbae-4062-a0ad-cf0c04198b0e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/customers/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer by ID",
+					"id": "49025644-8472fb2b-5160-476e-8f73-36f3c7d705dc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/customers/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"id": "49025644-b09a5173-9ae8-4c27-a1b8-3910717191ff",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"first_name\": \"John Updated\",\n  \"last_name\": \"Doe Updated\",\n  \"phone\": \"987-654-3210\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/customers/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer Service Tickets",
+					"id": "49025644-b4ac556d-9029-4a70-a9d1-ce6504c5061d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/customers/my-tickets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								"my-tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"id": "49025644-8dc16b18-2ac2-4e50-8c86-cbfeb28159ef",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/customers/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"customers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-80bd6f9d-62f9-47f0-9955-e369fa6f785d"
+		},
+		{
+			"name": "Mechanics",
+			"item": [
+				{
+					"name": "Register Mechanic",
+					"id": "49025644-3f4b39c2-782e-422e-a85f-b12b5cc7e041",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"first_name\":\"Jane\",\"last_name\":\"Mechanic\",\"email\":\"jane.mechanic@example.com\",\"password\":\"securepassword123\",\"specialization\":\"Engine Repair\",\"phone\":\"555-123-4567\",\"address\":\"456 Garage St, City, State\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "49025644-2c1fd69a-605e-415d-b0b4-596d192add3f",
+							"name": "Minimal valid body",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\":\"John Doe\",\"email\":\"john.doe22dd22@example.com\",\"password\":\"securepassword\"}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/mechanic/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"mechanic",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\"id\": 123, \"name\": \"John Doe\", \"email\": \"john.doe22dd22@example.com\"}"
+						},
+						{
+							"id": "49025644-e8815884-2c7c-4a71-b0f2-d284b8946e63",
+							"name": "Register - Minimal (email, password, first_name, last_name)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"email\":\"jane.mechanic@example.com\",\"password\":\"securepassword123\",\"first_name\":\"Jane\",\"last_name\":\"Mechanic\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/mechanic/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"mechanic",
+										"register"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n  \"errors\": {\n    \"first_name\": [\n      \"Unknown field.\"\n    ],\n    \"last_name\": [\n      \"Unknown field.\"\n    ],\n    \"name\": [\n      \"Missing data for required field.\"\n    ]\n  }\n}"
+						},
+						{
+							"id": "49025644-0ebaedca-dd1e-4624-8552-6e20cfdcdf31",
+							"name": "Register - Full (all fields)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"first_name\":\"Jane\",\"last_name\":\"Mechanic\",\"email\":\"jane.mechanic@example.com\",\"password\":\"securepassword123\",\"specialization\":\"Engine Repair\",\"phone\":\"555-123-4567\",\"address\":\"456 Garage St, City, State\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/mechanic/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"mechanic",
+										"register"
+									]
+								}
+							},
+							"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\n  \"errors\": {\n    \"first_name\": [\n      \"Unknown field.\"\n    ],\n    \"last_name\": [\n      \"Unknown field.\"\n    ],\n    \"name\": [\n      \"Missing data for required field.\"\n    ]\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Mechanics",
+					"id": "49025644-9fc7845b-287b-493d-b8fe-59c163db5bf4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mechanic Profile",
+					"id": "49025644-0a8e5a47-33c2-492e-b1f8-6b9f83ebb767",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Mechanic Profile",
+					"id": "49025644-6c43ad61-22cd-4604-b8d7-0ac85205a3c8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Smith Updated\",\n  \"specialization\": \"Transmission Specialist\",\n  \"phone\": \"555-987-6543\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mechanic Statistics",
+					"id": "49025644-3e4c333a-0c97-49a9-8bed-bbf0958dedd7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cached Mechanics",
+					"id": "49025644-7ac434f6-a404-437a-9869-1fd7e92f2fe0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/cached",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"cached"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rate Limited Test",
+					"id": "49025644-125cd9ae-73aa-4e7c-b1c7-6b5b9842cf1d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/rate-limited",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"rate-limited"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mechanic by ID",
+					"id": "49025644-e7a8ef76-7e16-45ac-a809-c5e305aafb12",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Mechanic by ID",
+					"id": "49025644-9a2e7216-6d39-4f04-aa9d-6b3e8ea1c68f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Mechanic Name\",\n  \"specialization\": \"Updated Specialization\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Mechanic",
+					"id": "49025644-890710fb-95b5-4267-b701-2c5096ada314",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/mechanic/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"mechanic",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-f660f94c-182c-4da5-ab71-dcbc8abeca45"
+		},
+		{
+			"name": "Inventory",
+			"item": [
+				{
+					"name": "Get All Inventory",
+					"id": "49025644-9fe26948-db31-48c6-bfff-41d96e758b1e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inventory/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inventory Item",
+					"id": "49025644-87e5eb0c-9e72-4732-8252-6dc7e560759e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inventory/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Inventory Item",
+					"id": "49025644-4b972740-f7b9-40d5-bc7a-d9440beac319",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"item_name\": \"Engine Oil\",\n  \"price\": 29.99,\n  \"quantity\": 50,\n  \"description\": \"Synthetic engine oil 5W-30\",\n  \"category\": \"Lubricants\",\n  \"min_stock_level\": 10,\n  \"supplier\": \"AutoParts Inc.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inventory/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Inventory Item",
+					"id": "49025644-3d8a2609-ca0f-43d7-a45b-4b50c596080c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"item_name\": \"Premium Engine Oil\",\n  \"price\": 34.99,\n  \"quantity\": 45,\n  \"description\": \"Premium synthetic engine oil\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/inventory/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Inventory Item",
+					"id": "49025644-fcdaf287-9dbb-4eb1-b558-0225d1dc31a4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/inventory/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Low Stock Items",
+					"id": "49025644-3aa43845-a2c3-4aa6-b800-87e77cffce62",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inventory/low-stock?threshold=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"low-stock"
+							],
+							"query": [
+								{
+									"key": "threshold",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inventory by Category",
+					"id": "49025644-4026f586-5d79-40f9-9311-756de4e1e3b7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/inventory/category/Lubricants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"inventory",
+								"category",
+								"Lubricants"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-84e09521-fad3-44cc-8c18-81ca2eb5671c"
+		},
+		{
+			"name": "Service Tickets",
+			"item": [
+				{
+					"name": "Get All Service Tickets",
+					"id": "49025644-c37fbeaf-11ba-4cf1-ba2e-38287d224b53",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/service-tickets/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service-tickets",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Service Ticket",
+					"id": "49025644-e059445d-436c-4c4f-8362-9ed2ba69bb95",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/service-tickets/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service-tickets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Service Ticket",
+					"id": "49025644-2b65fbf2-e2ef-491e-ae84-6ff5b0d2c96c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Engine overheating and strange noises\",\n  \"customer_id\": 1,\n  \"priority\": \"high\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service-tickets/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service-tickets",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Service Ticket",
+					"id": "49025644-100d75b1-c9d9-4479-99db-3551f7003a9c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Updated description - engine diagnostics completed\",\n  \"status\": \"in_progress\",\n  \"priority\": \"normal\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service-tickets/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service-tickets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Service Ticket",
+					"id": "49025644-bfcc8704-e596-4068-97ff-0c1945e10ba7",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{mechanicToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/service-tickets/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service-tickets",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-9f1b783b-9941-4dba-b08d-ce9dbbd524eb"
+		},
+		{
+			"name": "Vehicles",
+			"item": [
+				{
+					"name": "Get All Vehicles",
+					"id": "49025644-0fd11ea4-55ec-4124-8fe4-df1b4eec572c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/vehicles/vehicles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vehicles",
+								"vehicles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Vehicle",
+					"id": "49025644-7f38abc3-c172-4144-985b-00cc72b9b829",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_id\": 1,\n  \"make\": \"Toyota\",\n  \"model\": \"Camry\",\n  \"year\": 2020,\n  \"vin\": \"1HGCM82633A123456\",\n  \"license_plate\": \"ABC123\",\n  \"color\": \"Blue\",\n  \"mileage\": 45000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/vehicles/vehicles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vehicles",
+								"vehicles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer Vehicles",
+					"id": "49025644-6790c243-6c6c-4381-9427-aaa3ee49c1d2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{customerToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/vehicles/customers/1/vehicles",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"vehicles",
+								"customers",
+								"1",
+								"vehicles"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-2af45599-9bfd-42a7-a7f5-3fe583c37058"
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Status",
+					"id": "49025644-5014d8af-be3a-4e2f-aa6f-e79f97ba1357",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49025644-b223dadd-3781-4ebc-b6bf-55bf3f56d957"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "mechanicToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
