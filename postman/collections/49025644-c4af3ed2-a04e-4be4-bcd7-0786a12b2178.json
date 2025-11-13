@@ -344,12 +344,13 @@
 								"header": [
 									{
 										"key": "Content-Type",
-										"value": "application/json"
+										"value": "application/json",
+										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\"first_name\":\"Jane\",\"last_name\":\"Mechanic\",\"email\":\"jane.mechanic@example.com\",\"password\":\"securepassword123\",\"specialization\":\"Engine Repair\",\"phone\":\"555-123-4567\",\"address\":\"456 Garage St, City, State\"}",
+									"raw": "{\r\n    \"first_name\": \"Jane\",\r\n    \"last_name\": \"Mechanic\",\r\n    \"email\": \"jane.mechanic@example.com\",\r\n    \"password\": \"securepassword123\",\r\n    \"specialization\": \"Engine Repair\",\r\n    \"phone\": \"555-123-4567\",\r\n    \"address\": \"456 Garage St, City, State\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
