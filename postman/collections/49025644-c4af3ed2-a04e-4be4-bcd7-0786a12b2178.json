@@ -218,7 +218,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "register customer",
 					"id": "49025644-a6e079eb-3907-4e04-aa31-ca7e547e7e50",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
