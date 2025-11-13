@@ -57,7 +57,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Customers login",
 					"id": "49025644-c2b060ba-b43c-41b2-8332-d6654acb2358",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
