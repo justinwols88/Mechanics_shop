@@ -385,6 +385,21 @@
 				},
 				{
 					"name": "Get All Mechanics",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6afcf346-5a5b-4200-a57d-f8aacc52cc40",
+								"exec": [
+									"pm.test('Status code is 200', function () {pm.response.to.have.status(200);});",
+									"pm.test('Response is JSON array', function () {var json = pm.response.json(); pm.expect(Array.isArray(json)).to.be.true;});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"id": "49025644-9fc7845b-287b-493d-b8fe-59c163db5bf4",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -397,14 +412,23 @@
 								"value": "Bearer {{customerToken}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/mechanic/",
+							"raw": "{{baseUrl}}/api/mechanics",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"mechanic",
-								""
+								"api",
+								"mechanics"
 							]
 						}
 					},
