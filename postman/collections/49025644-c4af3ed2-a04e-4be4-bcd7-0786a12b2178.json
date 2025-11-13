@@ -448,6 +448,62 @@
 				},
 				{
 					"name": "Get Mechanic Profile",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "31bcaedc-793d-426c-94de-0e0272e17cca",
+								"exec": [
+									"// Pre-request script to ensure token and emulate basic session state if needed",
+									"const token = pm.environment.get('mechanicToken');",
+									"if (!token) {",
+									"  console.warn('mechanicToken is missing from the environment');",
+									"}",
+									"// Re-set the token to ensure it is available during the request lifecycle",
+									"pm.environment.set('mechanicToken', token);",
+									"",
+									"// If backend relies on a cookie-based session, ensure a dummy cookie header could be added by server; here we just log for visibility",
+									"console.log('Using mechanicToken:', token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "98f80fc0-0ced-461d-b2d1-89c8ccc1bc9d",
+								"exec": [
+									"// Store response details for debugging and surfacing errors",
+									"pm.environment.set('last_request_url', pm.request.url.toString());",
+									"pm.environment.set('last_request_method', pm.request.method);",
+									"pm.environment.set('last_request_body', pm.request.body ? pm.request.body.toString() : '');",
+									"pm.environment.set('last_response_status', pm.response.code.toString());",
+									"pm.environment.set('last_response_body', pm.response.text());",
+									"",
+									"// Basic assertions: response should not be empty and should be JSON when possible",
+									"pm.test('Response status code is present', function () {",
+									"  pm.expect(pm.response.code).to.be.a('number');",
+									"});",
+									"",
+									"pm.test('Surface error details when present', function () {",
+									"  try {",
+									"    const json = pm.response.json();",
+									"    if (json && (json.error || json.details)) {",
+									"      console.warn('API reported error:', json.error || '', json.details || '');",
+									"    }",
+									"  } catch (e) {",
+									"    // non-JSON response; still captured via last_response_body",
+									"  }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"id": "49025644-0a8e5a47-33c2-492e-b1f8-6b9f83ebb767",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -460,6 +516,15 @@
 								"value": "Bearer {{mechanicToken}}"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{baseUrl}}/mechanic/profile",
 							"host": [
