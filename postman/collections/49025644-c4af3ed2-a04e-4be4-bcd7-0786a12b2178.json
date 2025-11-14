@@ -811,7 +811,62 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"id": "49025644-1e87e694-abb5-40a5-bcf2-d68a03f62d59",
+							"name": "Fixed request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{mechanicToken}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"item_name\":\"Engine Oil\",\"price\":29.99,\"quantity\":50,\"description\":\"Synthetic engine oil 5W-30\",\"category\":\"Lubricants\",\"min_stock_level\":10,\"supplier\":\"AutoParts Inc.\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/inventory/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"inventory",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"enabled": true
+								},
+								{
+									"key": "Authorization",
+									"value": "Bearer {{mechanicToken}}",
+									"enabled": true
+								}
+							],
+							"cookie": [],
+							"responseTime": null,
+							"body": "{\"id\": 101, \"item_name\": \"Engine Oil\", \"price\": 29.99, \"quantity\": 50, \"description\": \"Synthetic engine oil 5W-30\", \"category\": \"Lubricants\", \"min_stock_level\": 10, \"supplier\": \"AutoParts Inc.\", \"mechanic_id\": 1}"
+						}
+					]
 				},
 				{
 					"name": "Update Inventory Item",
