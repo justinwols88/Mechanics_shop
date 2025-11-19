@@ -13,3 +13,4 @@ python-dotenv==1.0.1
 # Testing dependencies
 pytest-flask==1.2.0
 pytest-cov==4.1.0
+gunicorn==21.2.0
