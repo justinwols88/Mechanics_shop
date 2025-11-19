@@ -19,3 +19,8 @@ class TestingConfig(Config):
     RATELIMIT_DEFAULT = "5 per minute"
     RATELIMIT_STORAGE_URL = "memory://"
     RATELIMIT_ENABLED = False
+
+class ProductionConfig(Config):
+    # Use env var if set, otherwise fall back to default sqlite db
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///app.db')
+    CACHE_TYPE = "SimpleCache"
