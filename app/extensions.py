@@ -10,12 +10,13 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 
-# ✅ Use Redis for rate limiting
+# Initialize limiter with conditional enabling
 limiter = Limiter(
     key_func=get_remote_address,
     storage_uri=os.getenv('REDIS_URI', 'redis://localhost:6379'),
-    default_limits=["100 per hour"]
+    default_limits=["100 per hour"],
+    enabled=not os.getenv('TESTING')  # Disable if TESTING environment variable is set
 )
 
-# ✅ Use Redis for caching
+# Use Redis for caching
 cache = Cache()

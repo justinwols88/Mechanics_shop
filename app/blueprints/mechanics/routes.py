@@ -1,12 +1,10 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import func
-from app.models import Mechanic, service_mechanic
+from app.models import Mechanic, ServiceTicket
 from app.extensions import db
 from app.utils.auth import encode_mechanic_token, mechanic_token_required
 from app.schemas import MechanicSchema, MechanicsSchema
 from app.extensions import limiter, cache
-
-
 
 mechanics_bp = Blueprint('mechanics', __name__)
 mechanic_schema = MechanicSchema()
@@ -23,7 +21,7 @@ def mechanics_ranking():
         mechanics_data = []
         for mechanic in mechanics:
             # Safely get attributes with fallbacks
-            ticket_count = len(mechanic.service_tickets) if hasattr(mechanic, 'service_tickets') and mechanic.service_tickets else 0
+            ticket_count = len(mechanic.tickets) if hasattr(mechanic, 'tickets') and mechanic.tickets else 0
             
             # Build mechanic data safely
             mechanic_info = {
@@ -102,12 +100,12 @@ def register_mechanic():
         return jsonify({"message": "Email already registered"}), 409
 
     # Create new mechanic
-    new_mechanic = Mechanic()
-    new_mechanic.first_name = data['first_name']
-    new_mechanic.last_name = data['last_name']
-    new_mechanic.email = data['email']
-    # Set password after instantiation (assumes the model has password hashing logic)
-    new_mechanic.password = data['password']
+    new_mechanic = Mechanic(
+        first_name=data['first_name'],
+        last_name=data['last_name'],
+        email=data['email'],
+        password=data['password']
+    )
     db.session.add(new_mechanic)
     db.session.commit()
 
@@ -115,7 +113,7 @@ def register_mechanic():
 
 
 @mechanics_bp.route('', methods=['GET'])
-@mechanic_token_required  # Your custom mechanic decorator
+@mechanic_token_required
 def get_mechanics(current_mechanic):
     """Get all mechanics (requires mechanic authentication)"""
     try:
@@ -161,11 +159,9 @@ def get_mechanic(current_user, mechanic_id):
     
 @mechanics_bp.route('/<int:mechanic_id>', methods=['PUT', 'PATCH'])
 @mechanic_token_required
-def update_mechanic(current_mechanic_id, mechanic_id):  # ← Fix: expects ID
+def update_mechanic(current_mechanic_id, mechanic_id):
     """Update mechanic - expecting ID from decorator"""
     try:
-        # Remove the authorization check that uses .id
-        # Just update the mechanic directly
         mechanic = Mechanic.query.get(mechanic_id)
         
         if not mechanic:
@@ -213,7 +209,7 @@ def update_mechanic(current_mechanic_id, mechanic_id):  # ← Fix: expects ID
         }), 500
     
 @mechanics_bp.route('/<int:mechanic_id>', methods=['DELETE'])
-@limiter.limit("5 per minute")  # Very low limit for delete operations
+@limiter.limit("5 per minute")
 @mechanic_token_required
 def delete_mechanic(current_mechanic_id, mechanic_id):
     """Delete mechanic"""

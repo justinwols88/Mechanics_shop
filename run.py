@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import os
+
 from app import create_app
 
 load_dotenv()  # ✅ Load environment variables

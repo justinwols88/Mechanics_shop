@@ -1,0 +1,1278 @@
+openapi: 3.0.0
+info:
+  title: "Mechanics Shop API"
+  description: "A comprehensive REST API for managing automotive service operations including customers, service tickets, mechanics, and inventory"
+  version: "1.0.0"
+  contact:
+    name: "API Support"
+    email: "support@mechanicshop.com"
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+
+servers:
+  - url: "http://127.0.0.1:5000"
+    description: "Development server"
+  - url: "https://api.mechanicshop.com"
+    description: "Production server"
+
+components:
+  securitySchemes:
+    customerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Customer JWT Token"
+    mechanicAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Mechanic JWT Token"
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Error message describing what went wrong"
+        details:
+          type: object
+          description: "Additional error details"
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation completed successfully"
+
+    # Customer Schemas
+    CustomerLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "customer@example.com"
+          description: "Customer's email address"
+        password:
+          type: string
+          example: "password123"
+          description: "Customer's password"
+
+    CustomerRegister:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "newcustomer@example.com"
+          description: "Customer's email address (must be unique)"
+        password:
+          type: string
+          example: "securepassword123"
+          description: "Customer's password (min 6 characters)"
+
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "customer@example.com"
+        password:
+          type: string
+          example: "hashedpassword"
+
+    CustomerUpdate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "updated@example.com"
+        password:
+          type: string
+          example: "newpassword123"
+
+    # Mechanic Schemas
+    MechanicLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "mechanic@example.com"
+        password:
+          type: string
+          example: "mechanicpassword123"
+
+    MechanicRegister:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+      properties:
+        first_name:
+          type: string
+          example: "John"
+          description: "Mechanic's first name"
+        last_name:
+          type: string
+          example: "Doe"
+          description: "Mechanic's last name"
+        email:
+          type: string
+          format: email
+          example: "john.doe@mechanicshop.com"
+          description: "Mechanic's email address (must be unique)"
+        password:
+          type: string
+          example: "securepassword123"
+          description: "Mechanic's password"
+
+    MechanicResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@mechanicshop.com"
+
+    # Service Ticket Schemas
+    ServiceTicketCreate:
+      type: object
+      required:
+        - customer_id
+        - description
+      properties:
+        customer_id:
+          type: integer
+          example: 1
+          description: "ID of the customer creating the ticket"
+        description:
+          type: string
+          example: "Brake repair and oil change needed"
+          description: "Description of the service required"
+        status:
+          type: string
+          enum: [open, in_progress, completed, cancelled]
+          default: "open"
+          example: "open"
+        mechanic_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 2]
+          description: "Array of mechanic IDs to assign to this ticket"
+
+    ServiceTicketUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+          example: "Updated description of service needed"
+        status:
+          type: string
+          enum: [open, in_progress, completed, cancelled]
+          example: "in_progress"
+
+    ServiceTicketResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: "Brake repair and oil change"
+        customer_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          example: "open"
+        mechanics:
+          type: array
+          items:
+            $ref: '#/components/schemas/MechanicResponse'
+        inventory:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryResponse'
+
+    TicketMechanicsUpdate:
+      type: object
+      properties:
+        add_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 2]
+          description: "Mechanic IDs to add to the ticket"
+        remove_ids:
+          type: array
+          items:
+            type: integer
+          example: [3]
+          description: "Mechanic IDs to remove from the ticket"
+
+    TicketPartAdd:
+      type: object
+      required:
+        - part_id
+      properties:
+        part_id:
+          type: integer
+          example: 1
+          description: "Inventory part ID to add to the ticket"
+
+    # Inventory Schemas
+    InventoryCreate:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+          example: "Brake Pads"
+          description: "Name of the inventory item"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 49.99
+          description: "Price of the inventory item"
+
+    InventoryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Premium Brake Pads"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 59.99
+
+    InventoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Brake Pads"
+        price:
+          type: number
+          format: float
+          example: 49.99
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+
+    # Pagination and List Schemas
+    PaginatedCustomers:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 10
+        total:
+          type: integer
+          example: 50
+        pages:
+          type: integer
+          example: 5
+        customers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerResponse'
+
+    MechanicRanking:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        ticket_count:
+          type: integer
+          example: 5
+        email:
+          type: string
+          format: email
+          example: "john.doe@mechanicshop.com"
+
+    # Auth Responses
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+
+    # Health Check
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+        services:
+          type: object
+          properties:
+            database:
+              type: string
+              example: "healthy"
+            api:
+              type: string
+              example: "healthy"
+
+paths:
+  # ========== AUTHENTICATION ENDPOINTS ==========
+  /customers/login:
+    post:
+      tags:
+        - Authentication
+      summary: "Customer Login"
+      description: "Authenticate a customer and return a JWT token for accessing protected endpoints"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerLogin'
+            examples:
+              validLogin:
+                summary: "Valid Customer Login"
+                value:
+                  email: "customer@example.com"
+                  password: "password123"
+      responses:
+        200:
+          description: "Login successful"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              examples:
+                success:
+                  value:
+                    token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+        400:
+          description: "Bad Request - Missing or invalid fields"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        401:
+          description: "Unauthorized - Invalid credentials"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /mechanics/login:
+    post:
+      tags:
+        - Authentication
+      summary: "Mechanic Login"
+      description: "Authenticate a mechanic and return a JWT token for accessing protected endpoints"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MechanicLogin'
+            examples:
+              validLogin:
+                summary: "Valid Mechanic Login"
+                value:
+                  email: "mechanic@example.com"
+                  password: "mechanicpassword123"
+      responses:
+        200:
+          description: "Login successful"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        400:
+          description: "Bad Request - Missing or invalid fields"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        401:
+          description: "Unauthorized - Invalid credentials"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ========== CUSTOMER ENDPOINTS ==========
+  /customers/register:
+    post:
+      tags:
+        - Customers
+      summary: "Register New Customer"
+      description: "Create a new customer account with email and password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRegister'
+            examples:
+              newCustomer:
+                summary: "New Customer Registration"
+                value:
+                  email: "newcustomer@example.com"
+                  password: "securepassword123"
+      responses:
+        201:
+          description: "Customer created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        400:
+          description: "Bad Request - Missing required fields"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: "Conflict - Email already registered"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /customers/all:
+    get:
+      tags:
+        - Customers
+      summary: "Get Paginated Customers"
+      description: "Retrieve a paginated list of all customers. Rate limited to 10 requests per minute."
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: "Page number for pagination"
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          description: "Number of items per page"
+      responses:
+        200:
+          description: "Customers retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCustomers'
+        429:
+          description: "Too Many Requests - Rate limit exceeded"
+
+  /customers/{id}:
+    get:
+      tags:
+        - Customers
+      summary: "Get Customer by ID"
+      description: "Retrieve a specific customer by their ID"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Customer ID"
+      responses:
+        200:
+          description: "Customer found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        404:
+          description: "Customer not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Customers
+      summary: "Update Customer"
+      description: "Update customer information (email and/or password)"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Customer ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdate'
+            examples:
+              updateCustomer:
+                summary: "Update Customer Information"
+                value:
+                  email: "updated@example.com"
+                  password: "newpassword123"
+      responses:
+        200:
+          description: "Customer updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+        404:
+          description: "Customer not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Customers
+      summary: "Delete Customer"
+      description: "Permanently delete a customer account"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Customer ID"
+      responses:
+        200:
+          description: "Customer deleted successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        404:
+          description: "Customer not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /customers/my-tickets:
+    get:
+      tags:
+        - Customers
+      summary: "Get Customer's Service Tickets"
+      description: "Retrieve all service tickets for the authenticated customer. Requires customer authentication."
+      security:
+        - customerAuth: []
+      responses:
+        200:
+          description: "Tickets retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    description:
+                      type: string
+                      example: "Brake repair needed"
+        401:
+          description: "Unauthorized - Missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ========== MECHANIC ENDPOINTS ==========
+  /mechanics/register:
+    post:
+      tags:
+        - Mechanics
+      summary: "Register New Mechanic"
+      description: "Create a new mechanic account with personal information and credentials"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MechanicRegister'
+            examples:
+              newMechanic:
+                summary: "New Mechanic Registration"
+                value:
+                  first_name: "Jane"
+                  last_name: "Smith"
+                  email: "jane.smith@mechanicshop.com"
+                  password: "securepassword123"
+      responses:
+        201:
+          description: "Mechanic created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MechanicResponse'
+        400:
+          description: "Bad Request - Missing required fields"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: "Conflict - Email already registered"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /mechanics/ranking:
+    get:
+      tags:
+        - Mechanics
+      summary: "Get Mechanics Ranking"
+      description: "Retrieve mechanics ordered by the number of assigned service tickets"
+      responses:
+        200:
+          description: "Ranking retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MechanicRanking'
+
+  /mechanics:
+    get:
+      tags:
+        - Mechanics
+      summary: "Get All Mechanics"
+      description: "Retrieve all mechanics. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      responses:
+        200:
+          description: "Mechanics retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MechanicResponse'
+                  count:
+                    type: integer
+                    example: 5
+        401:
+          description: "Unauthorized - Missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /mechanics/{id}:
+    get:
+      tags:
+        - Mechanics
+      summary: "Get Mechanic by ID"
+      description: "Retrieve a specific mechanic by their ID. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Mechanic ID"
+      responses:
+        200:
+          description: "Mechanic found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/MechanicResponse'
+        404:
+          description: "Mechanic not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Mechanics
+      summary: "Update Mechanic"
+      description: "Update mechanic information. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Mechanic ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MechanicRegister'
+      responses:
+        200:
+          description: "Mechanic updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mechanic updated successfully"
+                  data:
+                    $ref: '#/components/schemas/MechanicResponse'
+        404:
+          description: "Mechanic not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Mechanics
+      summary: "Delete Mechanic"
+      description: "Permanently delete a mechanic account. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Mechanic ID"
+      responses:
+        200:
+          description: "Mechanic deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mechanic John Doe (ID: 1) deleted successfully"
+        404:
+          description: "Mechanic not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ========== SERVICE TICKET ENDPOINTS ==========
+  /tickets:
+    post:
+      tags:
+        - Service Tickets
+      summary: "Create Service Ticket"
+      description: "Create a new service ticket. Requires customer authentication."
+      security:
+        - customerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceTicketCreate'
+            examples:
+              newTicket:
+                summary: "New Service Ticket"
+                value:
+                  customer_id: 1
+                  description: "Brake repair and oil change needed"
+                  status: "open"
+                  mechanic_ids: [1, 2]
+      responses:
+        201:
+          description: "Service ticket created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Service ticket created successfully"
+                  data:
+                    $ref: '#/components/schemas/ServiceTicketResponse'
+        400:
+          description: "Bad Request - Missing required fields"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Service Tickets
+      summary: "Get All Service Tickets"
+      description: "Retrieve all service tickets with caching and rate limiting. Requires authentication."
+      security:
+        - customerAuth: []
+      responses:
+        200:
+          description: "Tickets retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ServiceTicketResponse'
+                  count:
+                    type: integer
+                    example: 10
+
+  /tickets/{id}:
+    get:
+      tags:
+        - Service Tickets
+      summary: "Get Service Ticket by ID"
+      description: "Retrieve a specific service ticket by ID with caching. Requires authentication."
+      security:
+        - customerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Service Ticket ID"
+      responses:
+        200:
+          description: "Ticket found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/ServiceTicketResponse'
+        404:
+          description: "Ticket not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Service Tickets
+      summary: "Delete Service Ticket"
+      description: "Delete a service ticket. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Service Ticket ID"
+      responses:
+        200:
+          description: "Ticket deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Service ticket deleted successfully"
+        404:
+          description: "Ticket not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tickets/{id}/edit:
+    put:
+      tags:
+        - Service Tickets
+      summary: "Edit Ticket Mechanics"
+      description: "Add or remove mechanics from a service ticket"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Service Ticket ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketMechanicsUpdate'
+            examples:
+              updateMechanics:
+                summary: "Update Ticket Mechanics"
+                value:
+                  add_ids: [1, 2]
+                  remove_ids: [3]
+      responses:
+        200:
+          description: "Ticket updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        404:
+          description: "Ticket not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tickets/{id}/add-part:
+    post:
+      tags:
+        - Service Tickets
+      summary: "Add Part to Ticket"
+      description: "Add an inventory part to a service ticket"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Service Ticket ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketPartAdd'
+            examples:
+              addPart:
+                summary: "Add Part to Ticket"
+                value:
+                  part_id: 1
+      responses:
+        200:
+          description: "Part added to ticket successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        404:
+          description: "Ticket or part not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ========== INVENTORY ENDPOINTS ==========
+  /inventory/:
+    post:
+      tags:
+        - Inventory
+      summary: "Create Inventory Item"
+      description: "Add a new part to the inventory"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryCreate'
+            examples:
+              newItem:
+                summary: "New Inventory Item"
+                value:
+                  name: "Brake Pads"
+                  price: 49.99
+      responses:
+        201:
+          description: "Inventory item created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryResponse'
+        400:
+          description: "Bad Request - Missing required fields"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Inventory
+      summary: "Get All Inventory"
+      description: "Retrieve all inventory items"
+      responses:
+        200:
+          description: "Inventory retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryResponse'
+
+  /inventory/{id}:
+    put:
+      tags:
+        - Inventory
+      summary: "Update Inventory Item"
+      description: "Update an existing inventory item. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Inventory Item ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryUpdate'
+            examples:
+              updateItem:
+                summary: "Update Inventory Item"
+                value:
+                  name: "Premium Brake Pads"
+                  price: 59.99
+      responses:
+        200:
+          description: "Inventory item updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Inventory item updated successfully"
+                  data:
+                    $ref: '#/components/schemas/InventoryResponse'
+        404:
+          description: "Inventory item not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Inventory
+      summary: "Delete Inventory Item"
+      description: "Remove an inventory item. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Inventory Item ID"
+      responses:
+        200:
+          description: "Inventory item deleted successfully"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        404:
+          description: "Inventory item not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /inventory/{id}/archive:
+    patch:
+      tags:
+        - Inventory
+      summary: "Archive Inventory Item"
+      description: "Archive an inventory item by setting quantity to 0. Requires mechanic authentication."
+      security:
+        - mechanicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: "Inventory Item ID"
+      responses:
+        200:
+          description: "Inventory item archived successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Inventory item archived (quantity set to 0)"
+                  data:
+                    $ref: '#/components/schemas/InventoryResponse'
+        404:
+          description: "Inventory item not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ========== SYSTEM ENDPOINTS ==========
+  /health:
+    get:
+      tags:
+        - System
+      summary: "Health Check"
+      description: "Comprehensive health check for all services including database connectivity"
+      responses:
+        200:
+          description: "All services healthy"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        503:
+          description: "One or more services unhealthy"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'

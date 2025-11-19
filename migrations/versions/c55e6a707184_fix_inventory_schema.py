@@ -1,8 +1,8 @@
-"""empty message
+"""Fix inventory schema
 
-Revision ID: e27704a0acda
+Revision ID: c55e6a707184
 Revises: 
-Create Date: 2025-11-17 11:44:58.778138
+Create Date: 2025-11-18 21:00:47.925984
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e27704a0acda'
+revision = 'c55e6a707184'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade():
     )
     op.create_table('inventory',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=120), nullable=False),
+    sa.Column('part_name', sa.String(length=120), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -35,27 +35,32 @@ def upgrade():
     )
     op.create_table('mechanic',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=120), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('first_name', sa.String(length=120), nullable=False),
+    sa.Column('last_name', sa.String(length=120), nullable=False),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('password', sa.String(length=120), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     op.create_table('service_ticket',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(length=255), nullable=True),
     sa.Column('customer_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], ),
+    sa.Column('status', sa.String(length=50), nullable=False),
+    sa.ForeignKeyConstraint(['customer_id'], ['customer.id'], name='fk_service_ticket_customer'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('service_mechanic',
     sa.Column('service_ticket_id', sa.Integer(), nullable=True),
     sa.Column('mechanic_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['mechanic_id'], ['mechanic.id'], ),
-    sa.ForeignKeyConstraint(['service_ticket_id'], ['service_ticket.id'], )
+    sa.ForeignKeyConstraint(['mechanic_id'], ['mechanic.id'], name='fk_mechanic_service_ticket'),
+    sa.ForeignKeyConstraint(['service_ticket_id'], ['service_ticket.id'], name='fk_service_ticket_mechanic')
     )
     op.create_table('ticket_inventory',
     sa.Column('service_ticket_id', sa.Integer(), nullable=True),
     sa.Column('inventory_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['inventory_id'], ['inventory.id'], ),
-    sa.ForeignKeyConstraint(['service_ticket_id'], ['service_ticket.id'], )
+    sa.ForeignKeyConstraint(['inventory_id'], ['inventory.id'], name='fk_inventory_service_ticket'),
+    sa.ForeignKeyConstraint(['service_ticket_id'], ['service_ticket.id'], name='fk_service_ticket_inventory')
     )
     # ### end Alembic commands ###
 

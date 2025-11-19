@@ -191,7 +191,7 @@ Save this as `Mechanics_Shop.postman_collection.json` and import into Postman:
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "url": { "raw": "http://127.0.0.1:5000/mechanics/login" },
-        "body": { "mode": "raw", "raw": "{ \"name\": \"John\" }" }
+        "body": { "mode": "raw", "raw": "{ \"name\": \"John\", \"password\": \"your_password\" }" }
       }
     },
     {
