@@ -13,6 +13,7 @@ try:
     from app import create_app
     from app.extensions import db
     from app.models import Customer, Mechanic
+    from config import TestingConfig
     
     print("✓ Successfully imported app modules")
     
@@ -24,19 +25,25 @@ try:
         SECRET_KEY = 'test-secret-key'
         CACHE_TYPE = 'SimpleCache'
     
-    app = create_app(TestConfig)
+    app = create_app("TestingConfig")
     
     with app.app_context():
         # Create tables
         db.create_all()
         
         # Test basic operations
-        customer = Customer(email="test@example.com", password="testpass")
+        customer = Customer(
+            # ...existing code (other required fields, e.g., id, etc.)...
+            # Use actual fields defined on your Customer model:
+            name="test user",
+            email="testuser@example.com",
+            # ...add or remove kwargs to match your real Customer model...
+        )
         db.session.add(customer)
         db.session.commit()
         
-        # Test query
-        found = Customer.query.filter_by(email="test@example.com").first()
+        # Test query - filter by the same real field used above
+        found = Customer.query.filter_by(email="testuser@example.com").first()
         if found:
             print("✓ Database operations working")
         else:

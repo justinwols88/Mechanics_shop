@@ -18,3 +18,4 @@ class TestingConfig(Config):
     # More aggressive rate limits for testing
     RATELIMIT_DEFAULT = "5 per minute"
     RATELIMIT_STORAGE_URL = "memory://"
+    RATELIMIT_ENABLED = False

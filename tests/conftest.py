@@ -9,7 +9,7 @@ from config import TestingConfig
 @pytest.fixture(scope='session')
 def app():
     """Create application for the tests."""
-    _app = create_app("TestingConfig")
+    _app = create_app(TestingConfig)
     _app.config['TESTING'] = True
     _app.config['WTF_CSRF_ENABLED'] = False
     
