@@ -1,58 +1,90 @@
+# app/__init__.py
+import os
+import sys
 from flask import Flask, jsonify
-from .extensions import db, ma, cache, migrate, limiter
-from app.blueprints.customers.routes import customers_bp
-from app.blueprints.service_tickets.routes import service_tickets_bp
-from app.blueprints.mechanics.routes import mechanics_bp
-from app.blueprints.inventory.routes import inventory_bp
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+from flask_caching import Cache
+from flask_migrate import Migrate
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 from datetime import datetime
 from sqlalchemy import text
-from flask_cors import CORS
+
+# Add the parent directory to Python path to fix imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Initialize extensions
+db = SQLAlchemy()
+ma = Marshmallow()
+cache = Cache()
+migrate = Migrate()
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 # Swagger configuration
 SWAGGER_URL = '/docs'
-SWAGGER_UI_URL = '/static/swagger.yaml'
-SWAGGER_CONFIG = {
-    'title': 'Service API Documentation',
-    'version': '1.0',
-    'openapi': '3.0.0',
-    'x-logo-url': 'https://example.com/logo.png'
-}
+API_URL = '/static/swagger.json'
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,
-    SWAGGER_UI_URL,
-    config=SWAGGER_CONFIG
+    API_URL,
+    config={
+        'app_name': "Mechanics Shop API"
+    }
 )
 
-def create_app(config_class='config.Config'):
+def create_app(config_object=None):
     app = Flask(__name__)
-    app.config.from_object(config_class)
     
-    # Cache configuration
-    app.config['CACHE_TYPE'] = 'simple'
-    app.config['CACHE_DEFAULT_TIMEOUT'] = 60 * 60
-
-    # Initialize extensions
+    # Import here to avoid circular imports
+    from config import ProductionConfig
+    
+    # Use provided config or default to ProductionConfig
+    if config_object is None:
+        config_object = ProductionConfig
+    app.config.from_object(config_object)
+    
+    # Initialize extensions with app
     db.init_app(app)
     ma.init_app(app)
-    
-    # Configure limiter based on app config
-    if app.config.get('TESTING'):
-        limiter.enabled = False
-    
-    limiter.init_app(app)
     cache.init_app(app)
     migrate.init_app(app, db)
+    limiter.init_app(app)
     CORS(app)
 
-    # Register blueprints
-    app.register_blueprint(customers_bp, url_prefix='/customers')
-    app.register_blueprint(service_tickets_bp, url_prefix='/tickets')
-    app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
-    app.register_blueprint(inventory_bp, url_prefix='/inventory')
+     # Register blueprints with error handling
+    blueprints = [
+        ('customers_bp', '/customers'),
+        ('service_tickets_bp', '/tickets'), 
+        ('mechanics_bp', '/mechanics'),
+        ('inventory_bp', '/inventory')
+    ]
+    
+    for bp_name, url_prefix in blueprints:
+        module_name = ''  # ensure module_name is always defined
+    try:
+        from app.blueprints.customers.routes import customers_bp
+        from app.blueprints.service_tickets.routes import service_tickets_bp
+        from app.blueprints.mechanics.routes import mechanics_bp
+        from app.blueprints.inventory.routes import inventory_bp
+        
+        app.register_blueprint(customers_bp, url_prefix='/customers')
+        app.register_blueprint(service_tickets_bp, url_prefix='/tickets') 
+        app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
+        app.register_blueprint(inventory_bp, url_prefix='/inventory')
+        
+        print("✓ All blueprints registered successfully!")
+    except ImportError as e:
+        print(f"✗ Error importing blueprints: {e}")
+
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
+    # Health check route
     @app.route('/health', methods=['GET'])
     def health_check():
         """Comprehensive health check for multiple services"""
@@ -76,5 +108,20 @@ def create_app(config_class='config.Config'):
         status_code = 200 if health_status['status'] == 'healthy' else 503
         
         return jsonify(health_status), status_code
+
+    @app.route('/')
+    def index():
+        return jsonify({
+            'message': 'Mechanics Shop API',
+            'version': '1.0.0',
+            'endpoints': {
+                'docs': '/docs',
+                'health': '/health',
+                'customers': '/customers',
+                'tickets': '/tickets',
+                'mechanics': '/mechanics',
+                'inventory': '/inventory'
+            }
+        })
 
     return app

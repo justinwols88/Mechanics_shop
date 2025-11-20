@@ -5,7 +5,7 @@ from app.utils.auth import token_required, mechanic_token_required
 from app.schemas import ServiceTicketSchema
 from app.extensions import limiter, cache
 
-service_tickets_bp = Blueprint('service_tickets', __name__)
+service_tickets_bp = Blueprint('service_tickets_bp', __name__)
 
 def validate_service_ticket_data(data, is_update=False):
     """Validate service ticket input data"""

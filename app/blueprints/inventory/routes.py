@@ -7,7 +7,7 @@ from app.extensions import limiter
 from datetime import datetime, timezone
 import numbers
 
-inventory_bp = Blueprint('inventory', __name__)
+inventory_bp = Blueprint('inventory_bp', __name__)
 inventory_schema = InventorySchema()
 
 def validate_inventory_data(data):

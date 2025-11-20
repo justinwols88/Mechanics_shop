@@ -6,7 +6,7 @@ from app.utils.auth import encode_mechanic_token, mechanic_token_required
 from app.schemas import MechanicSchema, MechanicsSchema
 from app.extensions import limiter, cache
 
-mechanics_bp = Blueprint('mechanics', __name__)
+mechanics_bp = Blueprint('mechanics_bp', __name__)
 mechanic_schema = MechanicSchema()
 mechanics_schema = MechanicsSchema()
 

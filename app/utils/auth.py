@@ -2,7 +2,9 @@ from functools import wraps
 from flask import request, jsonify, current_app
 from jose import jwt
 from jose.exceptions import JWTError, ExpiredSignatureError
+import os
 
+SECRET_KEY = os.environ.get("SUPER_SECRET_KEY")
 
 def encode_token(customer_id):
     payload = {"customer_id": customer_id}
