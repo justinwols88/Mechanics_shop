@@ -67,10 +67,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 black isort mypy
 
-    - name: Check code formatting with Black (explicit files)
+    - name: COMPLETELY REMOVE .gitignore for Black
       run: |
-        echo "Checking Python files with Black..."
-        find app tests -name "*.py" -type f | xargs python -m black --check --verbose
+        # Remove .gitignore entirely to prevent Black from reading it
+        if [ -f .gitignore ]; then
+          echo "Removing corrupted .gitignore file..."
+          rm -f .gitignore
+        fi
+
+    - name: Check code formatting with Black
+      run: |
+        echo "Running Black without .gitignore..."
+        python -m black --check app/ tests/ --verbose
 
     - name: Check import sorting with isort
       run: |
