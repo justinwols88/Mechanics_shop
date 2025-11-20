@@ -13,9 +13,9 @@ migrate = Migrate()
 # Initialize limiter with conditional enabling
 limiter = Limiter(
     key_func=get_remote_address,
-    storage_uri=os.getenv('REDIS_URI', 'redis://localhost:6379'),
+    storage_uri=os.getenv("REDIS_URI", "redis://localhost:6379"),
     default_limits=["100 per hour"],
-    enabled=not os.getenv('TESTING')  # Disable if TESTING environment variable is set
+    enabled=not os.getenv("TESTING"),  # Disable if TESTING environment variable is set
 )
 
 # Use Redis for caching

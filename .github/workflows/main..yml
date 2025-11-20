@@ -94,6 +94,7 @@ jobs:
     - name: Type checking with mypy
       run: |
         mypy app/ --ignore-missing-imports
+
   build:
     runs-on: ubuntu-latest
     needs: [test, lint]
@@ -128,7 +129,6 @@ jobs:
       with:
         service-id: ${{ secrets.RENDER_SERVICE_ID }}
         api-key: ${{ secrets.RENDER_API_KEY }}
-
 
   api-test:
     runs-on: ubuntu-latest
