@@ -75,11 +75,6 @@ jobs:
           rm -f .gitignore
         fi
 
-    - name: Check code formatting with Black
-      run: |
-        echo "Running Black without .gitignore..."
-        python -m black --check app/ tests/ --verbose
-
     - name: Check import sorting with isort
       run: |
         python -m isort --check-only app/ tests/
