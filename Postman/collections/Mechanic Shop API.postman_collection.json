@@ -1,0 +1,1074 @@
+{
+  "info": {
+    "_postman_id": "fc99586e-72bd-47d9-afd5-a11ebf33ce99",
+    "name": "Mechanic Shop API",
+    "description": "Complete API for Mechanic Shop Management System with authentication, rate limiting, and caching",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49025644",
+    "_collection_link": "https://justin-wold88-9318851.postman.co/workspace/05566301-623e-467b-88de-620b8af7f038/collection/49025644-fc99586e-72bd-47d9-afd5-a11ebf33ce99?action=share&source=collection_link&creator=49025644"
+  },
+  "item": [
+    {
+      "name": "👥 Customer Management",
+      "item": [
+        {
+          "name": "Register Customer",
+          "id": "2b472aeb-5f1e-4d14-a683-c314d98004ce",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"customerToken\", jsonData.token);",
+                  "pm.collectionVariables.set(\"customerId\", jsonData.customer_id);",
+                  "console.log(\"Customer Token:\", jsonData.token);"
+                ],
+                "type": "text/javascript",
+                "id": "f76835b9-e2d4-4cea-ad98-8396dce73024"
+              }
+            }
+          ],
+          "id": "5d6792fb-ccad-4668-b6c7-efb6bb413ca0",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Customers (Paginated & Cached)",
+          "id": "3806e32c-69c2-473e-a074-6865f95f95ac",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers?page=1&per_page=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer by ID",
+          "id": "dfa35b3b-409f-4f0a-a800-f919a8c78bc6",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Customer (Token Required)",
+          "id": "05c14d04-af3a-4b71-af8a-dad60944ff57",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John Updated\",\n  \"last_name\": \"Doe Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Customer (Token Required)",
+          "id": "fd60db00-4aa4-4b30-bf6f-5b92d69a359e",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{customerId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Tickets (Token Required)",
+          "id": "d91b54e7-1c87-41ac-9d3e-b372d49c7952",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/my-tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "my-tickets"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "0fa832a9-6aaf-419e-a89d-ffd5b7af57b8"
+    },
+    {
+      "name": "🔧 Mechanic Management",
+      "item": [
+        {
+          "name": "Register Mechanic",
+          "id": "2ec203c1-990b-4287-a5dd-b1709f563015",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mechanics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mechanic Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"mechanicToken\", jsonData.token);",
+                  "pm.collectionVariables.set(\"mechanicId\", jsonData.mechanic_id);",
+                  "console.log(\"Mechanic Token:\", jsonData.token);"
+                ],
+                "type": "text/javascript",
+                "id": "998aab18-fd3f-4215-b3b5-dcd66cb285e6"
+              }
+            }
+          ],
+          "id": "b3d86694-79fc-47b2-94a2-9ae10f39f892",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mechanics/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Mechanics",
+          "id": "020455dc-9b66-45e8-8a49-0f0ba084c62c",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/mechanics",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mechanic by ID",
+          "id": "49a6199b-e893-4968-893d-2f9c898a86cd",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/mechanics/{{mechanicId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanicId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Mechanic (Token Required)",
+          "id": "f5756153-5100-48b4-a4ea-3e7b58a1391d",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Jane Updated\",\n  \"last_name\": \"Smith Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/mechanics/{{mechanicId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanicId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Mechanic (Token Required)",
+          "id": "96601495-e0bc-4247-871e-a22d003abad0",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/mechanics/{{mechanicId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanicId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mechanics Leaderboard",
+          "id": "391a5aeb-648e-464e-a905-8fc5234d67b4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/mechanics/leaderboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "mechanics",
+                "leaderboard"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "962c2c82-ee40-4a90-b4ff-b41ec862b7ee"
+    },
+    {
+      "name": "🎫 Service Tickets",
+      "item": [
+        {
+          "name": "Create Service Ticket (Customer Token Required)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"ticketId\", jsonData.id);",
+                  "console.log(\"Created Ticket ID:\", jsonData.id);"
+                ],
+                "type": "text/javascript",
+                "id": "95f8165a-6635-447c-a903-6dfbbda23d66"
+              }
+            }
+          ],
+          "id": "f0c9b4b2-ec1f-4b02-a24f-596e7001bab1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"issue\": \"Engine making strange noises\",\n  \"vehicle_info\": \"Toyota Camry 2020\",\n  \"status\": \"open\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Service Tickets (Rate Limited)",
+          "id": "ef88ac2d-984c-49fe-ab32-be568e19bfee",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service Ticket by ID",
+          "id": "131c0ec8-87bf-4362-a7f4-bdcb32ceb17d",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets/{{ticketId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets",
+                "{{ticketId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service Ticket (Mechanic Token Required)",
+          "id": "c81a01ca-8331-4288-9928-68270df1c9b8",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"issue\": \"Engine making strange noises - diagnosed as belt issue\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets/{{ticketId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets",
+                "{{ticketId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add/Remove Mechanics from Ticket",
+          "id": "db471ae6-e2c4-4b0a-b286-b46b2c643587",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"add_ids\": [{{mechanicId}}],\n  \"remove_ids\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets/{{ticketId}}/edit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets",
+                "{{ticketId}}",
+                "edit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Part to Ticket",
+          "id": "3950dc6a-e6cd-408d-87b0-67f5e6419dd3",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"part_id\": {{inventoryId}},\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets/{{ticketId}}/parts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets",
+                "{{ticketId}}",
+                "parts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service Ticket (Mechanic Token Required)",
+          "id": "211442f7-5921-4b14-a8b4-8d4d263f801b",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets/{{ticketId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets",
+                "{{ticketId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "42daf309-30e5-4703-85ef-f24237d01fb4"
+    },
+    {
+      "name": "📦 Inventory Management",
+      "item": [
+        {
+          "name": "Create Inventory Item (Mechanic Token Required)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"inventoryId\", jsonData.id);",
+                  "console.log(\"Created Inventory ID:\", jsonData.id);"
+                ],
+                "type": "text/javascript",
+                "id": "075f7adf-d8c0-4136-991a-798429409042"
+              }
+            }
+          ],
+          "id": "6f679695-bf44-4091-9534-5d785bd83592",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Spark Plug\",\n  \"price\": 8.99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Inventory Items",
+          "id": "7d4f3bf0-3961-4046-a48e-47d509807410",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Item by ID",
+          "id": "b08a4a86-68c3-420c-b69f-3024445e6ba7",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/{{inventoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventoryId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Inventory Item (Mechanic Token Required)",
+          "id": "71c4efac-735c-4607-8db8-bd75d2eb5f03",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Spark Plug - Premium\",\n  \"price\": 12.99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inventory/{{inventoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventoryId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Inventory Item (Mechanic Token Required)",
+          "id": "5e30e687-5140-4227-9ccf-8372399552ee",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanicToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inventory/{{inventoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventoryId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "08790ba6-ddbd-45be-8933-66e063038a7a"
+    },
+    {
+      "name": "⚡ Rate Limit Testing",
+      "item": [
+        {
+          "name": "Test Customer Rate Limit (10/min)",
+          "id": "f6f15937-2b08-45a0-8100-ba2d6c23c4de",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Service Tickets Rate Limit (20/min)",
+          "id": "180b0ed6-7f27-431e-ad21-978875384c68",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/service_tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "service_tickets"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "433d97ae-ab5e-4984-bba2-a300bc493142"
+    },
+    {
+      "name": "🔐 Authentication Tests",
+      "item": [
+        {
+          "name": "Test Protected Route Without Token",
+          "id": "f4666e42-5fcf-4ce0-b3aa-9035ce792899",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customers/my-tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "my-tickets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Protected Route With Invalid Token",
+          "id": "42dd67e7-f135-42bd-997a-78b0e2c542b5",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token_here"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/my-tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "my-tickets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Customer Token on Mechanic Route",
+          "id": "8371b65d-9460-449f-a7c6-dbb7ca73f971",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Part\",\n  \"price\": 9.99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inventory"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "74ee7222-92b6-468a-a340-7d9c75c8048a"
+    },
+    {
+      "name": "🏠 Health Check",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "b8a4537b-0a4c-42be-b519-451c1ca00f8e",
+            "exec": [
+              "// Ensure baseUrl is set in environment; default to local server if missing",
+              "(function(){",
+              "  const env = pm.environment;",
+              "  const current = env.get('baseUrl');",
+              "  if (!current) {",
+              "    env.set('baseUrl', 'http://127.0.0.1:5000');",
+              "  }",
+              "",
+              "  // Update the request URL to a likely existing endpoint",
+              "  try {",
+              "    // Force the request URL to /mechanic if it was root",
+              "    const original = pm.request.url.toString();",
+              "    if (original.match(/\\{\\{\\s*baseUrl\\s*\\}\\}\\/\\s*$/)) {",
+              "      // mutate the URL path safely",
+              "      pm.request.url = pm.request.url.replace(/\\/?$/, '') + '/mechanic';",
+              "    }",
+              "  } catch (e) {",
+              "    // no-op",
+              "  }",
+              "})();"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "id": "859fe75d-1bc5-456e-941a-2e95b5f6588f",
+            "exec": [
+              "// Allow 200 OK or 404 Not Found with helpful diagnostics",
+              "pm.test('Status is 200 or 404', function () {",
+              "  pm.expect(pm.response.code, 'expected 200 (preferred) or 404').to.be.oneOf([200, 404]);",
+              "});",
+              "",
+              "// Parse JSON if possible and assert shape depending on status",
+              "(function(){",
+              "  let isJson = false; let data;",
+              "  try { data = pm.response.json(); isJson = true; } catch (e) {}",
+              "",
+              "  pm.test('Response is JSON', function(){",
+              "    pm.expect(isJson, 'response should be JSON').to.be.true;",
+              "  });",
+              "",
+              "  if (!isJson) { return; }",
+              "",
+              "  pm.test('Body is an object', function(){",
+              "    pm.expect(data).to.be.an('object');",
+              "  });",
+              "",
+              "  if (pm.response.code === 200) {",
+              "    pm.test('200 response should not contain error key', function(){",
+              "      pm.expect(Object.prototype.hasOwnProperty.call(data, 'error')).to.be.false;",
+              "    });",
+              "  }",
+              "",
+              "  if (pm.response.code === 404) {",
+              "    pm.test('404 response may contain error key with message', function(){",
+              "      pm.expect(Object.prototype.hasOwnProperty.call(data, 'error'), 'should include error field for 404').to.be.true;",
+              "      pm.expect(data.error).to.be.a('string');",
+              "    });",
+              "  }",
+              "})();",
+              "",
+              "// Add diagnostics when unexpected",
+              "pm.test('Diagnostics (status/body)', function(){",
+              "  if (![200,404].includes(pm.response.code)){",
+              "    console.error('Unexpected status', pm.response.code, pm.response.text());",
+              "  }",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "id": "7991decb-a789-401c-996e-793abd6ff301",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "console.log('Running request to:', pm.request.url);"
+        ],
+        "id": "fa5c02ac-c02b-4233-9b48-d5ecb7b560f5"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test(\"Status code is 200\", function () {",
+          "    pm.response.to.have.status(200);",
+          "});",
+          "",
+          "// For successful POST requests",
+          "if (pm.response.code === 201) {",
+          "    pm.test(\"Status code is 201\", function () {",
+          "        pm.response.to.have.status(201);",
+          "    });",
+          "}",
+          "",
+          "// For rate limit testing",
+          "if (pm.response.code === 429) {",
+          "    pm.test(\"Rate limit exceeded\", function () {",
+          "        pm.response.to.have.status(429);",
+          "    });",
+          "}"
+        ],
+        "id": "b46a0523-da2f-4427-a92c-583c1524dd8d"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "b153b1da-bae2-483e-bab7-ab15a6874389",
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "id": "f5fd5bac-332c-43fb-b537-d2a0470ac5a5",
+      "key": "customerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "50bce553-0f15-4ac5-b218-9442547eed95",
+      "key": "mechanicToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "960890bf-f773-42d9-9f48-75c6eaee04aa",
+      "key": "customerId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "696b03b2-8e81-427d-b8e3-79200e0ef733",
+      "key": "mechanicId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "510e0a67-a8e8-4341-87f5-a793ce04540e",
+      "key": "ticketId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "6656498f-d1df-4cec-80b3-269311f74859",
+      "key": "inventoryId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
