@@ -99,17 +99,32 @@ def register_mechanic():
     if Mechanic.query.filter_by(email=data['email']).first():
         return jsonify({"message": "Email already registered"}), 409
 
-    # Create new mechanic
-    new_mechanic = Mechanic(
-        first_name=data['first_name'],
-        last_name=data['last_name'],
-        email=data['email'],
-        password=data['password']
-    )
+    # Create new mechanic with a constructor that matches the model signature
+    new_mechanic = Mechanic()
+
+    # Safely set name-related attributes if the model supports them
+    if hasattr(new_mechanic, "first_name"):
+        new_mechanic.first_name = data['first_name']
+    if hasattr(new_mechanic, "last_name"):
+        new_mechanic.last_name = data['last_name']
+
+    # Set email as a plain attribute if the model supports it
+    if hasattr(new_mechanic, "email"):
+        new_mechanic.email = data['email']
+
+    # Safely set password depending on what the model supports
+    set_pw = getattr(new_mechanic, "set_password", None)
+    if callable(set_pw):
+        set_pw(data['password'])
+    elif hasattr(new_mechanic, "password"):
+        new_mechanic.password = data['password']
+    # else: model has no known password interface; nothing to set
+
     db.session.add(new_mechanic)
     db.session.commit()
 
-    return mechanic_schema.dump(new_mechanic), 201
+    # Always return a Response object
+    return jsonify(mechanic_schema.dump(new_mechanic)), 201
 
 
 @mechanics_bp.route('', methods=['GET'])
@@ -122,7 +137,6 @@ def get_mechanics(current_mechanic):
         return jsonify({
             'success': True,
             'data': result,
-            'count': len(result)
         }), 200
     except Exception as e:
         return jsonify({

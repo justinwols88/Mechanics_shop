@@ -16,6 +16,22 @@ from flask_limiter import Limiter
 class CustomerTestCase(unittest.TestCase):
     """Test cases for Customer endpoints"""
 
+    def _reset_rate_limiter(self):
+        """Best-effort reset of the rate limiter without relying on Flask type hints."""
+        app = self.app
+
+        # Try getting limiter from Flask's extensions dict
+        limiter = None
+        if hasattr(app, "extensions"):
+            limiter = app.extensions.get("limiter")
+
+        # Fallback to attribute if present
+        if limiter is None and hasattr(app, "limiter"):
+            limiter = getattr(app, "limiter")
+
+        if isinstance(limiter, Limiter) and hasattr(limiter, "reset"):
+            limiter.reset()
+
     def setUp(self):
         """Set up test environment"""
         self.app = create_app(TestingConfig)
@@ -31,10 +47,7 @@ class CustomerTestCase(unittest.TestCase):
         db.session.commit()
 
         # Reset rate limiter for clean test state
-        from flask_limiter import Limiter
-        from flask_limiter.util import get_remote_address
-        if hasattr(self.app, 'limiter'):
-            self.app.limiter.reset()
+        self._reset_rate_limiter()
 
     def tearDown(self):
         """Clean up after tests"""
@@ -43,8 +56,7 @@ class CustomerTestCase(unittest.TestCase):
         self.app_context.pop()
         
         # Reset rate limiter again
-        if hasattr(self.app, 'limiter'):
-            self.app.limiter.reset()
+        self._reset_rate_limiter()
 
     def test_customer_login_success(self):
         """Test successful customer login"""

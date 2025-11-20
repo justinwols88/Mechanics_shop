@@ -4,6 +4,7 @@ from app.models import Customer, ServiceTicket
 from app.schemas import CustomerSchema, LoginSchema
 from app.utils.auth import encode_token, token_required
 import re
+from flask.typing import ResponseReturnValue  # added for typing
 
 customers_bp = Blueprint('customers_bp', __name__)
 customer_schema = CustomerSchema()
@@ -88,7 +89,7 @@ def get_customers():
     })
 
 @customers_bp.route('/register', methods=['POST'])
-def register_customer():
+def register_customer() -> ResponseReturnValue:
     data = request.get_json()
 
     if not data:
@@ -114,7 +115,7 @@ def register_customer():
         db.session.add(new_customer)
         db.session.commit()
 
-        return customer_schema.dump(new_customer), 201
+        return jsonify(customer_schema.dump(new_customer)), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({
@@ -123,15 +124,15 @@ def register_customer():
         }), 500
 
 @customers_bp.route('/<int:id>', methods=['GET'])
-def get_customer_by_id(id):
+def get_customer_by_id(id: int) -> ResponseReturnValue:
     customer = db.session.get(Customer, id)
     if not customer:
         return jsonify({"message": "Customer not found"}), 404
 
-    return CustomerSchema().dump(customer), 200
+    return jsonify(CustomerSchema().dump(customer)), 200
 
 @customers_bp.route('/<int:id>', methods=['PUT'])
-def update_customer(id):
+def update_customer(id: int) -> ResponseReturnValue:
     customer = db.session.get(Customer, id)
     if not customer:
         return jsonify({"message": "Customer not found"}), 404
@@ -165,7 +166,7 @@ def update_customer(id):
             customer.password = data['password']
 
         db.session.commit()
-        return CustomerSchema().dump(customer), 200
+        return jsonify(CustomerSchema().dump(customer)), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({
