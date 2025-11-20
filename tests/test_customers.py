@@ -38,9 +38,9 @@ class CustomerTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
-        
+
         db.create_all()
-        
+
         # Create test customer
         self.customer = Customer(email="test@example.com", password="testpassword")
         db.session.add(self.customer)
@@ -54,117 +54,134 @@ class CustomerTestCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-        
+
         # Reset rate limiter again
         self._reset_rate_limiter()
 
     def test_customer_login_success(self):
         """Test successful customer login"""
-        response = self.client.post('/customers/login', 
-                                  json={'email': 'test@example.com', 'password': 'testpassword'})
+        response = self.client.post(
+            "/customers/login",
+            json={"email": "test@example.com", "password": "testpassword"},
+        )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertIn('token', data)
-        self.assertTrue(isinstance(data['token'], str))
+        self.assertIn("token", data)
+        self.assertTrue(isinstance(data["token"], str))
 
     def test_customer_login_invalid_password(self):
         """Test customer login with invalid password (negative test)"""
-        response = self.client.post('/customers/login', 
-                                  json={'email': 'test@example.com', 'password': 'wrongpassword'})
+        response = self.client.post(
+            "/customers/login",
+            json={"email": "test@example.com", "password": "wrongpassword"},
+        )
         self.assertEqual(response.status_code, 401)
         data = json.loads(response.data)
-        self.assertIn('message', data)
+        self.assertIn("message", data)
 
     def test_customer_login_nonexistent_email(self):
         """Test customer login with nonexistent email (negative test)"""
-        response = self.client.post('/customers/login', 
-                                  json={'email': 'nonexistent@example.com', 'password': 'password'})
+        response = self.client.post(
+            "/customers/login",
+            json={"email": "nonexistent@example.com", "password": "password"},
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_customer_login_missing_fields(self):
         """Test customer login with missing fields (negative test)"""
-        response = self.client.post('/customers/login', 
-                                  json={'email': 'test@example.com'})
+        response = self.client.post(
+            "/customers/login", json={"email": "test@example.com"}
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_customer_registration_success(self):
         """Test successful customer registration"""
-        response = self.client.post('/customers/register', 
-                                  json={'email': 'newcustomer@example.com', 'password': 'newpassword'})
+        response = self.client.post(
+            "/customers/register",
+            json={"email": "newcustomer@example.com", "password": "newpassword"},
+        )
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.data)
-        self.assertEqual(data['email'], 'newcustomer@example.com')
-        self.assertIn('id', data)
+        self.assertEqual(data["email"], "newcustomer@example.com")
+        self.assertIn("id", data)
 
     def test_customer_registration_duplicate_email(self):
         """Test customer registration with duplicate email (negative test)"""
-        response = self.client.post('/customers/register', 
-                                  json={'email': 'test@example.com', 'password': 'password123'})
+        response = self.client.post(
+            "/customers/register",
+            json={"email": "test@example.com", "password": "password123"},
+        )
         self.assertEqual(response.status_code, 409)
         data = json.loads(response.data)
-        self.assertIn('message', data)
-        self.assertIn('already', data['message'].lower())
+        self.assertIn("message", data)
+        self.assertIn("already", data["message"].lower())
 
     def test_customer_registration_missing_fields(self):
         """Test customer registration with missing fields (negative test)"""
-        response = self.client.post('/customers/register', 
-                                  json={'email': 'test@example.com'})
+        response = self.client.post(
+            "/customers/register", json={"email": "test@example.com"}
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_get_customer_by_id_success(self):
         """Test getting customer by ID"""
-        response = self.client.get(f'/customers/{self.customer.id}')
+        response = self.client.get(f"/customers/{self.customer.id}")
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertEqual(data['id'], self.customer.id)
-        self.assertEqual(data['email'], self.customer.email)
+        self.assertEqual(data["id"], self.customer.id)
+        self.assertEqual(data["email"], self.customer.email)
 
     def test_get_customer_by_id_not_found(self):
         """Test getting nonexistent customer (negative test)"""
-        response = self.client.get('/customers/999')
+        response = self.client.get("/customers/999")
         self.assertEqual(response.status_code, 404)
 
     def test_update_customer_success(self):
         """Test updating customer information"""
-        response = self.client.put(f'/customers/{self.customer.id}', 
-                                 json={'email': 'updated@example.com', 'password': 'newpassword'})
+        response = self.client.put(
+            f"/customers/{self.customer.id}",
+            json={"email": "updated@example.com", "password": "newpassword"},
+        )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertEqual(data['email'], 'updated@example.com')
+        self.assertEqual(data["email"], "updated@example.com")
 
     def test_update_customer_not_found(self):
         """Test updating nonexistent customer (negative test)"""
-        response = self.client.put('/customers/999', 
-                                 json={'email': 'updated@example.com'})
+        response = self.client.put(
+            "/customers/999", json={"email": "updated@example.com"}
+        )
         self.assertEqual(response.status_code, 404)
 
     def test_delete_customer_success(self):
         """Test deleting a customer"""
-        response = self.client.delete(f'/customers/{self.customer.id}')
+        response = self.client.delete(f"/customers/{self.customer.id}")
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertIn('deleted', data['message'].lower())
+        self.assertIn("deleted", data["message"].lower())
 
     def test_delete_customer_not_found(self):
         """Test deleting nonexistent customer (negative test)"""
-        response = self.client.delete('/customers/999')
+        response = self.client.delete("/customers/999")
         self.assertEqual(response.status_code, 404)
 
     def test_get_customers_paginated(self):
         """Test getting paginated customers list"""
-        response = self.client.get('/customers/all?page=1&per_page=5')
+        response = self.client.get("/customers/all?page=1&per_page=5")
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertIn('customers', data)
-        self.assertIn('page', data)
-        self.assertIn('total', data)
+        self.assertIn("customers", data)
+        self.assertIn("page", data)
+        self.assertIn("total", data)
 
     def test_get_my_tickets_authenticated(self):
         """Test getting customer's tickets with authentication"""
         # First login to get token
-        login_response = self.client.post('/customers/login', 
-                                        json={'email': 'test@example.com', 'password': 'testpassword'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/customers/login",
+            json={"email": "test@example.com", "password": "testpassword"},
+        )
+        token = json.loads(login_response.data)["token"]
 
         # Create a test ticket
         ticket = ServiceTicket(description="Test ticket", customer_id=self.customer.id)
@@ -172,17 +189,18 @@ class CustomerTestCase(unittest.TestCase):
         db.session.commit()
 
         # Access protected endpoint
-        response = self.client.get('/customers/my-tickets', 
-                                 headers={'Authorization': f'Bearer {token}'})
+        response = self.client.get(
+            "/customers/my-tickets", headers={"Authorization": f"Bearer {token}"}
+        )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertIsInstance(data, list)
 
     def test_get_my_tickets_unauthenticated(self):
         """Test getting tickets without authentication (negative test)"""
-        response = self.client.get('/customers/my-tickets')
+        response = self.client.get("/customers/my-tickets")
         self.assertEqual(response.status_code, 401)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

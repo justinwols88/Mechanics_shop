@@ -22,27 +22,25 @@ class ServiceTicketsTestCase(unittest.TestCase):
         """Set up test environment"""
         # Import the TestingConfig class directly
         from config import TestingConfig
-    
+
         self.app = create_app(TestingConfig)  # Pass the class, not a string
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
-    
+
         db.create_all()
-    
+
         # Create test data
         self.customer = Customer(email="customer@example.com", password="password")
         self.mechanic = Mechanic(
-            first_name="John", 
-            last_name="Doe", 
-            email="mechanic@example.com", 
-            password="mechanicpassword"
+            first_name="John",
+            last_name="Doe",
+            email="mechanic@example.com",
+            password="mechanicpassword",
         )
         self.inventory = Inventory(part_name="Brake Pads", price=49.99)  # Use part_name
         self.ticket = ServiceTicket(
-            description="Test service ticket", 
-            customer_id=1, 
-            status="open"
+            description="Test service ticket", customer_id=1, status="open"
         )
 
         db.session.add_all([self.customer, self.mechanic, self.inventory, self.ticket])
@@ -58,84 +56,100 @@ class ServiceTicketsTestCase(unittest.TestCase):
     def test_create_service_ticket_authenticated(self):
         """Test creating service ticket with authentication"""
         # Login as customer first
-        login_response = self.client.post('/customers/login', 
-                                        json={'email': 'customer@example.com', 'password': 'password'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/customers/login",
+            json={"email": "customer@example.com", "password": "password"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.post('/tickets', 
-                                  headers={'Authorization': f'Bearer {token}'},
-                                  json={
-                                      'customer_id': self.customer.id,
-                                      'description': 'New service request',
-                                      'status': 'open'
-                                  })
+        response = self.client.post(
+            "/tickets",
+            headers={"Authorization": f"Bearer {token}"},
+            json={
+                "customer_id": self.customer.id,
+                "description": "New service request",
+                "status": "open",
+            },
+        )
         self.assertEqual(response.status_code, 201)
         data = json.loads(response.data)
-        self.assertTrue(data['success'])
-        self.assertEqual(data['data']['description'], 'New service request')
+        self.assertTrue(data["success"])
+        self.assertEqual(data["data"]["description"], "New service request")
 
     def test_create_service_ticket_unauthenticated(self):
         """Test creating ticket without authentication (negative test)"""
-        response = self.client.post('/tickets', 
-                                  json={
-                                      'customer_id': 1,
-                                      'description': 'New service request'
-                                  })
+        response = self.client.post(
+            "/tickets", json={"customer_id": 1, "description": "New service request"}
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_create_service_ticket_missing_fields(self):
         """Test creating ticket with missing fields (negative test)"""
-        login_response = self.client.post('/customers/login', 
-                                        json={'email': 'customer@example.com', 'password': 'password'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/customers/login",
+            json={"email": "customer@example.com", "password": "password"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.post('/tickets', 
-                                  headers={'Authorization': f'Bearer {token}'},
-                                  json={'customer_id': self.customer.id})
+        response = self.client.post(
+            "/tickets",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"customer_id": self.customer.id},
+        )
         self.assertEqual(response.status_code, 400)
 
     def test_get_all_service_tickets_authenticated(self):
         """Test getting all service tickets with authentication"""
-        login_response = self.client.post('/customers/login', 
-                                        json={'email': 'customer@example.com', 'password': 'password'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/customers/login",
+            json={"email": "customer@example.com", "password": "password"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.get('/tickets', 
-                                 headers={'Authorization': f'Bearer {token}'})
+        response = self.client.get(
+            "/tickets", headers={"Authorization": f"Bearer {token}"}
+        )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertTrue(data['success'])
-        self.assertIn('data', data)
+        self.assertTrue(data["success"])
+        self.assertIn("data", data)
 
     def test_get_service_ticket_by_id_authenticated(self):
         """Test getting specific service ticket with authentication"""
-        login_response = self.client.post('/customers/login', 
-                                        json={'email': 'customer@example.com', 'password': 'password'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/customers/login",
+            json={"email": "customer@example.com", "password": "password"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.get(f'/tickets/{self.ticket.id}', 
-                                 headers={'Authorization': f'Bearer {token}'})
+        response = self.client.get(
+            f"/tickets/{self.ticket.id}", headers={"Authorization": f"Bearer {token}"}
+        )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertTrue(data['success'])
-        self.assertEqual(data['data']['id'], self.ticket.id)
+        self.assertTrue(data["success"])
+        self.assertEqual(data["data"]["id"], self.ticket.id)
 
     def test_get_service_ticket_not_found(self):
         """Test getting nonexistent service ticket (negative test)"""
-        login_response = self.client.post('/customers/login', 
-                                        json={'email': 'customer@example.com', 'password': 'password'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/customers/login",
+            json={"email": "customer@example.com", "password": "password"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.get('/tickets/999', 
-                                 headers={'Authorization': f'Bearer {token}'})
+        response = self.client.get(
+            "/tickets/999", headers={"Authorization": f"Bearer {token}"}
+        )
         self.assertEqual(response.status_code, 404)
 
     def test_edit_ticket_mechanics_add(self):
         """Test adding mechanics to a ticket"""
-        response = self.client.put(f'/tickets/{self.ticket.id}/edit', 
-                                 json={'add_ids': [self.mechanic.id]})
+        response = self.client.put(
+            f"/tickets/{self.ticket.id}/edit", json={"add_ids": [self.mechanic.id]}
+        )
         self.assertEqual(response.status_code, 200)
-        
+
         # Verify mechanic was added
         updated_ticket = db.session.get(ServiceTicket, self.ticket.id)
         self.assertIsNotNone(updated_ticket)
@@ -148,11 +162,12 @@ class ServiceTicketsTestCase(unittest.TestCase):
         # First add a mechanic
         self.ticket.mechanics.append(self.mechanic)
         db.session.commit()
-        
-        response = self.client.put(f'/tickets/{self.ticket.id}/edit', 
-                                 json={'remove_ids': [self.mechanic.id]})
+
+        response = self.client.put(
+            f"/tickets/{self.ticket.id}/edit", json={"remove_ids": [self.mechanic.id]}
+        )
         self.assertEqual(response.status_code, 200)
-        
+
         # Verify mechanic was removed
         updated_ticket = db.session.get(ServiceTicket, self.ticket.id)
         self.assertIsNotNone(updated_ticket)
@@ -162,16 +177,16 @@ class ServiceTicketsTestCase(unittest.TestCase):
 
     def test_edit_ticket_not_found(self):
         """Test editing nonexistent ticket (negative test)"""
-        response = self.client.put('/tickets/999/edit', 
-                                 json={'add_ids': [1]})
+        response = self.client.put("/tickets/999/edit", json={"add_ids": [1]})
         self.assertEqual(response.status_code, 404)
 
     def test_add_part_to_ticket_success(self):
         """Test adding inventory part to a ticket"""
-        response = self.client.post(f'/tickets/{self.ticket.id}/add-part', 
-                                  json={'part_id': self.inventory.id})
+        response = self.client.post(
+            f"/tickets/{self.ticket.id}/add-part", json={"part_id": self.inventory.id}
+        )
         self.assertEqual(response.status_code, 200)
-        
+
         # Verify part was added
         updated_ticket = db.session.get(ServiceTicket, self.ticket.id)
         self.assertIsNotNone(updated_ticket)
@@ -182,39 +197,47 @@ class ServiceTicketsTestCase(unittest.TestCase):
 
     def test_add_part_to_ticket_ticket_not_found(self):
         """Test adding part to nonexistent ticket (negative test)"""
-        response = self.client.post('/tickets/999/add-part', 
-                                  json={'part_id': self.inventory.id})
+        response = self.client.post(
+            "/tickets/999/add-part", json={"part_id": self.inventory.id}
+        )
         self.assertEqual(response.status_code, 404)
 
     def test_add_part_to_ticket_part_not_found(self):
         """Test adding nonexistent part to ticket (negative test)"""
-        response = self.client.post(f'/tickets/{self.ticket.id}/add-part', 
-                                  json={'part_id': 999})
+        response = self.client.post(
+            f"/tickets/{self.ticket.id}/add-part", json={"part_id": 999}
+        )
         self.assertEqual(response.status_code, 404)
 
     def test_delete_service_ticket_authenticated(self):
         """Test deleting service ticket with mechanic authentication"""
         # Login as mechanic first
-        login_response = self.client.post('/mechanics/login', 
-                                        json={'email': 'mechanic@example.com', 'password': 'mechanicpassword'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/mechanics/login",
+            json={"email": "mechanic@example.com", "password": "mechanicpassword"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.delete(f'/tickets/{self.ticket.id}', 
-                                    headers={'Authorization': f'Bearer {token}'})
+        response = self.client.delete(
+            f"/tickets/{self.ticket.id}", headers={"Authorization": f"Bearer {token}"}
+        )
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertTrue(data['success'])
+        self.assertTrue(data["success"])
 
     def test_delete_service_ticket_not_found(self):
         """Test deleting nonexistent service ticket (negative test)"""
-        login_response = self.client.post('/mechanics/login', 
-                                        json={'email': 'mechanic@example.com', 'password': 'mechanicpassword'})
-        token = json.loads(login_response.data)['token']
+        login_response = self.client.post(
+            "/mechanics/login",
+            json={"email": "mechanic@example.com", "password": "mechanicpassword"},
+        )
+        token = json.loads(login_response.data)["token"]
 
-        response = self.client.delete('/tickets/999', 
-                                    headers={'Authorization': f'Bearer {token}'})
+        response = self.client.delete(
+            "/tickets/999", headers={"Authorization": f"Bearer {token}"}
+        )
         self.assertEqual(response.status_code, 404)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -5,19 +5,18 @@ from app.models import Mechanic, Customer, Inventory, ServiceTicket
 from config import TestingConfig
 
 
-
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def app():
     """Create application for the tests."""
     _app = create_app(TestingConfig)
-    _app.config['TESTING'] = True
-    _app.config['WTF_CSRF_ENABLED'] = False
-    
+    _app.config["TESTING"] = True
+    _app.config["WTF_CSRF_ENABLED"] = False
+
     with _app.app_context():
         yield _app
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db(app):
     """Create database for the tests."""
     with app.app_context():
@@ -29,7 +28,7 @@ def db(app):
         _db.drop_all()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(db):
     """Create a new database session for a test."""
     connection = db.engine.connect()
@@ -57,10 +56,7 @@ def client(app, db, session):
 @pytest.fixture
 def sample_customer(session):
     """Create a sample customer for testing."""
-    customer = Customer(
-        email="test@example.com",
-        password="testpassword"
-    )
+    customer = Customer(email="test@example.com", password="testpassword")
     session.add(customer)
     session.commit()
     return customer
@@ -69,9 +65,7 @@ def sample_customer(session):
 @pytest.fixture
 def sample_mechanic(session):
     """Create a sample mechanic for testing."""
-    mechanic = Mechanic(
-        password="mechanicpassword"
-    )
+    mechanic = Mechanic(password="mechanicpassword")
     session.add(mechanic)
     session.commit()
     return mechanic
@@ -83,7 +77,7 @@ def sample_inventory(session):
     parts = [
         Inventory(name="Brake Pads", price=49.99),
         Inventory(name="Oil Filter", price=12.99),
-        Inventory(name="Spark Plug", price=8.99)
+        Inventory(name="Spark Plug", price=8.99),
     ]
     session.add_all(parts)
     session.commit()
@@ -94,9 +88,7 @@ def sample_inventory(session):
 def sample_ticket(session, sample_customer):
     """Create a sample service ticket for testing."""
     ticket = ServiceTicket(
-        description="Test service ticket",
-        customer_id=sample_customer.id,
-        status="open"
+        description="Test service ticket", customer_id=sample_customer.id, status="open"
     )
     session.add(ticket)
     session.commit()
