@@ -1,6 +1,13 @@
-# app/__init__.py
+"""
+Mechanics Shop API Application Factory
+Initializes Flask app with all extensions and blueprints.
+"""
+# Standard library imports
 import os
 import sys
+from datetime import datetime
+
+# Third-party imports
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -10,11 +17,12 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
-from datetime import datetime
 from sqlalchemy import text
+from sqlalchemy.exc import OperationalError, ProgrammingError, SQLAlchemyError
 
 # Add the parent directory to Python path to fix imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -22,7 +30,8 @@ ma = Marshmallow()
 cache = Cache()
 migrate = Migrate()
 limiter = Limiter(
-    key_func=get_remote_address, default_limits=["200 per day", "50 per hour"]
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
 )
 
 # Swagger configuration
@@ -30,15 +39,25 @@ SWAGGER_URL = "/docs"
 API_URL = "/static/swagger.json"
 
 swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL, API_URL, config={"app_name": "Mechanics Shop API"}
+    SWAGGER_URL,
+    API_URL,
+    config={"app_name": "Mechanics Shop API"}
 )
 
-
 def create_app(config_object=None):
+    """
+    Application factory function.
+    
+    Args:
+        config_object: Configuration class to use
+        
+    Returns:
+        Flask: Configured Flask application instance
+    """
     app = Flask(__name__)
 
     # Import here to avoid circular imports
-    from config import ProductionConfig
+    from config import ProductionConfig  # pylint: disable=import-outside-toplevel
 
     # Use provided config or default to ProductionConfig
     if config_object is None:
@@ -61,13 +80,13 @@ def create_app(config_object=None):
         ("inventory_bp", "/inventory"),
     ]
 
-    for bp_name, url_prefix in blueprints:
-        module_name = ""  # ensure module_name is always defined
+    # Register blueprints with error handling
     try:
-        from app.blueprints.customers.routes import customers_bp
-        from app.blueprints.service_tickets.routes import service_tickets_bp
-        from app.blueprints.mechanics.routes import mechanics_bp
-        from app.blueprints.inventory.routes import inventory_bp
+        # These imports are inside the function to avoid circular imports
+        from app.blueprints.customers.routes import customers_bp  # pylint: disable=import-outside-toplevel
+        from app.blueprints.service_tickets.routes import service_tickets_bp  # pylint: disable=import-outside-toplevel
+        from app.blueprints.mechanics.routes import mechanics_bp  # pylint: disable=import-outside-toplevel
+        from app.blueprints.inventory.routes import inventory_bp  # pylint: disable=import-outside-toplevel
 
         app.register_blueprint(customers_bp, url_prefix="/customers")
         app.register_blueprint(service_tickets_bp, url_prefix="/tickets")
@@ -76,14 +95,18 @@ def create_app(config_object=None):
 
         print("✓ All blueprints registered successfully!")
     except ImportError as e:
-        print(f"✗ Error importing blueprints: {e}")
+       print(f"✗ Error importing blueprints: {e}")
 
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
-    # Health check route
     @app.route("/health", methods=["GET"])
     def health_check():
-        """Comprehensive health check for multiple services"""
+        """
+        Comprehensive health check for multiple services.
+        
+        Returns:
+            JSON: Health status of all services with appropriate HTTP status code
+        """
         health_status = {
             "status": "healthy",
             "timestamp": datetime.utcnow().isoformat(),
@@ -94,7 +117,7 @@ def create_app(config_object=None):
             # Check database
             db.session.execute(text("SELECT 1"))
             health_status["services"]["database"] = "healthy"
-        except Exception as e:
+        except (OperationalError, ProgrammingError, SQLAlchemyError) as e:
             health_status["services"]["database"] = "unhealthy"
             health_status["status"] = "unhealthy"
             health_status["database_error"] = str(e)
@@ -107,6 +130,12 @@ def create_app(config_object=None):
 
     @app.route("/")
     def index():
+        """
+        Root endpoint with API information.
+        
+        Returns:
+            JSON: API metadata and available endpoints
+        """
         return jsonify(
             {
                 "message": "Mechanics Shop API",
