@@ -34,16 +34,6 @@ limiter = Limiter(
     default_limits=["200 per day", "50 per hour"]
 )
 
-# Swagger configuration
-SWAGGER_URL = "/docs"
-API_URL = "/static/swagger.json"
-
-swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={"app_name": "Mechanics Shop API"}
-)
-
 def create_app(config_object=None):
     """
     Application factory function.
@@ -96,6 +86,19 @@ def create_app(config_object=None):
         print("✓ All blueprints registered successfully!")
     except ImportError as e:
        print(f"✗ Error importing blueprints: {e}")
+
+    # Move swaggerui_blueprint creation here, after app is defined
+    SWAGGER_URL = "/docs"
+    API_URL = "/static/swagger.json"
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        SWAGGER_URL,
+        API_URL,
+        config={
+            'app_name': "Mechanics Shop API",
+            'host': app.config.get('SWAGGER_HOST', '127.0.0.1:5000'),
+            'schemes': app.config.get('SWAGGER_SCHEMES', ['http'])
+        }
+    )
 
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 

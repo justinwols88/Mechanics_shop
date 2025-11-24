@@ -1,10 +1,15 @@
+import os
 from functools import wraps
 from flask import request, jsonify, current_app
-from jose import jwt
+from jose import jwt, JWTError
 from jose.exceptions import JWTError, ExpiredSignatureError
-import os
 
-SECRET_KEY = os.environ.get("SUPER_SECRET_KEY")
+SECRET_KEY = os.environ.get('SECRET_KEY') or "super secret secrets"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 def encode_token(customer_id):
