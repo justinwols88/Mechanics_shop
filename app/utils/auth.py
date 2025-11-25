@@ -5,7 +5,7 @@ Authentication utilities for Mechanics Shop API
 import os
 from flask import request, jsonify
 from jose import jwt
-from jose.exceptions import JWTError, ExpiredSignatureError
+# JWTError imported below, ExpiredSignatureError
 from functools import wraps
 
 # Use environment variable with fallback for CI/CD

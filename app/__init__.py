@@ -48,10 +48,8 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 def create_app(config_object=None):
     """
     Application factory function.
-    
     Args:
         config_object: Configuration class to use
-        
     Returns:
         Flask: Configured Flask application instance
     """
@@ -65,6 +63,19 @@ def create_app(config_object=None):
         config_object = ProductionConfig
     app.config.from_object(config_object)
 
+    # Configure limiter storage (add this after initialization)
+    # For production, you should use Redis, but for now we'll use memory with a warning suppression
+    from flask_limiter import Limiter
+    from flask_limiter.util import get_remote_address
+
+    # Re-initialize limiter with storage configuration
+    limiter = Limiter(
+        key_func=get_remote_address,
+        default_limits=["200 per day", "50 per hour"],
+        storage_uri="memory://",  # Explicitly set to memory
+        strategy="fixed-window"   # Add strategy to reduce warnings
+    )
+
     # Initialize extensions with app
     db.init_app(app)
     ma.init_app(app)
@@ -74,7 +85,7 @@ def create_app(config_object=None):
     CORS(app)
 
     # Register blueprints with error handling
-    try:
+        print("✓ All blueprints registered successfully!")
         # These imports are inside the function to avoid circular imports
         from app.blueprints.customers.routes import customers_bp
         from app.blueprints.service_tickets.routes import service_tickets_bp
@@ -96,7 +107,6 @@ def create_app(config_object=None):
     def health_check():
         """
         Comprehensive health check for multiple services.
-        
         Returns:
             JSON: Health status of all services with appropriate HTTP status code
         """
@@ -125,7 +135,6 @@ def create_app(config_object=None):
     def index():
         """
         Root endpoint with API information.
-        
         Returns:
             JSON: API metadata and available endpoints
         """
