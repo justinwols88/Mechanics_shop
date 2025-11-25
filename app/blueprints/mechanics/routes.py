@@ -3,6 +3,7 @@ from app.extensions import db
 from app.utils.auth import encode_mechanic_token, mechanic_token_required
 from app.schemas import MechanicSchema, MechanicsSchema
 from app.extensions import limiter, cache
+from app.models import Mechanic  # <-- Add this import
 
 mechanics_bp = Blueprint("mechanics_bp", __name__)
 mechanic_schema = MechanicSchema()
@@ -10,7 +11,7 @@ mechanics_schema = MechanicsSchema()
 
 
 @mechanics_bp.route("/ranking", methods=["GET"])
-def mechanics_ranking():
+def mechanics_ranking(): # noqa: C901
     """Get mechanics ordered by ticket count - generic safe version"""
     try:
         # Get all mechanics
