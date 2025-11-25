@@ -30,8 +30,7 @@ ma = Marshmallow()
 cache = Cache()
 migrate = Migrate()
 limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    key_func=get_remote_address, default_limits=["200 per day", "50 per hour"]
 )
 
 # Swagger configuration
@@ -39,9 +38,7 @@ SWAGGER_URL = "/docs"
 API_URL = "/static/swagger.json"
 
 swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={"app_name": "Mechanics Shop API"}
+    SWAGGER_URL, API_URL, config={"app_name": "Mechanics Shop API"}
 )
 
 
@@ -73,7 +70,7 @@ def create_app(config_object=None):
         key_func=get_remote_address,
         default_limits=["200 per day", "50 per hour"],
         storage_uri="memory://",  # Explicitly set to memory
-        strategy="fixed-window"   # Add strategy to reduce warnings
+        strategy="fixed-window",  # Add strategy to reduce warnings
     )
 
     # Initialize extensions with app

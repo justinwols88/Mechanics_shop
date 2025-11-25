@@ -5,11 +5,12 @@ Authentication utilities for Mechanics Shop API
 import os
 from flask import request, jsonify
 from jose import jwt
+
 # JWTError imported below, ExpiredSignatureError
 from functools import wraps
 
 # Use environment variable with fallback for CI/CD
-SECRET_KEY = os.environ.get('SECRET_KEY') or "super secret secrets"
+SECRET_KEY = os.environ.get("SECRET_KEY") or "super secret secrets"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -51,9 +52,7 @@ def token_required(f):
             return jsonify({"message": "Token is missing"}), 401
 
         try:
-            data = jwt.decode(
-                token, SECRET_KEY, algorithms=["HS256"]
-            )
+            data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             customer_id = data["customer_id"]
         except ExpiredSignatureError:
             return jsonify({"message": "Token has expired"}), 401
@@ -104,9 +103,7 @@ def mechanic_token_required(f):
             return jsonify({"message": "Token is missing"}), 401
 
         try:
-            data = jwt.decode(
-                token, SECRET_KEY, algorithms=["HS256"]
-            )
+            data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
 
             # Check if token has mechanic role
             if data.get("role") != "mechanic":

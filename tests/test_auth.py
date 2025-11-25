@@ -17,26 +17,26 @@ from app.models import Customer, Mechanic
 
 class TestAuth:
     """Test authentication endpoints"""
-    
+
     def setup_method(self):
         """Set up test environment"""
-        self.app = create_app('config.TestingConfig')
+        self.app = create_app("config.TestingConfig")
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-        
+
         # Create test data
         self.customer = Customer()
         self.customer.email = "test@example.com"
         self.customer.password = "testpassword"  # Set password directly
-        
+
         self.mechanic = Mechanic()
         self.mechanic.email = "mechanic@example.com"
         self.mechanic.first_name = "John"
         self.mechanic.last_name = "Doe"
         self.mechanic.password = "mechanicpassword"  # Set password directly
-        
+
         db.session.add(self.customer)
         db.session.add(self.mechanic)
         db.session.commit()
