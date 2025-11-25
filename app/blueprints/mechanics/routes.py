@@ -11,7 +11,7 @@ mechanics_schema = MechanicsSchema()
 
 
 @mechanics_bp.route("/ranking", methods=["GET"])
-def mechanics_ranking(): # noqa: C901
+def mechanics_ranking():  # noqa: C901
     """Get mechanics ordered by ticket count - generic safe version"""
     try:
         # Get all mechanics

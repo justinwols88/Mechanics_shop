@@ -95,7 +95,7 @@ def get_inventory() -> Response:
 @inventory_bp.route("/<int:item_id>", methods=["PUT", "PATCH"])
 @mechanic_token_required
 @limiter.limit("20 per minute")
-def update_inventory_item(item_id): # noqa: C901
+def update_inventory_item(item_id):  # noqa: C901
     """Update inventory item with auth, rate limiting, and enhanced validation"""
     try:
         item = db.session.get(Inventory, item_id)
