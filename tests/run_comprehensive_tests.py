@@ -6,7 +6,7 @@ Runs all test suites with detailed error reporting
 import unittest
 import sys
 import os
-import json
+
 from datetime import datetime
 
 
