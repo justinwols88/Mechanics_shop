@@ -6,24 +6,61 @@ import os
 import sys
 import pytest
 
-# Add the project root to Python path - FIXED VERSION
+# DEBUG: Print current working directory and files
+print(f"Current working directory: {os.getcwd()}")
+print(f"Directory contents: {os.listdir('.')}")
+
+# Add the project root to Python path - ABSOLUTE PATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 sys.path.insert(0, project_root)
 
-print(f"Python path: {sys.path}")  # Debug info
-print(f"Current directory: {current_dir}")  # Debug info
-print(f"Project root: {project_root}")  # Debug info
+print(f"Python path: {sys.path}")
+print(f"Project root: {project_root}")
+
+# Check if app directory exists
+app_dir = os.path.join(project_root, 'app')
+print(f"App directory exists: {os.path.exists(app_dir)}")
+if os.path.exists(app_dir):
+    print(f"App directory contents: {os.listdir(app_dir)}")
 
 try:
     from app import create_app
-    from app.extensions import db
-    from app.models import Customer, Mechanic, ServiceTicket, Inventory
-    from config import TestingConfig
-    print("✓ All imports successful!")  # Debug info
+    print("✓ Successfully imported create_app from app")
 except ImportError as e:
-    print(f"✗ Import error: {e}")  # Debug info
+    print(f"✗ Failed to import create_app: {e}")
+    # Try alternative import
+    try:
+        import app
+        print("✓ Successfully imported app module")
+        from app import create_app
+        print("✓ Successfully imported create_app after importing app")
+    except ImportError as e2:
+        print(f"✗ Alternative import also failed: {e2}")
     raise
+
+try:
+    from app.extensions import db
+    print("✓ Successfully imported db from app.extensions")
+except ImportError as e:
+    print(f"✗ Failed to import db: {e}")
+    raise
+
+try:
+    from app.models import Customer, Mechanic, ServiceTicket, Inventory
+    print("✓ Successfully imported models")
+except ImportError as e:
+    print(f"✗ Failed to import models: {e}")
+    raise
+
+try:
+    from config import TestingConfig
+    print("✓ Successfully imported TestingConfig from config")
+except ImportError as e:
+    print(f"✗ Failed to import TestingConfig: {e}")
+    raise
+
+print("✓ All imports successful!")
 
 
 @pytest.fixture
