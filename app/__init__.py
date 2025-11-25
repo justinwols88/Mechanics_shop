@@ -85,7 +85,7 @@ def create_app(config_object=None):
     CORS(app)
 
     # Register blueprints with error handling
-        print("✓ All blueprints registered successfully!")
+    try:
         # These imports are inside the function to avoid circular imports
         from app.blueprints.customers.routes import customers_bp
         from app.blueprints.service_tickets.routes import service_tickets_bp
