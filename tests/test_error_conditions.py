@@ -2,7 +2,7 @@ import unittest
 import json
 import sys
 import os
-from urllib import response
+
 
 # Add the parent directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import create_app
 from app.extensions import db
 from app.models import Customer, Mechanic, ServiceTicket, Inventory
-from config import TestingConfig
+
 
 
 class ErrorConditionsTestCase(unittest.TestCase):
@@ -22,7 +22,7 @@ class ErrorConditionsTestCase(unittest.TestCase):
     def setUp(self):
         """Set up test environment with proper isolation"""
         # Import the TestingConfig class directly
-        from config import TestingConfig
+        
 
         # Pass the config class name as a string to match create_app signature
         self.app = create_app(TestingConfig)

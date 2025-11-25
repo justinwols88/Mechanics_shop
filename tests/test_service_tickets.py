@@ -4,7 +4,7 @@ import sys
 import os
 from typing import cast
 
-from flask import config
+
 
 # Add the parent directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import create_app
 from app.extensions import db
 from app.models import ServiceTicket, Customer, Mechanic, Inventory
-from config import TestingConfig
+
 
 
 class ServiceTicketsTestCase(unittest.TestCase):
@@ -21,7 +21,7 @@ class ServiceTicketsTestCase(unittest.TestCase):
     def setUp(self):
         """Set up test environment"""
         # Import the TestingConfig class directly
-        from config import TestingConfig
+        
 
         self.app = create_app(TestingConfig)  # Pass the class, not a string
         self.client = self.app.test_client()

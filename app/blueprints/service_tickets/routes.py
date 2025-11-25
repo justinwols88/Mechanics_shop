@@ -1,5 +1,4 @@
 from flask import Blueprint, jsonify, request
-from app.models import ServiceTicket, Mechanic, Inventory, Customer
 from app.extensions import db
 from app.utils.auth import token_required, mechanic_token_required
 from app.schemas import ServiceTicketSchema

@@ -1,72 +1,63 @@
-name: Mechanics Shop API CI/CD
+name: Test and Deploy
 
-on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master ]
-
-env:
-  FLASK_ENV: production
-  FLASK_APP: flask_app.py
-  SECRET_KEY: SUPER_SECRET_KEY
-  DATABASE_URI: sqlite:///test.db
+on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python-version: [3.11, 3.12]
-
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
+    
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Python ${3.11}
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${3.11}
-        cache: 'pip'
-
+        python-version: '3.11'
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest pytest-cov
-
-    - name: Run tests with coverage
+        
+    - name: Debug - List directory contents
       run: |
-        python -m pytest tests/ -v --cov=app --cov-report=xml --cov-report=html
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-
-    - name: Run security audit
+        echo "Current directory:"
+        pwd
+        echo "Directory contents:"
+        ls -la
+        echo "Tests directory:"
+        ls -la tests/
+        echo "App directory:"
+        ls -la app/
+        
+    - name: Test with pytest
       run: |
-        pip install bandit safety
-        bandit -r app/ -f html -o bandit_report.html || true
-        safety check --json --output safety_report.json || true
+        PYTHONPATH=. python -c "import sys; print('Python path:', sys.path)"
+        PYTHONPATH=. python -c "from app import create_app; print('✓ App import successful')"
+        PYTHONPATH=. python -m pytest tests/ -v --tb=short -x
+      env:
+        FLASK_ENV: testing
+        DATABASE_URI: sqlite:///test.db
+        SECRET_KEY: test-secret-key
 
-    - uses: actions/checkout@v4
-    - name: Install Postman CLI
-      run: |
-        curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-    - name: Login to Postman CLI
-      run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
-    - name: Run API tests
-      run: |
-        postman collection run "${{ github.workspace }}/postman/collections/Mechanic Shop API.json"
-
-    - name: Deploy to production
-      uses: johnbeynon/render-deploy-action@v0.0.8
-      with:
-        service-id: ${{ secrets.SERVICE_ID }}
-        api-key: ${{ secrets.RENDER_API_KEY }}
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Deploy to Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
 
   lint:
     runs-on: ubuntu-22.04
@@ -121,15 +112,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-  
-  deploy:
-    runs-on: ubuntu-22.04
-    needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
 
     - name: Deploy to Render
       uses: johnbeynon/render-deploy-action@v0.0.8

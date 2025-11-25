@@ -2,8 +2,8 @@ import unittest
 import json
 import sys
 import os
-from urllib import response
-from config import TestingConfig
+
+
 
 # Add the parent directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import create_app
 from app.extensions import db
 from app.models import Inventory, Mechanic
-from config import TestingConfig
+
 
 
 class InventoryTestCase(unittest.TestCase):
@@ -20,7 +20,7 @@ class InventoryTestCase(unittest.TestCase):
     def setUp(self):
         """Set up test environment"""
         # Import the TestingConfig class directly
-        from config import TestingConfig
+        
 
         self.app = create_app(TestingConfig)
         self.client = self.app.test_client()

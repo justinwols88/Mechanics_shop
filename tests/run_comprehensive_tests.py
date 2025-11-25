@@ -31,9 +31,9 @@ def create_test_suite():
         try:
             module_suite = loader.loadTestsFromName(module_name)
             test_suite.addTest(module_suite)
-            print(f"✓ Loaded {module_name}")
+            print("✓ Loaded {module_name}")
         except Exception as e:
-            print(f"✗ Failed to load {module_name}: {e}")
+            print("✗ Failed to load {module_name}: {e}")
 
     return test_suite
 
@@ -43,7 +43,7 @@ def run_comprehensive_tests():
     print("=" * 70)
     print("MECHANICS SHOP API - COMPREHENSIVE TEST SUITE")
     print("=" * 70)
-    print(f"Test Execution Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("Test Execution Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
 
     # Create and run test suite
@@ -57,18 +57,18 @@ def run_comprehensive_tests():
     print("=" * 70)
 
     # Summary Statistics
-    print(f"\n📊 SUMMARY STATISTICS:")
-    print(f"   Tests Run:     {result.testsRun}")
-    print(f"   Failures:      {len(result.failures)}")
-    print(f"   Errors:        {len(result.errors)}")
-    print(f"   Skipped:       {len(result.skipped)}")
+    print("\n📊 SUMMARY STATISTICS:")
+    print("   Tests Run:     {result.testsRun}")
+    print("   Failures:      {len(result.failures)}")
+    print("   Errors:        {len(result.errors)}")
+    print("   Skipped:       {len(result.skipped)}")
     print(
-        f"   Success Rate:  {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%"
+        "   Success Rate:  {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%"
     )
 
     # Error Analysis
     if result.failures or result.errors:
-        print(f"\n❌ ERROR ANALYSIS:")
+        print("\n❌ ERROR ANALYSIS:")
 
         # Group errors by type
         error_types = {
@@ -98,10 +98,10 @@ def run_comprehensive_tests():
 
         for error_type, count in error_types.items():
             if count > 0:
-                print(f"   {error_type}: {count} occurrences")
+                print("   {error_type}: {count} occurrences")
 
     # Endpoint Coverage Report
-    print(f"\n📋 ENDPOINT COVERAGE:")
+    print("\n📋 ENDPOINT COVERAGE:")
     endpoints_covered = {
         "Customer Endpoints": 12,
         "Mechanic Endpoints": 10,
@@ -111,10 +111,10 @@ def run_comprehensive_tests():
     }
 
     for endpoint_type, count in endpoints_covered.items():
-        print(f"   {endpoint_type}: {count} test cases")
+        print("   {endpoint_type}: {count} test cases")
 
     # Test Categories
-    print(f"\n🎯 TEST CATEGORIES:")
+    print("\n🎯 TEST CATEGORIES:")
     categories = {
         "Positive Tests": "Functionality verification",
         "Negative Tests": "Error condition testing",
@@ -125,10 +125,10 @@ def run_comprehensive_tests():
     }
 
     for category, description in categories.items():
-        print(f"   {category}: {description}")
+        print("   {category}: {description}")
 
     # Final Result
-    print(f"\n🎯 FINAL RESULT:")
+    print("\n🎯 FINAL RESULT:")
     if result.wasSuccessful():
         print("   ✅ ALL TESTS PASSED - API is production ready!")
         print("   ✓ Comprehensive error handling verified")
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     # Run comprehensive tests
     exit_code = run_comprehensive_tests()
 
-    print(f"\n" + "=" * 70)
+    print("\n" + "=" * 70)
     print("Thank you for using the Comprehensive Test Suite!")
     print("=" * 70)
 

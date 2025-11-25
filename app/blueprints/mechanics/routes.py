@@ -3,7 +3,6 @@ from app.extensions import db
 from app.utils.auth import encode_mechanic_token, mechanic_token_required
 from app.schemas import MechanicSchema, MechanicsSchema
 from app.extensions import limiter, cache
-from app.models import Mechanic  # <-- Add this import
 
 mechanics_bp = Blueprint("mechanics_bp", __name__)
 mechanic_schema = MechanicSchema()

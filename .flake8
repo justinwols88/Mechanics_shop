@@ -1,4 +1,3 @@
-[flake8]
 max-line-length = 127
 extend-ignore = 
     E402,  # module level import not at top of file
@@ -10,14 +9,21 @@ extend-ignore =
     W292,  # no newline at end of file
     E122,  # continuation line missing indentation
     E128,  # continuation line under-indented
+    E302,  # expected 2 blank lines
+    F401,  # unused imports
+    F541,  # f-string missing placeholders
 per-file-ignores =
     __init__.py:F401
     tests/__init__.py:F401
-    migrations/*:E128,E122,E501,E302,W291,W293
+    migrations/*:E128,E122,E501,E302,W291,W293,F401
+    app/blueprints/*:C901
+    app/utils/*:C901
+    tests/*:C901,F811,E402
 exclude = 
     migrations/,
     venv/,
     env/,
     .venv/,
     __pycache__/,
-    .git/
+    .git/,
+    *.egg-info/

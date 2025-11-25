@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app import create_app
 from app.extensions import db
 from app.models import Customer, Inventory  # Import the models you need to test
-from config import TestingConfig  # Import the actual config class
+  # Import the actual config class
 
 
 class SystemTestCase(unittest.TestCase):
