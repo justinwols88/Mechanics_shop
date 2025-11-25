@@ -6,7 +6,6 @@ import os
 from flask import request, jsonify
 from jose import jwt
 from jose.exceptions import JWTError, ExpiredSignatureError
-from datetime import datetime, timedelta
 from functools import wraps
 
 # Use environment variable with fallback for CI/CD
