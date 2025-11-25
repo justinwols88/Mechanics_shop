@@ -2,6 +2,7 @@
 Mechanics Shop API Application Factory
 Initializes Flask app with all extensions and blueprints.
 """
+
 # Standard library imports
 import os
 import sys
@@ -23,7 +24,6 @@ from sqlalchemy.exc import OperationalError, ProgrammingError, SQLAlchemyError
 # Add the parent directory to Python path to fix imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
 # Initialize extensions
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -33,6 +33,17 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["200 per day", "50 per hour"]
 )
+
+# Swagger configuration
+SWAGGER_URL = "/docs"
+API_URL = "/static/swagger.json"
+
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={"app_name": "Mechanics Shop API"}
+)
+
 
 def create_app(config_object=None):
     """
@@ -47,7 +58,7 @@ def create_app(config_object=None):
     app = Flask(__name__)
 
     # Import here to avoid circular imports
-    from config import ProductionConfig  # pylint: disable=import-outside-toplevel
+    from config import ProductionConfig
 
     # Use provided config or default to ProductionConfig
     if config_object is None:
@@ -63,20 +74,12 @@ def create_app(config_object=None):
     CORS(app)
 
     # Register blueprints with error handling
-    blueprints = [
-        ("customers_bp", "/customers"),
-        ("service_tickets_bp", "/tickets"),
-        ("mechanics_bp", "/mechanics"),
-        ("inventory_bp", "/inventory"),
-    ]
-
-    # Register blueprints with error handling
     try:
         # These imports are inside the function to avoid circular imports
-        from app.blueprints.customers.routes import customers_bp  # pylint: disable=import-outside-toplevel
-        from app.blueprints.service_tickets.routes import service_tickets_bp  # pylint: disable=import-outside-toplevel
-        from app.blueprints.mechanics.routes import mechanics_bp  # pylint: disable=import-outside-toplevel
-        from app.blueprints.inventory.routes import inventory_bp  # pylint: disable=import-outside-toplevel
+        from app.blueprints.customers.routes import customers_bp
+        from app.blueprints.service_tickets.routes import service_tickets_bp
+        from app.blueprints.mechanics.routes import mechanics_bp
+        from app.blueprints.inventory.routes import inventory_bp
 
         app.register_blueprint(customers_bp, url_prefix="/customers")
         app.register_blueprint(service_tickets_bp, url_prefix="/tickets")
@@ -85,20 +88,7 @@ def create_app(config_object=None):
 
         print("✓ All blueprints registered successfully!")
     except ImportError as e:
-       print(f"✗ Error importing blueprints: {e}")
-
-    # Move swaggerui_blueprint creation here, after app is defined
-    SWAGGER_URL = "/docs"
-    API_URL = "/static/swagger.json"
-    swaggerui_blueprint = get_swaggerui_blueprint(
-        SWAGGER_URL,
-        API_URL,
-        config={
-            'app_name': "Mechanics Shop API",
-            'host': app.config.get('SWAGGER_HOST', '127.0.0.1:5000'),
-            'schemes': app.config.get('SWAGGER_SCHEMES', ['http'])
-        }
-    )
+        print(f"✗ Error importing blueprints: {e}")
 
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 

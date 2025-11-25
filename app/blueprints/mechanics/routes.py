@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request
-from sqlalchemy import func
-from app.models import Mechanic, ServiceTicket
+from app.models import Mechanic
 from app.extensions import db
 from app.utils.auth import encode_mechanic_token, mechanic_token_required
 from app.schemas import MechanicSchema, MechanicsSchema

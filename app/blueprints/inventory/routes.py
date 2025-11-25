@@ -1,12 +1,11 @@
 from flask import Blueprint, request, jsonify, Response
 from typing import Tuple
-from app.models import Inventory, Mechanic
+from app.models import Inventory
 from app.extensions import db
 from app.schemas import InventorySchema
 from app.utils.auth import mechanic_token_required
 from app.extensions import limiter
 from datetime import datetime, timezone
-import numbers
 
 inventory_bp = Blueprint("inventory_bp", __name__)
 inventory_schema = InventorySchema()
@@ -96,7 +95,7 @@ def get_inventory() -> Response:
 @inventory_bp.route("/<int:item_id>", methods=["PUT", "PATCH"])
 @mechanic_token_required
 @limiter.limit("20 per minute")
-def update_inventory_item(mechanic_id, item_id):
+def update_inventory_item(item_id):
     """Update inventory item with auth, rate limiting, and enhanced validation"""
     try:
         item = db.session.get(Inventory, item_id)
@@ -211,7 +210,7 @@ def update_inventory_item(mechanic_id, item_id):
 
 @inventory_bp.route("/<int:item_id>/archive", methods=["PATCH"])
 @mechanic_token_required
-def archive_inventory_item(current_mechanic_id, item_id):
+def archive_inventory_item(item_id):
     """Archive inventory item by marking it unavailable/archived."""
     try:
         item = db.session.get(Inventory, item_id)
