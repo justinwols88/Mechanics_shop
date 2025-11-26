@@ -36,27 +36,39 @@ class BaseTestCase(unittest.TestCase):
 
     def setup_test_data(self):
         """Create initial test data"""
-        # Create test customer
-        self.customer = Customer(email="test@example.com", password="testpassword")
-        db.session.add(self.customer)
-
-        # Create test mechanic
-        self.mechanic = Mechanic(
-            first_name="John",
-            last_name="Doe",
-            email="mechanic@example.com",
-            password="mechanicpassword",
+        # Create test customer via API to match model constructor
+        self.client.post(
+            "/customers/register",
+            json={"email": "test@example.com", "password": "testpassword"},
         )
-        db.session.add(self.mechanic)
+        self.customer = Customer.query.filter_by(email="test@example.com").first()
+        assert self.customer is not None, "Customer should be created in setup_test_data"
 
-        # Create test inventory
-        self.inventory = Inventory(part_name="Brake Pads", price=49.99)
-        db.session.add(self.inventory)
+        # Create test mechanic via API to match model constructor
+        self.client.post(
+            "/mechanics/register",
+            json={
+                "first_name": "John",
+                "last_name": "Doe",
+                "email": "mechanic@example.com",
+                "password": "mechanicpassword",
+            },
+        )
+        self.mechanic = Mechanic.query.filter_by(email="mechanic@example.com").first()
+        assert self.mechanic is not None, "Mechanic should be created in setup_test_data"
+
+        # Create test inventory via API to avoid constructor arg mismatch
+        inv_resp = self.client.post("/inventory/", json={"name": "Brake Pads", "price": 49.99})
+        assert inv_resp.status_code in (200, 201), "Inventory creation failed in setup_test_data"
+        self.inventory = Inventory.query.filter_by(name="Brake Pads").first()
+        assert self.inventory is not None, "Inventory should be created in setup_test_data"
 
         # Create test service ticket
-        self.ticket = ServiceTicket(
-            description="Test service ticket", customer_id=1, status="open"
-        )
+        self.ticket = ServiceTicket()
+        # Set fields not accepted by constructor
+        self.ticket.status = "open"
+        self.ticket.customer_id = self.customer.id
+        self.ticket.description = "Test service ticket"
         db.session.add(self.ticket)
 
         db.session.commit()
@@ -174,6 +186,7 @@ class ServiceTicketTestCase(BaseTestCase):
     def test_create_ticket_authenticated(self):
         """Test creating service ticket with auth"""
         token = self.get_customer_token()
+        assert self.customer is not None, "Customer should be initialized in setUp"
         response = self.client.post(
             "/tickets",
             headers={"Authorization": f"Bearer {token}"},
@@ -199,7 +212,7 @@ class InventoryTestCase(BaseTestCase):
     def test_create_inventory(self):
         """Test creating inventory item"""
         response = self.client.post(
-            "/inventory/", json={"part_name": "Test Part", "price": 29.99}
+            "/inventory/", json={"name": "Test Part", "price": 29.99}
         )
         self.assertEqual(response.status_code, 201)
 
@@ -216,7 +229,7 @@ class InventoryTestCase(BaseTestCase):
         response = self.client.put(
             f"/inventory/{self.inventory.id}",
             headers={"Authorization": f"Bearer {token}"},
-            json={"part_name": "Updated Part", "price": 39.99},
+            json={"name": "Updated Part", "price": 39.99},
         )
         self.assertEqual(response.status_code, 200)
 

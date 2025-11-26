@@ -26,30 +26,18 @@ class MechanicsTestCase(unittest.TestCase):
         db.create_all()
 
         # Create test data
-        self.customer = Customer(email="customer@example.com", password="password")
-        self.mechanic = Mechanic(
-            first_name="John",
-            last_name="Doe",
-            email="mechanic@example.com",
-            password="mechanicpassword",
-        )
-        self.mechanic2 = Mechanic(
-            first_name="Jane",
-            last_name="Smith",
-            email="jane@example.com",
-            password="password",
-        )
+        self.customer = Customer()
+        self.mechanic = Mechanic(email="mechanic@example.com")
+        self.mechanic.set_password("mechanicpassword")
+        self.mechanic2 = Mechanic(email="jane@example.com")
+        self.mechanic2.set_password("password")
 
         db.session.add_all([self.customer, self.mechanic, self.mechanic2])
         db.session.commit()
 
         # Create tickets for ranking test
-        self.ticket1 = ServiceTicket(
-            description="Ticket 1", customer_id=self.customer.id
-        )
-        self.ticket2 = ServiceTicket(
-            description="Ticket 2", customer_id=self.customer.id
-        )
+        self.ticket1 = ServiceTicket(customer_id=self.customer.id)
+        self.ticket2 = ServiceTicket(customer_id=self.customer.id)
         self.ticket1.mechanics.append(self.mechanic)
         self.ticket2.mechanics.append(self.mechanic)  # Mechanic has 2 tickets
         self.ticket1.mechanics.append(self.mechanic2)  # Mechanic2 has 1 ticket

@@ -29,7 +29,6 @@ class ServiceTicketsTestCase(unittest.TestCase):
         self.customer.password = "password"
         self.mechanic = Mechanic()
         self.mechanic.email = "mechanic@example.com"
-        self.mechanic.password = "mechanicpassword"
         self.inventory = Inventory()
         db.session.add_all([self.customer, self.mechanic, self.inventory])
         db.session.commit()

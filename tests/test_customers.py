@@ -13,7 +13,6 @@ from app.models import Customer, ServiceTicket
 
 from flask_limiter import Limiter
 
-
 class CustomerTestCase(unittest.TestCase):
     """Test cases for Customer endpoints"""
 
@@ -43,7 +42,9 @@ class CustomerTestCase(unittest.TestCase):
         db.create_all()
 
         # Create test customer
-        self.customer = Customer(email="test@example.com", password="testpassword")
+        self.customer = Customer()  # was: Customer(email="test@example.com", password="testpassword")
+        self.customer.email = "test@example.com"
+        self.customer.password = "testpassword"
         db.session.add(self.customer)
         db.session.commit()
 
@@ -185,7 +186,8 @@ class CustomerTestCase(unittest.TestCase):
         token = json.loads(login_response.data)["token"]
 
         # Create a test ticket
-        ticket = ServiceTicket(description="Test ticket", customer_id=self.customer.id)
+        ticket = ServiceTicket()
+        ticket.customer_id = self.customer.id
         db.session.add(ticket)
         db.session.commit()
 
