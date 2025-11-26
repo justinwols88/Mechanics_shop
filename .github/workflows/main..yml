@@ -47,37 +47,10 @@ jobs:
         pip install -e .
       if: always()
         
-    - name: Verify test_imports.py exists
+    - name: Create debug import script
       run: |
-        if [ ! -f ".github/scripts/test_imports.py" ]; then
-          echo "WARNING: .github/scripts/test_imports.py not found. Creating basic import test..."
-          mkdir -p .github/scripts
-          cat > .github/scripts/test_imports.py << 'EOF'
-#!/usr/bin/env python3
-"""Basic import test for the application"""
-try:
-    # Try to import main app modules
-    from app import create_app
-    print("✓ Successfully imported create_app")
-except ImportError as e:
-    print(f"✗ Failed to import: {e}")
-    exit(1)
-print("✓ All imports successful!")
-EOF
-        fi
-        
-    - name: Run import tests
-      run: |
-        echo "=== Running Import Tests ==="
-        python .github/scripts/test_imports.py
-        
-    - name: Debug Python path and imports
-      if: success()
-      run: |
-        echo "=== Python Path ==="
-        python -c "import sys; print('\n'.join(sys.path))"
-        echo "=== Testing Imports ==="
-        python << 'EOF'
+        mkdir -p .github/scripts
+        cat > .github/scripts/debug_imports.py << 'EOF'
 import sys
 try:
     from app import create_app
@@ -97,6 +70,13 @@ except Exception as e:
     traceback.print_exc()
     sys.exit(1)
 EOF
+        
+    - name: Debug Python path and imports
+      run: |
+        echo "=== Python Path ==="
+        python -c "import sys; print('\n'.join(sys.path))"
+        echo "=== Testing Imports ==="
+        python .github/scripts/debug_imports.py
         
     - name: Check if tests directory exists
       run: |
@@ -121,7 +101,6 @@ EOF
         FLASK_ENV: testing
         DATABASE_URI: sqlite:///test.db
         SECRET_KEY: test-secret-key
-      continue-on-error: false
 
   lint:
     runs-on: ubuntu-latest
