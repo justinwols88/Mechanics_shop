@@ -56,8 +56,7 @@ def create_app(config_object=None):
     from config import ProductionConfig
 
     # Use provided config or default to ProductionConfig
-    if config_object is None:
-        config_object = ProductionConfig
+    config_object = ProductionConfig
     app.config.from_object(config_object)
 
     # Configure limiter storage (add this after initialization)
