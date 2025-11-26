@@ -2,17 +2,19 @@ import unittest
 import json
 import sys
 import os
-from config import TestingConfig
 
-# Add the parent directory to Python path
+# Add the parent directory to Python path FIRST
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# NOW import from config and app
+from config import TestingConfig
 from app import create_app
 from app.extensions import db
 from app.models import Customer, ServiceTicket
 
 from flask_limiter import Limiter
 
+# REST OF YOUR FILE STAYS THE SAME...
 class CustomerTestCase(unittest.TestCase):
     """Test cases for Customer endpoints"""
 
