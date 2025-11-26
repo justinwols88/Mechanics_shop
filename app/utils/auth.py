@@ -2,14 +2,51 @@
 Authentication utilities for Mechanics Shop API
 """
 
-import os
-from flask import request, jsonify
-from jose import jwt
-from jose.exceptions import JWTError
-from jose.exceptions import ExpiredSignatureError
-from datetime import datetime, timedelta
+# Added guarded import with fallback stubs
+try:
+    from flask import request, jsonify  # type: ignore
+except ImportError:
+    class _FallbackRequest:
+        headers = {}
+    request = _FallbackRequest()
+    def jsonify(obj):
+        return obj  # Fallback: install Flask for proper Response
 
-# JWTError imported below, ExpiredSignatureError
+import os
+import importlib
+try:
+    from importlib.util import find_spec
+except ImportError:
+    find_spec = None
+# Define placeholder exceptions for analyzers; real ones will override on import
+class JWTError(Exception):
+    pass
+class ExpiredSignatureError(JWTError):
+    pass
+# Fixed jose imports: exceptions come from jose.exceptions; added type: ignore for optional dependency
+try:
+    from jose import jwt  # type: ignore
+    from jose.exceptions import JWTError, ExpiredSignatureError  # type: ignore
+except ImportError:
+    spec = find_spec("jwt") if find_spec else None
+    # Placeholders already defined; keep them unless overridden by PyJWT
+    if spec:
+        _pyjwt = importlib.import_module("jwt")
+        jwt = _pyjwt  # PyJWT module
+        try:
+            from jwt.exceptions import ExpiredSignatureError as _PyJWTExpired  # type: ignore
+            ExpiredSignatureError = _PyJWTExpired
+        except Exception:
+            pass  # keep placeholder ExpiredSignatureError
+    else:
+        class _StubJWT:
+            def encode(self, *_, **__):
+                raise RuntimeError("Install python-jose or PyJWT for JWT support")
+            def decode(self, *_, **__):
+                raise RuntimeError("Install python-jose or PyJWT for JWT support")
+        jwt = _StubJWT()
+
+from datetime import datetime, timedelta
 from functools import wraps
 
 # Use environment variable with fallback for CI/CD
@@ -19,7 +56,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 def encode_token(customer_id):
-    payload = {"customer_id": customer_id}
+    # Added exp claim so expiration handling works
+    exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    payload = {"customer_id": customer_id, "exp": exp}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 
@@ -70,7 +109,8 @@ def token_required(f):
 
 
 def encode_mechanic_token(mechanic_id):
-    payload = {"mechanic_id": mechanic_id, "role": "mechanic"}
+    exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    payload = {"mechanic_id": mechanic_id, "role": "mechanic", "exp": exp}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 

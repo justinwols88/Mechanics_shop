@@ -7,9 +7,37 @@ Initializes Flask app with all extensions and blueprints.
 import os
 import sys
 from datetime import datetime
+from importlib.util import find_spec
+
+REQUIRED_PACKAGES = [
+    "flask",
+    "flask_sqlalchemy",
+    "flask_marshmallow",
+    "flask_caching",
+    "flask_migrate",
+    "flask_limiter",
+    "flask_cors",
+    "flask_swagger_ui",
+]
+
+def _verify_dependencies():
+    missing = [p for p in REQUIRED_PACKAGES if find_spec(p) is None]
+    if missing:
+        raise ModuleNotFoundError(
+            f"Missing packages: {', '.join(missing)}. "
+            "Install with: pip install " + " ".join(REQUIRED_PACKAGES)
+        )
+
+_verify_dependencies()
+try:
+    from flask import Flask, jsonify
+except ModuleNotFoundError as e:
+    raise ModuleNotFoundError(
+        "Flask is not installed. Install all required packages with:\n"
+        "pip install flask flask_sqlalchemy flask_marshmallow flask_caching flask_migrate flask_limiter flask_cors flask_swagger_ui"
+    ) from e
 
 # Third-party imports
-from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_caching import Cache

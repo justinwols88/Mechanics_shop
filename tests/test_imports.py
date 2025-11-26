@@ -10,8 +10,16 @@ def test_imports():
     """Test that all required imports work"""
     print("=== Testing Imports ===")
     
+    # Add the parent directory to Python path
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    sys.path.insert(0, parent_dir)
+    
+    print(f"Current directory: {current_dir}")
+    print(f"Parent directory: {parent_dir}")
+    
     try:
-        from app import create_app
+        from app import create_app, db
         print('✓ SUCCESS: Imported create_app from app')
         
         from config import TestingConfig
@@ -21,9 +29,8 @@ def test_imports():
         app = create_app(TestingConfig)
         print('✓ SUCCESS: App creation worked')
         
-        # Test database operations
+        # Test database operations WITHIN app context
         with app.app_context():
-            from app.extensions import db
             db.create_all()
             print('✓ SUCCESS: Database operations worked')
             db.drop_all()
