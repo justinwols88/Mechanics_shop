@@ -43,16 +43,16 @@ EOF
         echo "=== Python Path ==="
         python -c "import sys; print('\n'.join(sys.path))"
         
-    - name: Create test script for imports
+    - name: Create import test script
       run: |
-        cat > test_imports_ci.py << 'EOF'
+        cat > test_imports.py << 'EOF'
 import sys
 import os
 
-def test_imports():
+def main():
     print("=== Testing Imports ===")
     
-    # Add current directory to path
+    # Add current directory to Python path
     sys.path.insert(0, os.getcwd())
     
     try:
@@ -66,7 +66,7 @@ def test_imports():
         app = create_app(TestingConfig)
         print('✓ SUCCESS: App creation worked')
         
-        # Test database operations WITHIN app context
+        # Test database operations within app context
         with app.app_context():
             db.create_all()
             print('✓ SUCCESS: Database operations worked')
@@ -82,17 +82,17 @@ def test_imports():
         return False
 
 if __name__ == "__main__":
-    success = test_imports()
-    sys.exit(0 if success else 1)
+    success = main()
+    exit(0 if success else 1)
 EOF
         
-    - name: Test imports with script
+    - name: Run import test script
       run: |
-        python test_imports_ci.py
+        python test_imports.py
         
     - name: Run pytest
       run: |
-        python -m pytest tests/ -v --tb=short || echo "Tests completed with some failures"
+        python -m pytest tests/ -v --tb=short || echo "Tests completed"
       env:
         FLASK_ENV: testing
         DATABASE_URI: sqlite:///test.db
@@ -119,9 +119,7 @@ EOF
 
     - name: Lint with flake8
       run: |
-        # Critical errors only
         flake8 app/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
-        # All warnings (exit-zero)
         flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
   deploy:
