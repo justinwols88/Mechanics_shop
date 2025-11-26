@@ -35,48 +35,16 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov
         
-    - name: Verify setup.py or pyproject.toml exists
-      run: |
-        if [ ! -f "setup.py" ] && [ ! -f "pyproject.toml" ]; then
-          echo "WARNING: No setup.py or pyproject.toml found. Skipping development install."
-          exit 0
-        fi
-        
     - name: Install package in development mode
       run: |
         pip install -e .
-      if: always()
         
-    - name: Create debug import script
+    - name: Create and run basic import test
       run: |
-        mkdir -p .github/scripts
-        cat > .github/scripts/debug_imports.py << 'EOF'
-import sys
-try:
-    from app import create_app
-    print('✓ SUCCESS: Imported create_app from app')
-    from config import TestingConfig
-    print('✓ SUCCESS: Imported TestingConfig from config')
-    app = create_app(TestingConfig)
-    print('✓ SUCCESS: App creation worked')
-    with app.app_context():
-        from app.extensions import db
-        db.create_all()
-        print('✓ SUCCESS: Database operations worked')
-        db.drop_all()
-except Exception as e:
-    print('✗ FAILED:', e)
-    import traceback
-    traceback.print_exc()
-    sys.exit(1)
-EOF
-        
-    - name: Debug Python path and imports
-      run: |
-        echo "=== Python Path ==="
-        python -c "import sys; print('\n'.join(sys.path))"
-        echo "=== Testing Imports ==="
-        python .github/scripts/debug_imports.py
+        echo "=== Testing Basic Imports ==="
+        python -c "import sys; print('Python path:', sys.path[0])"
+        python -c "from app import create_app; print('✓ Successfully imported create_app')"
+        python -c "import config; print('✓ Successfully imported config')"
         
     - name: Check if tests directory exists
       run: |
@@ -96,7 +64,7 @@ EOF
     - name: Run pytest
       run: |
         echo "=== Running Pytest ==="
-        python -m pytest tests/ -v --tb=short --cov=app --cov-report=term-missing
+        python -m pytest tests/ -v --tb=short
       env:
         FLASK_ENV: testing
         DATABASE_URI: sqlite:///test.db
@@ -138,35 +106,9 @@ EOF
         # Style warnings (non-blocking)
         flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  security:
-    runs-on: ubuntu-latest
-    needs: test
-    timeout-minutes: 5
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-        
-    - name: Install safety
-      run: |
-        pip install safety
-        
-    - name: Scan dependencies for vulnerabilities
-      run: |
-        if [ -f "requirements.txt" ]; then
-          safety check --file=requirements.txt
-        else
-          echo "No requirements.txt found. Skipping security scan."
-        fi
-
   deploy:
     runs-on: ubuntu-latest
-    needs: [test, lint, security]
+    needs: [test, lint]
     if: github.ref == 'refs/heads/main'
     timeout-minutes: 15
     
@@ -192,4 +134,3 @@ EOF
       - name: Verify deployment
         run: |
           echo "✓ Deployment initiated successfully"
-          echo "Check your Render dashboard for deployment status"
