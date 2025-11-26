@@ -6,6 +6,7 @@ import os
 from flask import request, jsonify
 from jose import jwt
 from jose.exceptions import JWTError
+from jose.exceptions import ExpiredSignatureError
 from datetime import datetime, timedelta
 
 # JWTError imported below, ExpiredSignatureError
