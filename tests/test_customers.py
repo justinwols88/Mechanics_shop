@@ -2,6 +2,7 @@ import unittest
 import json
 import sys
 import os
+from config import TestingConfig
 
 # Add the parent directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
