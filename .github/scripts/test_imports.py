@@ -5,7 +5,6 @@ Test script for GitHub Actions - Tests all imports and basic functionality
 
 import sys
 import os
-
 def main():
     print("=== Testing Imports ===")
     
