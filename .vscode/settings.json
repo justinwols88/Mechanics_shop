@@ -2,5 +2,8 @@
     "python-envs.pythonProjects": [],
     "cSpell.words": [
         "dotenv"
-    ]
+    ],
+    "yaml.schemas": {
+        "https://www.schemastore.org/github-workflow.json": "file:///c%3A/Users/jmw12/CT/Mechanics_Shop/.github/workflows/main..yml"
+    }
 }
