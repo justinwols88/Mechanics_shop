@@ -13,7 +13,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'  # REMOVE the ${} syntax
+        python-version: '3.11'
         cache: 'pip'
         
     - name: Install dependencies
@@ -25,14 +25,14 @@ jobs:
     - name: Create setup.py for editable install
       run: |
         cat > setup.py << 'EOF'
-        from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
-        setup(
-            name="mechanics-shop-api",
-            version="1.0.0",
-            packages=find_packages(),
-        )
-        EOF
+setup(
+    name="mechanics-shop-api",
+    version="1.0.0",
+    packages=find_packages(),
+)
+EOF
         
     - name: Install package in development mode
       run: |
@@ -43,30 +43,35 @@ jobs:
         echo "=== Python Path ==="
         python -c "import sys; print('\n'.join(sys.path))"
         echo "=== Testing Imports ==="
-        python -c '
-          import sys
-          try:
-              from app import create_app
-              print("✓ SUCCESS: Imported create_app from app")
-              from config import TestingConfig
-              print("✓ SUCCESS: Imported TestingConfig from config")
-              app = create_app(TestingConfig)
-              print("✓ SUCCESS: App creation worked")
-              with app.app_context():
-                  from app.extensions import db
-                  db.create_all()
-                  print("✓ SUCCESS: Database operations worked")
-                  db.drop_all()
-          except Exception as e:
-              print("✗ FAILED:", e)
-              import traceback
-              traceback.print_exc()
-              sys.exit(1)
-        '
+        python -c "
+import sys
+try:
+    from app import create_app
+    print('✓ SUCCESS: Imported create_app from app')
+    from config import TestingConfig
+    print('✓ SUCCESS: Imported TestingConfig from config')
+    
+    # Test app creation
+    app = create_app(TestingConfig)
+    print('✓ SUCCESS: App creation worked')
+    
+    # Test database
+    with app.app_context():
+        from app.extensions import db
+        db.create_all()
+        print('✓ SUCCESS: Database operations worked')
+        db.drop_all()
+        
+except Exception as e:
+    print('✗ FAILED:', e)
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
+"
         
     - name: Run pytest
       run: |
-        python -m pytest tests/ -v --tb=short || echo "Some tests failed but continuing..."
+        python -m pytest tests/ -v --tb=short || echo "Tests completed with some failures"
       env:
         FLASK_ENV: testing
         DATABASE_URI: sqlite:///test.db
@@ -83,7 +88,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'  # FIXED: No ${} syntax
+        python-version: '3.11'
         cache: 'pip'
 
     - name: Install dependencies
