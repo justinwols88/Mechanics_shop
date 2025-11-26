@@ -22,77 +22,19 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-cov
         
-    - name: Create setup.py for editable install
-      run: |
-        cat > setup.py << 'EOF'
-from setuptools import setup, find_packages
-
-setup(
-    name="mechanics-shop-api",
-    version="1.0.0",
-    packages=find_packages(),
-)
-EOF
-        
     - name: Install package in development mode
       run: |
         pip install -e .
         
-    - name: Debug Python path
+    - name: Run import tests
       run: |
-        echo "=== Python Path ==="
-        python -c "import sys; print('\n'.join(sys.path))"
-        
-    - name: Create import test script
-      run: |
-        cat > test_imports.py << 'EOF'
-import sys
-import os
-
-def main():
-    print("=== Testing Imports ===")
-    
-    # Add current directory to Python path
-    sys.path.insert(0, os.getcwd())
-    
-    try:
-        from app import create_app, db
-        print('✓ SUCCESS: Imported create_app from app')
-        
-        from config import TestingConfig
-        print('✓ SUCCESS: Imported TestingConfig from config')
-        
-        # Test app creation
-        app = create_app(TestingConfig)
-        print('✓ SUCCESS: App creation worked')
-        
-        # Test database operations within app context
-        with app.app_context():
-            db.create_all()
-            print('✓ SUCCESS: Database operations worked')
-            db.drop_all()
-            
-        print("✓ ALL IMPORTS SUCCESSFUL!")
-        return True
-        
-    except Exception as e:
-        print('✗ FAILED:', e)
-        import traceback
-        traceback.print_exc()
-        return False
-
-if __name__ == "__main__":
-    success = main()
-    exit(0 if success else 1)
-EOF
-        
-    - name: Run import test script
-      run: |
-        python test_imports.py
+        echo "=== Running Import Tests ==="
+        python .github/scripts/test_imports.py
         
     - name: Run pytest
       run: |
-        python -m pytest tests/ -v --tb=short || echo "Tests completed"
+        echo "=== Running Pytest ==="
+        python -m pytest tests/ -v --tb=short
       env:
         FLASK_ENV: testing
         DATABASE_URI: sqlite:///test.db
