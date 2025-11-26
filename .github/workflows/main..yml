@@ -51,14 +51,8 @@ jobs:
         if [ ! -d "tests" ]; then
           echo "WARNING: tests directory not found. Creating basic test structure..."
           mkdir -p tests
-          cat > tests/__init__.py <<'EOF'
-          # Test package
-          EOF
-          cat > tests/test_basic.py <<'EOF'
-          def test_basic():
-              """Basic test to ensure pytest works"""
-              assert 1 + 1 == 2
-          EOF
+          printf "%s\n" "# Test package" > tests/__init__.py
+          printf "%s\n%s\n%s\n" "def test_basic():" '    """Basic test to ensure pytest works"""' "    assert 1 + 1 == 2" > tests/test_basic.py
         fi
         
     - name: Run pytest
@@ -111,26 +105,27 @@ jobs:
     needs: [test, lint]
     if: github.ref == 'refs/heads/main'
     timeout-minutes: 15
-    
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Validate deployment secrets
-        run: |
-          if [ -z "${{ secrets.SERVICE_ID }}" ] || [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
-            echo "ERROR: Missing required secrets: SERVICE_ID or RENDER_API_KEY"
-            exit 1
-          else
-            echo "✓ Deployment secrets are configured"
-          fi
-      
-      - name: Deploy to Render
-        uses: johnbeynon/render-deploy-action@v0.0.8
-        with:
-          service-id: ${{ secrets.SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
-          
-      - name: Verify deployment
-        run: |
-          echo "✓ Deployment initiated successfully"
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Validate deployment secrets
+      run: |
+        if [ -z "${{ secrets.SERVICE_ID }}" ] || [ -z "${{ secrets.RENDER_API_KEY }}" ]; then
+          echo "ERROR: Missing required secrets: SERVICE_ID or RENDER_API_KEY"
+          exit 1
+        else
+          echo "✓ Deployment secrets are configured"
+        fi
+
+    - name: Deploy to Render
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
+        project-name: my-flask-app
+        env-vars: |
+          DATABASE_URI=sqlite:///my_flask_app.db
+    - name: Verify deployment
+      run: |
+        echo "✓ Deployment initiated successfully"
