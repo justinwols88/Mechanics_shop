@@ -45,7 +45,7 @@ jobs:
     - name: Install package in development mode
       run: |
         pip install -e .
-      if: always()  # Run even if previous step had issues
+      if: always()
         
     - name: Verify test_imports.py exists
       run: |
@@ -70,6 +70,33 @@ EOF
       run: |
         echo "=== Running Import Tests ==="
         python .github/scripts/test_imports.py
+        
+    - name: Debug Python path and imports
+      if: success()
+      run: |
+        echo "=== Python Path ==="
+        python -c "import sys; print('\n'.join(sys.path))"
+        echo "=== Testing Imports ==="
+        python << 'EOF'
+import sys
+try:
+    from app import create_app
+    print('✓ SUCCESS: Imported create_app from app')
+    from config import TestingConfig
+    print('✓ SUCCESS: Imported TestingConfig from config')
+    app = create_app(TestingConfig)
+    print('✓ SUCCESS: App creation worked')
+    with app.app_context():
+        from app.extensions import db
+        db.create_all()
+        print('✓ SUCCESS: Database operations worked')
+        db.drop_all()
+except Exception as e:
+    print('✗ FAILED:', e)
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
+EOF
         
     - name: Check if tests directory exists
       run: |
