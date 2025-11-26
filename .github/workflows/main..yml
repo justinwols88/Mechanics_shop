@@ -1,15 +1,10 @@
 name: Test and Deploy
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     
     steps:
     - name: Checkout code
@@ -19,42 +14,12 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-        cache: 'pip'
         
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f "requirements.txt" ]; then
-          pip install -r requirements.txt
-        else
-          pip install flask pytest
-        fi
-        pip install pytest pytest-cov
+      run: pip install -r requirements.txt
         
-    - name: Install package
-      run: |
-        if [ -f "setup.py" ] || [ -f "pyproject.toml" ]; then
-          pip install -e .
-        fi
-        
-    - name: Simple Python check
-      run: |
-        echo "=== Basic Python Check ==="
-        python --version
-        python -c "import sys; print('Python path working')"
-        
-    - name: Run pytest
-      run: |
-        echo "=== Running Pytest ==="
-        if [ -d "tests" ]; then
-          python -m pytest tests/ -v
-        else
-          echo "No tests directory found, skipping pytest"
-        fi
-      env:
-        FLASK_ENV: testing
-        DATABASE_URI: sqlite:///test.db
-        SECRET_KEY: test-secret-key
+    - name: Run tests
+      run: python -m pytest tests/ -v
 
   lint:
     runs-on: ubuntu-latest
@@ -70,17 +35,10 @@ jobs:
         python-version: '3.11'
 
     - name: Install flake8
-      run: |
-        pip install flake8
+      run: pip install flake8
 
     - name: Run flake8
-      run: |
-        echo "=== Running Flake8 ==="
-        if [ -d "app" ] || [ -d "src" ]; then
-          flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-        else
-          echo "No source directories found, skipping flake8"
-        fi
+      run: flake8 app/ tests/ --max-line-length=127
 
   deploy:
     runs-on: ubuntu-latest
@@ -88,9 +46,6 @@ jobs:
     if: github.ref == 'refs/heads/main'
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
       - name: Deploy to Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
