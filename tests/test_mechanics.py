@@ -2,17 +2,17 @@ import unittest
 import json
 import sys
 import os
-from config import TestingConfig
 
-# Add the parent directory to Python path
+# Add the parent directory to Python path FIRST
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# NOW import from config and app
+from config import TestingConfig
 from app import create_app
 from app.extensions import db
 from app.models import Mechanic, ServiceTicket, Customer
 
-
-
+# REST OF YOUR FILE STAYS EXACTLY THE SAME...
 class MechanicsTestCase(unittest.TestCase):
     """Test cases for Mechanics endpoints"""
 
@@ -25,19 +25,37 @@ class MechanicsTestCase(unittest.TestCase):
 
         db.create_all()
 
-        # Create test data
+        # Create test data - FIXED: Set required fields for Customer
         self.customer = Customer()
-        self.mechanic = Mechanic(email="mechanic@example.com")
-        self.mechanic.set_password("mechanicpassword")
-        self.mechanic2 = Mechanic(email="jane@example.com")
-        self.mechanic2.set_password("password")
+        self.customer.email = "customer@example.com"  # Add this line
+        self.customer.password = "password"           # Add this line
+        
+        self.mechanic = Mechanic()
+        self.mechanic.email = "mechanic@example.com"
+        self.mechanic.first_name = "John"             # Add required fields
+        self.mechanic.last_name = "Doe"               # Add required fields
+        # Set password directly to avoid unknown attribute errors
+        self.mechanic.password = "mechanicpassword"
+        
+        self.mechanic2 = Mechanic()
+        self.mechanic2.email = "jane@example.com"
+        self.mechanic2.first_name = "Jane"            # Add required fields
+        self.mechanic2.last_name = "Smith"            # Add required fields
+        # Set password directly to avoid unknown attribute errors
+        self.mechanic2.password = "password"
 
         db.session.add_all([self.customer, self.mechanic, self.mechanic2])
         db.session.commit()
 
         # Create tickets for ranking test
-        self.ticket1 = ServiceTicket(customer_id=self.customer.id)
-        self.ticket2 = ServiceTicket(customer_id=self.customer.id)
+        self.ticket1 = ServiceTicket()
+        self.ticket1.customer_id = self.customer.id
+        self.ticket1.description = "Test ticket 1"    # Add description if required
+        
+        self.ticket2 = ServiceTicket()
+        self.ticket2.customer_id = self.customer.id
+        self.ticket2.description = "Test ticket 2"    # Add description if required
+        
         self.ticket1.mechanics.append(self.mechanic)
         self.ticket2.mechanics.append(self.mechanic)  # Mechanic has 2 tickets
         self.ticket1.mechanics.append(self.mechanic2)  # Mechanic2 has 1 ticket
