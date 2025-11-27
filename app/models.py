@@ -1,4 +1,6 @@
 from app.extensions import db
+from app.models import service_mechanic, ticket_inventory
+
 
 # Junction tables
 service_mechanic = db.Table(
