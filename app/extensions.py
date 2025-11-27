@@ -11,23 +11,26 @@ db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 
-# Make sure SQLAlchemyAutoSchema is available
+# Fix for SQLAlchemyAutoSchema import without assigning to Marshmallow instance
 try:
-    # Force import to ensure SQLAlchemyAutoSchema is available
     from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-    # Add it to ma if it's missing
-    if not hasattr(ma, 'SQLAlchemyAutoSchema'):
-        ma.SQLAlchemyAutoSchema = SQLAlchemyAutoSchema
 except ImportError:
+    SQLAlchemyAutoSchema = None
     print("Warning: marshmallow_sqlalchemy not installed")
 
-# Initialize limiter with conditional enabling
+# Initialize limiter with MEMORY storage for testing
 limiter = Limiter(
     key_func=get_remote_address,
-    storage_uri=os.getenv("REDIS_URI", "redis://localhost:6379"),
-    default_limits=["100 per hour"],
-    enabled=not os.getenv("TESTING"),
+    storage_uri="memory://",  # Use memory instead of Redis
+    default_limits=["200 per day", "50 per hour"],
+    strategy="fixed-window",  # Avoid moving-window strategy issues
+    enabled=not os.getenv("TESTING"),  # Disable if TESTING environment variable is set
 )
 
-# Use Redis for caching
-cache = Cache()
+# Use SimpleCache for testing
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+
+# Explicitly define public exports and include SQLAlchemyAutoSchema if available
+__all__ = ['db', 'ma', 'migrate', 'limiter', 'cache']
+if SQLAlchemyAutoSchema is not None:
+    __all__.append('SQLAlchemyAutoSchema')

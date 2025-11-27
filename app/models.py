@@ -1,8 +1,6 @@
 from app.extensions import db
-from app.models import service_mechanic, ticket_inventory
 
-
-# Junction tables
+# Define junction tables FIRST, before any imports
 service_mechanic = db.Table(
     "service_mechanic",
     db.Column(
@@ -63,8 +61,8 @@ class Mechanic(db.Model):
     __tablename__ = "mechanic"
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(120), nullable=False)
-    last_name = db.Column(db.String(120), nullable=False)
+    first_name = db.Column(db.String(120), nullable=False, default="Unknown")
+    last_name = db.Column(db.String(120), nullable=False, default="Mechanic")
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
 
@@ -73,13 +71,12 @@ class Inventory(db.Model):
     __tablename__ = "inventory"
 
     id = db.Column(db.Integer, primary_key=True)
-    part_name = db.Column(
-        db.String(120), nullable=False
-    )  # Changed from 'name' to 'part_name'
-    price = db.Column(db.Float, nullable=False)
+    part_name = db.Column(db.String(120), nullable=False, default="Unnamed Part")
+    price = db.Column(db.Float, nullable=False, default=0.0)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(
         db.DateTime,
         default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp(),
     )
+

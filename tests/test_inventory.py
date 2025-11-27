@@ -7,14 +7,36 @@ from config import TestingConfig
 # Add the parent directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from app import create_app
 from app.extensions import db
-from app.models import Inventory, Mechanic
+
 
 class InventoryTestCase(unittest.TestCase):
     """Test cases for Inventory endpoints"""
 
     def setUp(self):
+        """Set up test environment"""
+        from app import create_app
+        from app.extensions import db
+        from app.models import Inventory, Mechanic
+    
+        self.app = create_app(TestingConfig)
+        self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+        # Create test data - instantiate without unknown constructor parameters
+        self.mechanic = Mechanic()
+        if hasattr(self.mechanic, "email"):
+            self.mechanic.email = "mechanic@example.com"
+        if hasattr(self.mechanic, "password"):
+            self.mechanic.password = "mechanicpassword"
+
+        # Instantiate without unknown constructor parameters to avoid errors
+        self.inventory_item = Inventory()
+
+        db.session.add(self.mechanic)
+        db.session.commit()
         """Set up test environment"""
         self.app = create_app(TestingConfig)
         self.client = self.app.test_client()
@@ -31,7 +53,7 @@ class InventoryTestCase(unittest.TestCase):
         # Instantiate without constructor args to avoid unknown parameters
         self.inventory_item = Inventory()
         if hasattr(self.inventory_item, "name"):
-            self.inventory_item.name = "Brake Pads"
+            setattr(self.inventory_item, "name", "Brake Pads")
         if hasattr(self.inventory_item, "price"):
             self.inventory_item.price = 49.99
         # ...existing code...

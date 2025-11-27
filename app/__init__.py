@@ -3,11 +3,14 @@ Mechanics Shop API Application Factory
 Initializes Flask app with all extensions and blueprints.
 """
 
-# Standard library imports
 import os
 import sys
 from datetime import datetime
 from importlib.util import find_spec
+from flask import Flask, jsonify
+from sqlalchemy import text
+from sqlalchemy.exc import OperationalError, ProgrammingError, SQLAlchemyError
+from app.extensions import db, ma, cache, migrate, limiter
 
 REQUIRED_PACKAGES = [
     "flask",
@@ -29,46 +32,17 @@ def _verify_dependencies():
         )
 
 _verify_dependencies()
-try:
-    from flask import Flask, jsonify
-except ModuleNotFoundError as e:
-    raise ModuleNotFoundError(
-        "Flask is not installed. Install all required packages with:\n"
-        "pip install flask flask_sqlalchemy flask_marshmallow flask_caching flask_migrate flask_limiter flask_cors flask_swagger_ui"
-    ) from e
 
-# Third-party imports
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-from flask_caching import Cache
-from flask_migrate import Migrate
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_cors import CORS
-from flask_swagger_ui import get_swaggerui_blueprint
+from flask import Flask, jsonify
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError, ProgrammingError, SQLAlchemyError
 
-# Add the parent directory to Python path to fix imports
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Initialize extensions
-db = SQLAlchemy()
-ma = Marshmallow()
-cache = Cache()
-migrate = Migrate()
-limiter = Limiter(
-    key_func=get_remote_address, default_limits=["200 per day", "50 per hour"]
-)
+# Import extensions
+from app.extensions import db, ma, cache, migrate, limiter
 
 # Swagger configuration
 SWAGGER_URL = "/docs"
 API_URL = "/static/swagger.json"
-
-swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL, API_URL, config={"app_name": "Mechanics Shop API"}
-)
-
 
 def create_app(config_object=None):
     """
@@ -84,29 +58,26 @@ def create_app(config_object=None):
     from config import ProductionConfig
 
     # Use provided config or default to ProductionConfig
-    config_object = ProductionConfig
+    if config_object is None:
+        config_object = ProductionConfig
     app.config.from_object(config_object)
 
-    # Configure limiter storage (add this after initialization)
-    # For production, you should use Redis, but for now we'll use memory with a warning suppression
-    from flask_limiter import Limiter
-    from flask_limiter.util import get_remote_address
-
-    # Re-initialize limiter with storage configuration
-    limiter = Limiter(
-        key_func=get_remote_address,
-        default_limits=["200 per day", "50 per hour"],
-        storage_uri="memory://",  # Explicitly set to memory
-        strategy="fixed-window",  # Add strategy to reduce warnings
-    )
-
-    # Initialize extensions with app
+    # Initialize extensions with app FIRST
     db.init_app(app)
     ma.init_app(app)
     cache.init_app(app)
     migrate.init_app(app, db)
+    
+    # Configure limiter
+    from flask_limiter.util import get_remote_address
     limiter.init_app(app)
+    
+    from flask_cors import CORS
     CORS(app)
+
+    # Import models to ensure they are registered with SQLAlchemy
+    with app.app_context():
+        from app import models  # This ensures models are loaded
 
     # Register blueprints with error handling
     try:
@@ -123,9 +94,17 @@ def create_app(config_object=None):
 
         print("✓ All blueprints registered successfully!")
     except ImportError as e:
-        print(f"✗ Error importing blueprints: {e}")
+        print(f"⚠️  Error importing blueprints: {e}")
 
-    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+    # Swagger UI
+    try:
+        from flask_swagger_ui import get_swaggerui_blueprint
+        swaggerui_blueprint = get_swaggerui_blueprint(
+            SWAGGER_URL, API_URL, config={"app_name": "Mechanics Shop API"}
+        )
+        app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+    except ImportError:
+        print("⚠️  Flask-Swagger-UI not available")
 
     @app.route("/health", methods=["GET"])
     def health_check():
