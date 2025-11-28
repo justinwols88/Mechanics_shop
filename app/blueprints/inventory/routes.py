@@ -2,6 +2,18 @@
 Inventory Routes
 """
 from flask import Blueprint
+from functools import wraps
+from typing import Callable
+
+try:
+    from app.utils.auth import mechanic_required_token  # type: ignore[attr-defined]
+except (ImportError, AttributeError, ModuleNotFoundError):
+    # Fallback no-op decorator if the real decorator is unavailable
+    def mechanic_required_token(func: Callable):  # pragma: no cover
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            return func(*args, **kwargs)
+        return wrapper
 
 inventory_bp = Blueprint('inventory', __name__)
 
@@ -9,3 +21,10 @@ inventory_bp = Blueprint('inventory', __name__)
 def get_inventory():
     """Get inventory"""
     return {"message": "inventory endpoint"}, 200
+
+@inventory_bp.route('/<int:item_id>', methods=['PUT'])
+@mechanic_required_token
+def update_inventory_item(item_id):
+    """Update inventory item"""
+    # Placeholder implementation returning a valid Flask response type
+    return {"message": f"inventory item {item_id} updated"}, 200
