@@ -1,36 +1,77 @@
 #!/usr/bin/env python3
 """
-Script to fix CI/CD issues
+Script to automatically fix common Flake8 style issues
 """
-
 import os
+import re
 
-def create_init_files():
-    """Create necessary __init__.py files"""
-    # Create tests/__init__.py
-    tests_init = "tests/__init__.py"
-    if not os.path.exists(tests_init):
-        with open(tests_init, 'w') as f:
-            f.write('')
-        print("✓ Created tests/__init__.py")
-    
-    # Create app/__init__.py if it doesn't exist
-    app_init = "app/__init__.py"
-    if not os.path.exists(app_init):
-        print("⚠️  app/__init__.py doesn't exist - this might be the problem!")
+def fix_file(filepath):
+    """Fix common style issues in a file"""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
 
-def check_structure():
-    """Check project structure"""
-    print("Project structure:")
+    original_content = content
+
+    # Fix W292: Add newline at end of file
+    if content and not content.endswith('\n'):
+        content += '\n'
+
+    # Fix W293: Remove whitespace from blank lines
+    content = re.sub(r'^\s+$', '', content, flags=re.MULTILINE)
+
+    # Fix W291: Remove trailing whitespace
+    content = re.sub(r'[ \t]+$', '', content, flags=re.MULTILINE)
+
+    # Fix E128: Fix under-indented continuation lines
+    lines = content.split('\n')
+    fixed_lines = []
+    for i, line in enumerate(lines):
+        if line.strip().startswith(('db.Column', 'onupdate=')) and len(line) > 1:
+            # Add proper indentation for continuation lines
+            if not line.startswith('    ' * 2):  # Should be at least 8 spaces
+                fixed_lines.append('    ' * 2 + line.lstrip())
+                continue
+        fixed_lines.append(line)
+    content = '\n'.join(fixed_lines)
+
+    if content != original_content:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"✓ Fixed issues in {filepath}")
+        return True
+    return False
+
+def main():
+    """Main function to fix all files"""
+    files_fixed = 0
+
+    # Files that need manual fixes for F811 (redefinition)
+    manual_fix_files = [
+        'app/__init__.py',
+        'app/blueprints/service_tickets/routes.py',
+        'app/utils/auth.py'
+    ]
+
+    print("Fixing style issues...")
+
+    # Walk through all Python files
     for root, dirs, files in os.walk('.'):
-        level = root.replace('.', '').count(os.sep)
-        indent = ' ' * 2 * level
-        print(f"{indent}{os.path.basename(root)}/")
-        subindent = ' ' * 2 * (level + 1)
-        for file in files[:5]:  # Show first 5 files
+        for file in files:
             if file.endswith('.py'):
-                print(f"{subindent}{file}")
+                filepath = os.path.join(root, file)
+                if fix_file(filepath):
+                    files_fixed += 1
 
-if __name__ == "__main__":
-    create_init_files()
-    check_structure()
+    print(f"\nFixed {files_fixed} files automatically.")
+    print("\n⚠️  Manual fixes needed for these files:")
+    for file in manual_fix_files:
+        if os.path.exists(file):
+            print(f"  - {file}")
+
+    print("\nManual fixes required:")
+    print("1. Remove duplicate imports (F811 errors)")
+    print("2. Add 2 blank lines before function/class definitions (E302)")
+    print("3. Remove extra blank lines (E303)")
+
+if __name__ == '__main__':
+    main()

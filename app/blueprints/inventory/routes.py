@@ -34,13 +34,13 @@ def update_inventory_item(item_id):
 
 def validate_inventory_data(data):
     errors = []
-    
+
     if not data.get('part_name') or not data.get('part_name').strip():
         errors.append("Name is required and cannot be empty")  # Test expects this message
-    
+
     if not data.get('price') or float(data.get('price', 0)) <= 0:
         errors.append("Price must be a positive number")
-    
+
     return errors
 
 # For non-existent inventory (should return 404, not 405)
@@ -51,7 +51,7 @@ def get_inventory_item(item_id):
         return jsonify({"error": "Inventory item not found"}), 404
     return jsonify(item.to_dict())
 
-# For non-existent mechanics (should return 404, not 401)  
+# For non-existent mechanics (should return 404, not 401)
 @mechanics_bp.route('/<int:mechanic_id>', methods=['GET'])
 def get_mechanic(mechanic_id):
     mechanic = Mechanic.query.get(mechanic_id)

@@ -9,9 +9,9 @@ from config import Config
 
 class Mechanic(db.Model):
     """Mechanic model for automotive shop mechanics"""
-    
+
     __tablename__ = 'mechanic'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
@@ -22,15 +22,15 @@ class Mechanic(db.Model):
     hourly_rate = db.Column(db.Float, default=0.0)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    
+
     def set_password(self, password):
         """Set hashed password"""
         self.password_hash = generate_password_hash(password)
-    
+
     def check_password(self, password):
         """Check hashed password"""
         return check_password_hash(self.password_hash, password)
-    
+
     def generate_token(self):
         """Generate JWT token for authentication"""
         payload = {
@@ -40,7 +40,7 @@ class Mechanic(db.Model):
             'type': 'mechanic'
         }
         return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-    
+
     def to_dict(self):
         """Convert to dictionary"""
         return {
@@ -54,6 +54,6 @@ class Mechanic(db.Model):
             'is_active': self.is_active,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
-    
+
     def __repr__(self):
         return f'<Mechanic {self.email}>'

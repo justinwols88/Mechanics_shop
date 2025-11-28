@@ -27,7 +27,6 @@ def create_app():
     cache.init_app(app)
     cors.init_app(app)
 
-
     # Register blueprints
     register_blueprints(app)
 
@@ -55,7 +54,6 @@ def register_blueprints(app):
         print("✓ Service Tickets blueprint registered successfully!")
         app.register_blueprint(auth_bp, url_prefix='/auth')
         print("✓ All blueprints registered successfully!")
-    
 
         # Health check endpoint
         @app.route('/health')
@@ -67,7 +65,7 @@ def register_blueprints(app):
             })
 
         print("✓ All blueprints registered successfully!")
-        
+
     except ImportError as e:
         print(f"⚠️  Error importing blueprints: {e}")
     except Exception as e:
@@ -75,7 +73,7 @@ def register_blueprints(app):
 
 def register_error_handlers(app):
     """Register error handlers"""
-    
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({"error": "Resource not found"}), 404

@@ -54,13 +54,11 @@ SECRET_KEY = os.environ.get("SECRET_KEY") or "super secret secrets"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-
 def encode_token(customer_id):
     # Added exp claim so expiration handling works
     exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"customer_id": customer_id, "exp": exp}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
 
 def token_required(f):
     @wraps(f)
@@ -107,12 +105,10 @@ def token_required(f):
 
     return decorated
 
-
 def encode_mechanic_token(mechanic_id):
     exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"mechanic_id": mechanic_id, "role": "mechanic", "exp": exp}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
 
 def mechanic_token_required(f):
     @wraps(f)

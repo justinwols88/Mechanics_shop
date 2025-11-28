@@ -5,9 +5,9 @@ from app import db
 
 class ServiceTicket(db.Model):
     """Service Ticket model for tracking repair jobs"""
-    
+
     __tablename__ = 'service_ticket'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
     vehicle_info = db.Column(db.String(200), nullable=False)
@@ -17,12 +17,12 @@ class ServiceTicket(db.Model):
     estimated_hours = db.Column(db.Float, default=0.0)
     total_cost = db.Column(db.Float, default=0.0)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), 
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(),
                           onupdate=db.func.current_timestamp())
-    
+
     # Relationships
     customer = db.relationship('Customer', backref=db.backref('tickets', lazy=True))
-    
+
     def to_dict(self):
         """Convert to dictionary"""
         return {
@@ -37,6 +37,6 @@ class ServiceTicket(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
-    
+
     def __repr__(self):
         return f'<ServiceTicket {self.id}>'
