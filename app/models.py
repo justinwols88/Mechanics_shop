@@ -80,3 +80,4 @@ class Inventory(db.Model):
         default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp(),
     )
+
