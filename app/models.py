@@ -3,12 +3,12 @@ from app.extensions import db
 # Define junction tables FIRST, before any imports
 service_mechanic = db.Table(
     "service_mechanic",
-        db.Column(
+    db.Column(
         "service_ticket_id",
         db.Integer,
         db.ForeignKey("service_ticket.id", name="fk_service_ticket_mechanic"),
     ),
-        db.Column(
+    db.Column(
         "mechanic_id",
         db.Integer,
         db.ForeignKey("mechanic.id", name="fk_mechanic_service_ticket"),
@@ -17,17 +17,18 @@ service_mechanic = db.Table(
 
 ticket_inventory = db.Table(
     "ticket_inventory",
-        db.Column(
+    db.Column(
         "service_ticket_id",
         db.Integer,
         db.ForeignKey("service_ticket.id", name="fk_service_ticket_inventory"),
     ),
-        db.Column(
+    db.Column(
         "inventory_id",
         db.Integer,
         db.ForeignKey("inventory.id", name="fk_inventory_service_ticket"),
     ),
 )
+
 
 class Customer(db.Model):
     __tablename__ = "customer"
@@ -37,13 +38,15 @@ class Customer(db.Model):
     password = db.Column(db.String(120), nullable=False)
     tickets = db.relationship("ServiceTicket", backref="customer", lazy=True)
 
+
 class ServiceTicket(db.Model):
     __tablename__ = "service_ticket"
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
     customer_id = db.Column(
-        db.Integer, db.ForeignKey("customer.id", name="fk_service_ticket_customer")
+        db.Integer,
+        db.ForeignKey("customer.id", name="fk_service_ticket_customer")
     )
     status = db.Column(db.String(50), nullable=False, default="open")
 
@@ -54,6 +57,7 @@ class ServiceTicket(db.Model):
         "Inventory", secondary=ticket_inventory, backref="service_tickets"
     )
 
+
 class Mechanic(db.Model):
     __tablename__ = "mechanic"
 
@@ -62,6 +66,7 @@ class Mechanic(db.Model):
     last_name = db.Column(db.String(120), nullable=False, default="Mechanic")
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+
 
 class Inventory(db.Model):
     __tablename__ = "inventory"
