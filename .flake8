@@ -16,6 +16,7 @@ extend-ignore =
     E203,  # whitespace before inline comment
     E731,  # do not assign a lambda expression directly to a variable
     W503,  # use of assert keyword
+    E501,  # line too long (deprecated, use max-line-length)
 exclude = 
     migrations/,
     venv/,
