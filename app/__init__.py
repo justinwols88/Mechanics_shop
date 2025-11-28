@@ -2,18 +2,12 @@
 Flask Application Factory
 """
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_cors import CORS
-from flask_caching import Cache
 from config import Config
 from flask import Flask
 from .extensions import db, migrate, cache
 
 # Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
-cache = Cache()
 cors = CORS()
 
 def create_app():
