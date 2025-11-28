@@ -2,12 +2,13 @@
 Flask Application Factory
 """
 import os
+import sys
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_caching import Cache
-from config import Config, DevelopmentConfig, ProductionConfig
+from config import ProductionConfig
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -21,6 +22,7 @@ def create_app(config_class=ProductionConfig):
     
     # Load appropriate config
     if os.environ.get('FLASK_ENV') == 'development':
+        from config import DevelopmentConfig
         app.config.from_object(DevelopmentConfig)
     else:
         app.config.from_object(ProductionConfig)
@@ -42,17 +44,18 @@ def create_app(config_class=ProductionConfig):
 def register_blueprints(app):
     """Register all blueprints with the application"""
     try:
+        # Use absolute imports
+        from app.blueprints.auth.routes import auth_bp
         from app.blueprints.customers.routes import customers_bp
         from app.blueprints.mechanics.routes import mechanics_bp
         from app.blueprints.inventory.routes import inventory_bp
         from app.blueprints.service_tickets.routes import service_tickets_bp
-        from app.blueprints.auth.routes import auth_bp
 
+        app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(customers_bp, url_prefix='/customers')
         app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
         app.register_blueprint(inventory_bp, url_prefix='/inventory')
         app.register_blueprint(service_tickets_bp, url_prefix='/tickets')
-        app.register_blueprint(auth_bp, url_prefix='/auth')
 
         # Health check endpoint
         @app.route('/health')
@@ -67,8 +70,12 @@ def register_blueprints(app):
         
     except ImportError as e:
         print(f"⚠️  Error importing blueprints: {e}")
+        import traceback
+        traceback.print_exc()
     except Exception as e:
         print(f"⚠️  Error registering blueprints: {e}")
+        import traceback
+        traceback.print_exc()
 
 def register_error_handlers(app):
     """Register error handlers"""
