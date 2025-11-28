@@ -1,12 +1,13 @@
 """
 Flask Application Factory
 """
+import os
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_caching import Cache
-from config import Config
+from config import Config, DevelopmentConfig, ProductionConfig
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -14,10 +15,15 @@ migrate = Migrate()
 cache = Cache()
 cors = CORS()
 
-def create_app():
+def create_app(config_class=ProductionConfig):
     """Application factory pattern"""
     app = Flask(__name__)
-    app.config.from_object(Config)
+    
+    # Load appropriate config
+    if os.environ.get('FLASK_ENV') == 'development':
+        app.config.from_object(DevelopmentConfig)
+    else:
+        app.config.from_object(ProductionConfig)
 
     # Initialize extensions with app
     db.init_app(app)
@@ -43,15 +49,10 @@ def register_blueprints(app):
         from app.blueprints.auth.routes import auth_bp
 
         app.register_blueprint(customers_bp, url_prefix='/customers')
-        print("✓ Customers blueprint registered successfully!")
         app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
-        print("✓ Mechanics blueprint registered successfully!")
         app.register_blueprint(inventory_bp, url_prefix='/inventory')
-        print("✓ Inventory blueprint registered successfully!")
         app.register_blueprint(service_tickets_bp, url_prefix='/tickets')
-        print("✓ Service Tickets blueprint registered successfully!")
         app.register_blueprint(auth_bp, url_prefix='/auth')
-        print("✓ All blueprints registered successfully!")
 
         # Health check endpoint
         @app.route('/health')
@@ -59,11 +60,11 @@ def register_blueprints(app):
             return jsonify({
                 "status": "healthy",
                 "message": "Mechanics Shop API is running",
-                "timestamp": "2024-01-01T00:00:00Z"
+                "environment": os.environ.get('FLASK_ENV', 'production')
             })
 
         print("✓ All blueprints registered successfully!")
-
+        
     except ImportError as e:
         print(f"⚠️  Error importing blueprints: {e}")
     except Exception as e:
@@ -71,7 +72,7 @@ def register_blueprints(app):
 
 def register_error_handlers(app):
     """Register error handlers"""
-
+    
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({"error": "Resource not found"}), 404

@@ -3,9 +3,14 @@ Authentication utilities for Mechanics Shop API
 """
 import os
 import importlib
-from typing import Type
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+from typing import Type
+
+# Use environment variable with fallback for CI/CD
+SECRET_KEY = os.environ.get("SECRET_KEY") or "super secret secrets"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 try:
     from flask import request, jsonify
@@ -24,7 +29,7 @@ try:
         JWTError as _JoseJWTError,
         ExpiredSignatureError as _JoseExpiredSignatureError,
     )
-    jwt = _jose_jwt  # python-jose implementation
+    jwt = _jose_jwt
     JWTError: Type[Exception] = _JoseJWTError
     ExpiredSignatureError: Type[Exception] = _JoseExpiredSignatureError
 except ImportError:

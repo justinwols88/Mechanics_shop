@@ -1,62 +1,22 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Environments
+# Environment variables
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
 
 # IDE
 .vscode/
@@ -67,31 +27,3 @@ venv.bak/
 # OS
 .DS_Store
 Thumbs.db
-
-# Database
-*.db
-*.sqlite3
-
-# Logs
-*.log
-
-# Redis
-dump.rdb
-
-# Temporary files
-*.tmp
-*.temp
-
-# Documentation
-docs/_build/
-
-# Flask
-instance/
-
-# Security
-*.pem
-*.key
-
-# Coverage reports
-.coverage
-.coverage.*
