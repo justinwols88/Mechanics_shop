@@ -1,6 +1,10 @@
-"""Authentication utilities for Mechanics Shop API"""
+"""
+Authentication utilities for Mechanics Shop API
+"""
 import os
-from datetime import datetime, timedelta
+import importlib
+from typing import Type
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 try:
@@ -9,42 +13,53 @@ except ImportError:
     class _FallbackRequest:
         headers = {}
     request = _FallbackRequest()
-    def jsonify(obj):  # type: ignore
+    
+    def jsonify(obj):
         return obj
 
-# Unified JWT import logic (avoid duplicate ExpiredSignatureError declarations)
+
 try:
-    from jose import jwt  # type: ignore
-    from jose.exceptions import JWTError, ExpiredSignatureError  # type: ignore
-except ImportError:  # python-jose not available
+    from jose import jwt as _jose_jwt
+    from jose.exceptions import (
+        JWTError as _JoseJWTError,
+        ExpiredSignatureError as _JoseExpiredSignatureError,
+    )
+    jwt = _jose_jwt  # python-jose implementation
+    JWTError: Type[Exception] = _JoseJWTError
+    ExpiredSignatureError: Type[Exception] = _JoseExpiredSignatureError
+except ImportError:
+    import jwt  # PyJWT fallback
     try:
-        import jwt  # PyJWT
-        from jwt.exceptions import ExpiredSignatureError  # type: ignore
-        from jwt.exceptions import InvalidTokenError as JWTError  # type: ignore
+        from jwt.exceptions import (
+            ExpiredSignatureError as _PyJWTExpiredSignatureError,
+            InvalidTokenError as _PyJWTInvalidTokenError,
+        )
+        JWTError: Type[Exception] = _PyJWTInvalidTokenError
+        ExpiredSignatureError: Type[Exception] = _PyJWTExpiredSignatureError
     except ImportError:
-        class ExpiredSignatureError(Exception):  # Fallback placeholder
+        class _GenericExpiredSignatureError(Exception):
             pass
-        class JWTError(Exception):  # Fallback placeholder
+        class _GenericJWTError(Exception):
             pass
-        class _StubJWT:
-            def encode(self, *_, **__):  # pragma: no cover
-                raise RuntimeError("Install python-jose or PyJWT for JWT support")
-            def decode(self, *_, **__):  # pragma: no cover
-                raise RuntimeError("Install python-jose or PyJWT for JWT support")
-        jwt = _StubJWT()  # type: ignore
+        JWTError: Type[Exception] = _GenericJWTError
+        ExpiredSignatureError: Type[Exception] = _GenericExpiredSignatureError
 
 # Use environment variable with fallback for CI/CD
 SECRET_KEY = os.environ.get("SECRET_KEY") or "super secret secrets"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+
 def encode_token(customer_id):
-    # Added exp claim so expiration handling works
-    exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    """Encode JWT token"""
+    # Use timezone-aware UTC datetime
+    exp = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"customer_id": customer_id, "exp": exp}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
+
 def token_required(f):
+    """Decorator for token authentication"""
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
@@ -89,12 +104,17 @@ def token_required(f):
 
     return decorated
 
+
 def encode_mechanic_token(mechanic_id):
-    exp = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    """Encode mechanic JWT token"""
+    # Use timezone-aware UTC datetime
+    exp = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {"mechanic_id": mechanic_id, "role": "mechanic", "exp": exp}
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
+
 def mechanic_token_required(f):
+    """Decorator for mechanic token authentication"""
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
