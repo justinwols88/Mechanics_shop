@@ -13,10 +13,17 @@ extend-ignore =
     E302,  # expected 2 blank lines
     F401,  # unused imports
     F541,  # f-string missing placeholders
+    E203,  # whitespace before inline comment
+    E731,  # do not assign a lambda expression directly to a variable
+    W503,  # use of assert keyword
 exclude = 
     migrations/,
     venv/,
     env/,
     .venv/,
     __pycache__/,
-    .git/
+    .git/,
+    .git,__pycache__,build,
+    dist
+    per-file-ignores =
+    __init__.py:f401
