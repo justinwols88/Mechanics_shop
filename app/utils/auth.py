@@ -1,10 +1,14 @@
 """
 Authentication utilities for Mechanics Shop API
 """
+import os
+import jwt
+from datetime import datetime, timedelta
+from functools import wraps
 
 # Added guarded import with fallback stubs
 try:
-    from flask import request, jsonify  # type: ignore
+    from flask import request, jsonify
 except ImportError:
     class _FallbackRequest:
         headers = {}
@@ -21,12 +25,9 @@ except ImportError:
 # Define placeholder exceptions for analyzers; real ones will override on import
 class JWTError(Exception):
     pass
-class ExpiredSignatureError(JWTError):
-    pass
-# Fixed jose imports: exceptions come from jose.exceptions; added type: ignore for optional dependency
+
 try:
-    from jose import jwt  # type: ignore
-    from jose.exceptions import JWTError, ExpiredSignatureError  # type: ignore
+    from jose import jwt
 except ImportError:
     spec = find_spec("jwt") if find_spec else None
     # Placeholders already defined; keep them unless overridden by PyJWT
@@ -34,8 +35,10 @@ except ImportError:
         _pyjwt = importlib.import_module("jwt")
         jwt = _pyjwt  # PyJWT module
         try:
-            from jwt.exceptions import ExpiredSignatureError as _PyJWTExpired  # type: ignore
-            ExpiredSignatureError = _PyJWTExpired  # type: ignore
+            from jwt.exceptions import ExpiredSignatureError as _PyJWTExpired
+            # Ensure type compatibility for static type checkers by subclassing
+            class ExpiredSignatureError(_PyJWTExpired):
+                pass
         except Exception:
             pass  # keep placeholder ExpiredSignatureError
     else:

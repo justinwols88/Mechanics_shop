@@ -3,7 +3,6 @@ Service Tickets Routes
 """
 from flask import Blueprint, request, jsonify
 from app.models.service_ticket import ServiceTicket
-from ...models.service_ticket import ServiceTicket
 from app import db
 
 service_tickets_bp = Blueprint('service_tickets', __name__)
