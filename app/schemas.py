@@ -23,7 +23,7 @@ class MechanicSchema(Schema):
 
 class InventorySchema(Schema):
     id = fields.Int()
-    part_name = fields.Str()
+    name = fields.Str()
     price = fields.Float()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()

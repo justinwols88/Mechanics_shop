@@ -1,13 +1,15 @@
+import os
+import sys
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_caching import Cache
 from flask_migrate import Migrate
-import os
+from flask_jwt_extended import JWTManager
 
-# Initialize extensions
 db = SQLAlchemy()
+jwt = JWTManager()
 ma = Marshmallow()
 migrate = Migrate()
 

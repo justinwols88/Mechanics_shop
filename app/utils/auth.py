@@ -35,7 +35,7 @@ except ImportError:
         jwt = _pyjwt  # PyJWT module
         try:
             from jwt.exceptions import ExpiredSignatureError as _PyJWTExpired  # type: ignore
-            ExpiredSignatureError = _PyJWTExpired
+            ExpiredSignatureError = _PyJWTExpired  # type: ignore
         except Exception:
             pass  # keep placeholder ExpiredSignatureError
     else:

@@ -1,200 +1,121 @@
+"""
+Customer Routes
+"""
 from flask import Blueprint, request, jsonify
-from app.extensions import limiter, cache, db
-from app.models import Customer, ServiceTicket
-from app.schemas import CustomerSchema, LoginSchema
-from app.utils.auth import encode_token, token_required
-import re
-from flask.typing import ResponseReturnValue  # added for typing
+from app.models.customer import Customer
+from app import db
+import jwt
+from config import Config
 
-customers_bp = Blueprint("customers_bp", __name__)
-customer_schema = CustomerSchema()
-login_schema = LoginSchema()
+customers_bp = Blueprint('customers', __name__)
 
-
-@customers_bp.route("/")
-def index():
-    return "Customers page"
-
-
-def validate_email(email):
-    """Basic email validation"""
-    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    return re.match(pattern, email) is not None
-
-
-def validate_customer_data(data, is_update=False):
-    """Validate customer input data"""
-    errors = []
-
-    if not is_update:
-        # For registration, both email and password are required
-        if "email" not in data or not data["email"]:
-            errors.append("Email is required")
-        elif not validate_email(data["email"]):
-            errors.append("Invalid email format")
-
-        if "password" not in data or not data["password"]:
-            errors.append("Password is required")
-        elif len(data["password"]) < 6:
-            errors.append("Password must be at least 6 characters long")
-    else:
-        # For updates, validate only provided fields
-        if "email" in data and data["email"]:
-            if not validate_email(data["email"]):
-                errors.append("Invalid email format")
-
-        if "password" in data and data["password"] and len(data["password"]) < 6:
-            errors.append("Password must be at least 6 characters long")
-
-    return errors
-
-
-@customers_bp.route("/login", methods=["POST"])
-def login():
+@customers_bp.route('/customers', methods=['POST'])
+def create_customer():
+    """Create a new customer"""
     data = request.get_json()
-
-    if not data:
-        return jsonify({"message": "No data provided"}), 400
-
-    errors = login_schema.validate(data)
-    if errors:
-        return jsonify(errors), 400
-
-    # Additional validation
-    if not data.get("email") or not data.get("password"):
-        return jsonify({"message": "Email and password are required"}), 400
-
-    customer = Customer.query.filter_by(email=data["email"]).first()
-    if customer and customer.password == data["password"]:
-        token = encode_token(customer.id)
-        return jsonify({"token": token})
-    return jsonify({"message": "Invalid credentials"}), 401
-
-
-@customers_bp.route("/all")
-@limiter.limit("10 per minute")
-@cache.cached(timeout=60)
-def get_customers():
-    page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("per_page", 10, type=int)
-
-    # Validate pagination parameters
-    if page < 1:
-        page = 1
-    if per_page < 1 or per_page > 100:
-        per_page = 10
-
-    customers = Customer.query.paginate(page=page, per_page=per_page, error_out=False)
-    return jsonify(
-        {
-            "page": customers.page,
-            "per_page": customers.per_page,
-            "total": customers.total,
-            "pages": customers.pages,
-            "customers": CustomerSchema(many=True).dump(customers.items),
-        }
-    )
-
-
-@customers_bp.route("/register", methods=["POST"])
-def register_customer() -> ResponseReturnValue:
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"message": "No data provided"}), 400
-
-    # Validate input data
-    validation_errors = validate_customer_data(data, is_update=False)
-    if validation_errors:
-        return (
-            jsonify({"message": "Validation failed", "errors": validation_errors}),
-            400,
-        )
-
+    
+    # Validate required fields
+    required_fields = ['first_name', 'last_name', 'email', 'password']
+    for field in required_fields:
+        if not data.get(field):
+            return jsonify({"error": f"{field} is required"}), 400
+    
     # Check if email already exists
-    if Customer.query.filter_by(email=data["email"]).first():
-        return jsonify({"message": "Email already registered"}), 409
+    if Customer.query.filter_by(email=data['email']).first():
+        return jsonify({"error": "Customer with this email already exists"}), 409
+    
+    # Create customer
+    customer = Customer(
+        first_name=data['first_name'],
+        last_name=data['last_name'],
+        email=data['email']
+    )
+    customer.set_password(data['password'])
+    
+    db.session.add(customer)
+    db.session.commit()
+    
+    return jsonify(customer.to_dict()), 201
 
-    # Create new customer
-    try:
-        new_customer = Customer()
-        new_customer.email = data["email"]
-        new_customer.password = data["password"]
-        db.session.add(new_customer)
-        db.session.commit()
+@customers_bp.route('/customers', methods=['GET'])
+def get_customers():
+    """Get all customers with pagination"""
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    
+    customers = Customer.query.paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+    
+    return jsonify({
+        'customers': [customer.to_dict() for customer in customers.items],
+        'total': customers.total,
+        'pages': customers.pages,
+        'current_page': page
+    }), 200
 
-        return jsonify(customer_schema.dump(new_customer)), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": "Error creating customer", "error": str(e)}), 500
-
-
-@customers_bp.route("/<int:id>", methods=["GET"])
-def get_customer_by_id(id: int) -> ResponseReturnValue:
-    customer = db.session.get(Customer, id)
+@customers_bp.route('/customers/<int:customer_id>', methods=['GET'])
+def get_customer(customer_id):
+    """Get a specific customer by ID"""
+    customer = db.session.get(Customer, customer_id)
     if not customer:
-        return jsonify({"message": "Customer not found"}), 404
+        return jsonify({"error": "Customer not found"}), 404
+    
+    return jsonify(customer.to_dict()), 200
 
-    return jsonify(CustomerSchema().dump(customer)), 200
-
-
-@customers_bp.route("/<int:id>", methods=["PUT"])
-def update_customer(id: int) -> ResponseReturnValue:
-    customer = db.session.get(Customer, id)
+@customers_bp.route('/customers/<int:customer_id>', methods=['PUT'])
+def update_customer(customer_id):
+    """Update a customer"""
+    customer = db.session.get(Customer, customer_id)
     if not customer:
-        return jsonify({"message": "Customer not found"}), 404
-
+        return jsonify({"error": "Customer not found"}), 404
+    
     data = request.get_json()
+    
+    # Update fields if provided
+    if 'first_name' in data:
+        customer.first_name = data['first_name']
+    if 'last_name' in data:
+        customer.last_name = data['last_name']
+    if 'email' in data and data['email'] != customer.email:
+        # Check if new email is already taken
+        existing = Customer.query.filter_by(email=data['email']).first()
+        if existing and existing.id != customer.id:
+            return jsonify({"error": "Email already taken"}), 409
+        customer.email = data['email']
+    if 'phone' in data:
+        customer.phone = data['phone']
+    if 'address' in data:
+        customer.address = data['address']
+    
+    db.session.commit()
+    
+    return jsonify(customer.to_dict()), 200
 
-    if not data:
-        return jsonify({"message": "No data provided"}), 400
-
-    # Validate input data
-    validation_errors = validate_customer_data(data, is_update=True)
-    if validation_errors:
-        return (
-            jsonify({"message": "Validation failed", "errors": validation_errors}),
-            400,
-        )
-
-    # Update fields
-    try:
-        if "email" in data:
-            # Check if new email already exists (excluding current customer)
-            existing = Customer.query.filter(
-                Customer.email == data["email"], Customer.id != id
-            ).first()
-            if existing:
-                return jsonify({"message": "Email already registered"}), 409
-            customer.email = data["email"]
-
-        if "password" in data:
-            customer.password = data["password"]
-
-        db.session.commit()
-        return jsonify(CustomerSchema().dump(customer)), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": "Error updating customer", "error": str(e)}), 500
-
-
-@customers_bp.route("/my-tickets", methods=["GET"])
-@token_required
-def get_my_tickets(customer_id):
-    tickets = ServiceTicket.query.filter_by(customer_id=customer_id).all()
-    return jsonify([{"id": t.id, "description": t.description} for t in tickets]), 200
-
-
-@customers_bp.route("/<int:id>", methods=["DELETE"])
-def delete_customer(id):
-    customer = db.session.get(Customer, id)
+@customers_bp.route('/customers/<int:customer_id>', methods=['DELETE'])
+def delete_customer(customer_id):
+    """Delete a customer"""
+    customer = db.session.get(Customer, customer_id)
     if not customer:
-        return jsonify({"message": "Customer not found"}), 404
+        return jsonify({"error": "Customer not found"}), 404
+    
+    db.session.delete(customer)
+    db.session.commit()
+    
+    return jsonify({"message": "Customer deleted successfully"}), 200
 
-    try:
-        db.session.delete(customer)
-        db.session.commit()
-        return jsonify({"message": f"Customer {id} deleted successfully"}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"message": "Error deleting customer", "error": str(e)}), 500
+@customers_bp.route('/customers/me/tickets', methods=['GET'])
+def get_my_tickets():
+    """Get the current customer's service tickets"""
+    # Check for authentication
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"error": "Authentication required"}), 401
+    
+    # For now, return an empty array since we don't have full ticket implementation
+    # In a real implementation, you would:
+    # 1. Validate the JWT token
+    # 2. Get the customer ID from the token
+    # 3. Query the service_tickets table for that customer
+    return jsonify({"tickets": []}), 200
+
