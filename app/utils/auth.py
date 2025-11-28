@@ -1,56 +1,37 @@
-"""
-Authentication utilities for Mechanics Shop API
-"""
+"""Authentication utilities for Mechanics Shop API"""
 import os
-import jwt
 from datetime import datetime, timedelta
 from functools import wraps
 
-# Added guarded import with fallback stubs
 try:
     from flask import request, jsonify
 except ImportError:
     class _FallbackRequest:
         headers = {}
     request = _FallbackRequest()
-    def jsonify(obj):
-        return obj  # Fallback: install Flask for proper Response
+    def jsonify(obj):  # type: ignore
+        return obj
 
-import os
-import importlib
+# Unified JWT import logic (avoid duplicate ExpiredSignatureError declarations)
 try:
-    from importlib.util import find_spec
-except ImportError:
-    find_spec = None
-# Define placeholder exceptions for analyzers; real ones will override on import
-class JWTError(Exception):
-    pass
-
-try:
-    from jose import jwt
-except ImportError:
-    spec = find_spec("jwt") if find_spec else None
-    # Placeholders already defined; keep them unless overridden by PyJWT
-    if spec:
-        _pyjwt = importlib.import_module("jwt")
-        jwt = _pyjwt  # PyJWT module
-        try:
-            from jwt.exceptions import ExpiredSignatureError as _PyJWTExpired
-            # Ensure type compatibility for static type checkers by subclassing
-            class ExpiredSignatureError(_PyJWTExpired):
-                pass
-        except Exception:
-            pass  # keep placeholder ExpiredSignatureError
-    else:
+    from jose import jwt  # type: ignore
+    from jose.exceptions import JWTError, ExpiredSignatureError  # type: ignore
+except ImportError:  # python-jose not available
+    try:
+        import jwt  # PyJWT
+        from jwt.exceptions import ExpiredSignatureError  # type: ignore
+        from jwt.exceptions import InvalidTokenError as JWTError  # type: ignore
+    except ImportError:
+        class ExpiredSignatureError(Exception):  # Fallback placeholder
+            pass
+        class JWTError(Exception):  # Fallback placeholder
+            pass
         class _StubJWT:
-            def encode(self, *_, **__):
+            def encode(self, *_, **__):  # pragma: no cover
                 raise RuntimeError("Install python-jose or PyJWT for JWT support")
-            def decode(self, *_, **__):
+            def decode(self, *_, **__):  # pragma: no cover
                 raise RuntimeError("Install python-jose or PyJWT for JWT support")
-        jwt = _StubJWT()
-
-from datetime import datetime, timedelta
-from functools import wraps
+        jwt = _StubJWT()  # type: ignore
 
 # Use environment variable with fallback for CI/CD
 SECRET_KEY = os.environ.get("SECRET_KEY") or "super secret secrets"
