@@ -52,10 +52,13 @@ jobs:
           echo "def test_basic():" > tests/test_basic.py
           echo "    assert 1 + 1 == 2" >> tests/test_basic.py
         fi
-        
+
     - name: Run pytest
       run: |
         echo "=== Running Pytest ==="
+        echo "Python version:"
+        python --version
+        echo "Running tests..."
         python -m pytest tests/ -v --tb=short
       env:
         FLASK_ENV: testing
