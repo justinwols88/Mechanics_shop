@@ -28,3 +28,14 @@ def update_inventory_item(item_id):
     """Update inventory item"""
     # Placeholder implementation returning a valid Flask response type
     return {"message": f"inventory item {item_id} updated"}, 200
+
+def validate_inventory_data(data):
+    errors = []
+    
+    if not data.get('part_name') or not data.get('part_name').strip():
+        errors.append("Name is required and cannot be empty")  # Test expects this message
+    
+    if not data.get('price') or float(data.get('price', 0)) <= 0:
+        errors.append("Price must be a positive number")
+    
+    return errors
