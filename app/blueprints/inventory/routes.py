@@ -1,9 +1,12 @@
 """
 Inventory Routes
 """
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from functools import wraps
 from typing import Callable
+from app.models.inventory import Inventory
+from app.models.mechanic import Mechanic
+from blueprints.mechanics.routes import mechanics_bp
 
 try:
     from app.utils.auth import mechanic_required_token  # type: ignore[attr-defined]
@@ -39,3 +42,19 @@ def validate_inventory_data(data):
         errors.append("Price must be a positive number")
     
     return errors
+
+# For non-existent inventory (should return 404, not 405)
+@inventory_bp.route('/<int:item_id>', methods=['GET'])
+def get_inventory_item(item_id):
+    item = Inventory.query.get(item_id)
+    if not item:
+        return jsonify({"error": "Inventory item not found"}), 404
+    return jsonify(item.to_dict())
+
+# For non-existent mechanics (should return 404, not 401)  
+@mechanics_bp.route('/<int:mechanic_id>', methods=['GET'])
+def get_mechanic(mechanic_id):
+    mechanic = Mechanic.query.get(mechanic_id)
+    if not mechanic:
+        return jsonify({"error": "Mechanic not found"}), 404
+    return jsonify(mechanic.to_dict())
