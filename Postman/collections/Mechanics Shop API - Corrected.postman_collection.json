@@ -1,0 +1,346 @@
+{
+  "info": {
+    "_postman_id": "bab4f122-208c-4d6a-862a-e4ee6280103d",
+    "name": "Mechanics Shop API - Corrected",
+    "description": "Corrected endpoints based on actual Flask blueprint structure",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Customer Login",
+          "id": "f59824ec-97b8-4399-837a-bfe55552f8d6",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/auth/customer/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "auth",
+                "customer",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mechanic Login",
+          "id": "f2d8ed1e-0a3c-4808-887a-27cc41d07978",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"mechanic@example.com\",\n  \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/auth/mechanic/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "auth",
+                "mechanic",
+                "login"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "7d2ca0b0-b343-4dc6-8cac-eaa1417aba6d"
+    },
+    {
+      "name": "👥 Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "id": "a8daba13-3218-40d0-b76c-b8a50e310f75",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/customers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "id": "b8ae62c3-f975-44e4-9dd6-58fb6ab37e2c",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/customers/customers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "customers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "id": "e2ff24bd-791b-4faf-b2cb-7333ec9bb9e4",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/customers/customers/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "customers",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Tickets",
+          "id": "637d346c-57e4-43fa-adef-4863c166893e",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/customers/me/tickets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "customers",
+                "me",
+                "tickets"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "afd1ca46-4cc7-4c2f-b5c1-d40f8920b552"
+    },
+    {
+      "name": "🔧 Mechanics",
+      "item": [
+        {
+          "name": "Get Mechanics",
+          "id": "d7f47bad-62ce-4fec-934d-b6c248fb3dfa",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/mechanics/mechanics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "mechanics"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "80209f60-02df-4514-af09-19be92af6b1d"
+    },
+    {
+      "name": "📋 Service Tickets",
+      "item": [
+        {
+          "name": "Create Service Ticket",
+          "id": "3d436a80-e5b3-447f-8412-46a265edaab1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": 1,\n  \"vehicle_info\": \"Toyota Camry 2020\",\n  \"issue_description\": \"Brake repair needed\",\n  \"status\": \"open\",\n  \"priority\": \"medium\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/service_tickets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "service_tickets"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Service Ticket by ID",
+          "id": "fa504c2e-9c4f-4ac1-80c5-3a70e704ed5a",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tickets/service_tickets/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "service_tickets",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Tickets",
+          "id": "45666b97-9136-4b51-957b-35d087a14b7f",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tickets/service_tickets/customer/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "service_tickets",
+                "customer",
+                "1"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "d72edef5-1ebc-4f3d-a449-83eb6e170eab"
+    },
+    {
+      "name": "📦 Inventory",
+      "item": [
+        {
+          "name": "Get Inventory",
+          "id": "c2854d50-86c4-4776-9f88-8e76d34038be",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/inventory/inventory",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                "inventory"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Inventory Item",
+          "id": "33aff9f1-88cc-48b9-98a2-c5f6239120a7",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"part_name\": \"Updated Brake Pads\",\n  \"price\": 59.99\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/inventory/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                "1"
+              ]
+            }
+          }
+        }
+      ],
+      "id": "273e25d3-5532-437e-8c8c-5eaba31810cb"
+    },
+    {
+      "name": "🏥 Health Check",
+      "id": "a1883fc8-5746-447d-acc6-3f8779936770",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "a0178ec9-c98e-4277-8281-52998b716bff",
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "id": "94fc0b31-971d-4c43-a65b-bb9d37e9b861",
+      "key": "customer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "0c8d40eb-f3a2-4f1b-9235-828d25557b16",
+      "key": "mechanic_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

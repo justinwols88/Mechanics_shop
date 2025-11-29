@@ -3,9 +3,7 @@
     "id": "05566301-623e-467b-88de-620b8af7f038"
   },
   "entities": {
-    "collections": [
-      "..\\postman\\collections\\Mechanic Shop API.postman_collection.json"
-    ],
+    "collections": [],
     "environments": [
       "..\\postman\\environments\\Mechanic Shop Environment.postman_environment.json"
     ],

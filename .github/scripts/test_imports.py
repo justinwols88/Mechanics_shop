@@ -19,11 +19,12 @@ def main():
         from app import create_app, db
         print('✓ SUCCESS: Imported create_app from app')
 
-        from config import TestingConfig
+        from config import TestingConfig, ProductionConfig
+        from typing import Type, cast
         print('✓ SUCCESS: Imported TestingConfig from config')
 
         # Test app creation
-        app = create_app(TestingConfig)
+        app = create_app(cast(Type[ProductionConfig], TestingConfig))
         print('✓ SUCCESS: App creation worked')
 
         # Test database operations within app context
