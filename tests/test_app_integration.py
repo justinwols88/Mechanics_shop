@@ -59,7 +59,7 @@ def test_database_connection(app):
             from app import db
             from app.models.customer import Customer
             # Try to create a simple query
-            customers = Customer.query.limit(1).all()
+            _ = Customer.query.limit(1).all()
             assert True  # If we get here, database connection works
         except Exception as e:
             # It's okay if this fails in test environment without proper DB setup
