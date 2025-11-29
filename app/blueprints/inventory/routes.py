@@ -19,7 +19,7 @@ except (ImportError, AttributeError, ModuleNotFoundError):
 
 inventory_bp = Blueprint('inventory', __name__)
 
-@inventory_bp.route('/inventory', methods=['GET'])
+@inventory_bp.route('', methods=['GET'])
 def get_inventory():
     """Get inventory"""
     return {"message": "inventory endpoint"}, 200
@@ -51,7 +51,7 @@ def get_inventory_item(item_id):
     return jsonify(item.to_dict())
 
 # For non-existent mechanics (should return 404, not 401)  
-@inventory_bp.route('/mechanics/<int:mechanic_id>', methods=['GET'])
+@inventory_bp.route('/<int:mechanic_id>', methods=['GET'])
 def get_mechanic(mechanic_id):
     mechanic = Mechanic.query.get(mechanic_id)
     if not mechanic:

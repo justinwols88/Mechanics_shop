@@ -44,18 +44,18 @@ def create_app(config_class=ProductionConfig):
 def register_blueprints(app):
     """Register all blueprints with the application"""
     try:
-        # Use absolute imports
         from app.blueprints.auth.routes import auth_bp
         from app.blueprints.customers.routes import customers_bp
         from app.blueprints.mechanics.routes import mechanics_bp
         from app.blueprints.inventory.routes import inventory_bp
         from app.blueprints.service_tickets.routes import service_tickets_bp
 
+        # Fix: Remove url_prefix or use proper prefixes
         app.register_blueprint(auth_bp, url_prefix='/auth')
-        app.register_blueprint(customers_bp, url_prefix='/customers')
-        app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
-        app.register_blueprint(inventory_bp, url_prefix='/inventory')
-        app.register_blueprint(service_tickets_bp, url_prefix='/tickets')
+        app.register_blueprint(customers_bp, url_prefix='/api/customers')
+        app.register_blueprint(mechanics_bp, url_prefix='/api/mechanics')
+        app.register_blueprint(inventory_bp, url_prefix='/api/inventory')
+        app.register_blueprint(service_tickets_bp, url_prefix='/api/tickets')
 
         # Health check endpoint
         @app.route('/health')
@@ -72,22 +72,3 @@ def register_blueprints(app):
         print(f"⚠️  Error importing blueprints: {e}")
         import traceback
         traceback.print_exc()
-    except Exception as e:
-        print(f"⚠️  Error registering blueprints: {e}")
-        import traceback
-        traceback.print_exc()
-
-def register_error_handlers(app):
-    """Register error handlers"""
-    
-    @app.errorhandler(404)
-    def not_found(error):
-        return jsonify({"error": "Resource not found"}), 404
-
-    @app.errorhandler(500)
-    def internal_error(error):
-        return jsonify({"error": "Internal server error"}), 500
-
-    @app.errorhandler(400)
-    def bad_request(error):
-        return jsonify({"error": "Bad request"}), 400

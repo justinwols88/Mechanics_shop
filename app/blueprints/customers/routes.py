@@ -4,12 +4,11 @@ Customer Routes
 from flask import Blueprint, request, jsonify
 from app.models.customer import Customer
 from app import db
-import jwt
-from config import Config
 
 customers_bp = Blueprint('customers', __name__)
 
-@customers_bp.route('/customers', methods=['POST'])
+# Remove '/customers' from routes since it's in the url_prefix
+@customers_bp.route('/', methods=['POST'])
 def create_customer():
     """Create a new customer"""
     data = request.get_json()
@@ -37,7 +36,7 @@ def create_customer():
 
     return jsonify(customer.to_dict()), 201
 
-@customers_bp.route('/customers', methods=['GET'])
+@customers_bp.route('/', methods=['GET'])
 def get_customers():
     """Get all customers with pagination"""
     page = request.args.get('page', 1, type=int)
@@ -54,7 +53,7 @@ def get_customers():
         'current_page': page
     }), 200
 
-@customers_bp.route('/customers/<int:customer_id>', methods=['GET'])
+@customers_bp.route('/<int:customer_id>', methods=['GET'])
 def get_customer(customer_id):
     """Get a specific customer by ID"""
     customer = db.session.get(Customer, customer_id)
@@ -63,7 +62,7 @@ def get_customer(customer_id):
 
     return jsonify(customer.to_dict()), 200
 
-@customers_bp.route('/customers/<int:customer_id>', methods=['PUT'])
+@customers_bp.route('/<int:customer_id>', methods=['PUT'])
 def update_customer(customer_id):
     """Update a customer"""
     customer = db.session.get(Customer, customer_id)
@@ -92,7 +91,7 @@ def update_customer(customer_id):
 
     return jsonify(customer.to_dict()), 200
 
-@customers_bp.route('/customers/<int:customer_id>', methods=['DELETE'])
+@customers_bp.route('/<int:customer_id>', methods=['DELETE'])
 def delete_customer(customer_id):
     """Delete a customer"""
     customer = db.session.get(Customer, customer_id)
@@ -104,7 +103,7 @@ def delete_customer(customer_id):
 
     return jsonify({"message": "Customer deleted successfully"}), 200
 
-@customers_bp.route('/customers/me/tickets', methods=['GET'])
+@customers_bp.route('/me/tickets', methods=['GET'])
 def get_my_tickets():
     """Get the current customer's service tickets"""
     # Check for authentication
