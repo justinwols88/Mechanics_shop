@@ -5,7 +5,17 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      python -c "from app import create_app, db; app = create_app(); app.app_context().push(); db.create_all()"
+      python -c "
+      import os
+      import sys
+      sys.path.append('/opt/render/project/src')
+      from app import create_app, db
+      from config import ProductionConfig
+      app = create_app(ProductionConfig)
+      with app.app_context():
+          db.create_all()
+          print('✅ Database tables created during build')
+      "
     startCommand: gunicorn flask_app:app
     envVars:
       - key: DATABASE_URL
@@ -16,9 +26,3 @@ services:
         generateValue: true
       - key: FLASK_ENV
         value: production
-
-databases:
-  - name: mechanic_shop_db
-    plan: free
-    databaseName: mechanics_shop
-    user: mechanics_user
