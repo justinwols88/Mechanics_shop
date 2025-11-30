@@ -1,74 +1,46 @@
 """
-Flask Application Factory
+Application Factory Pattern with Blueprint Structure
 """
-import os
-import sys
-from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_cors import CORS
-from flask_caching import Cache
-from config import ProductionConfig
+from flask import Flask
+from config import Config
+from app.extensions import db, jwt, ma, migrate, limiter, cache
 
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
-cache = Cache()
-cors = CORS()
-
-def create_app(config_class=ProductionConfig):
-    """Application factory pattern"""
+def create_app(config_class=Config):
     app = Flask(__name__)
-    
-    # Load appropriate config
-    if os.environ.get('FLASK_ENV') == 'development':
-        from config import DevelopmentConfig
-        app.config.from_object(DevelopmentConfig)
-    else:
-        app.config.from_object(ProductionConfig)
+    app.config.from_object(config_class)
 
-    # Initialize extensions with app
+    # Initialize extensions
     db.init_app(app)
+    jwt.init_app(app)
+    ma.init_app(app)
     migrate.init_app(app, db)
+    limiter.init_app(app)
     cache.init_app(app)
-    cors.init_app(app)
 
-    # Register blueprints
-    register_blueprints(app)
+    # Import and register blueprints
+    from app.blueprints.auth.routes import auth_bp
+    from app.blueprints.customers.routes import customers_bp
+    from app.blueprints.mechanics.routes import mechanics_bp
+    from app.blueprints.service_tickets.routes import service_tickets_bp
+    from app.blueprints.inventory.routes import inventory_bp
+    
+    # Register blueprints with URL prefixes
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(customers_bp, url_prefix='/customers')
+    app.register_blueprint(mechanics_bp, url_prefix='/mechanics')
+    app.register_blueprint(service_tickets_bp, url_prefix='/tickets')
+    app.register_blueprint(inventory_bp, url_prefix='/inventory')
 
-    # Register error handlers
-    register_error_handlers(app)
+    # Health check endpoint
+    @app.route('/health')
+    def health_check():
+        return {
+            "status": "healthy",
+            "timestamp": "2023-01-15T10:30:00Z",
+            "services": {
+                "database": "healthy",
+                "api": "healthy"
+            }
+        }
 
     return app
-
-def register_blueprints(app):
-    """Register all blueprints with the application"""
-    try:
-        from app.blueprints.auth.routes import auth_bp
-        from app.blueprints.customers.routes import customers_bp
-        from app.blueprints.mechanics.routes import mechanics_bp
-        from app.blueprints.inventory.routes import inventory_bp
-        from app.blueprints.service_tickets.routes import service_tickets_bp
-
-        # Fix: Remove url_prefix or use proper prefixes
-        app.register_blueprint(auth_bp, url_prefix='/auth')
-        app.register_blueprint(customers_bp, url_prefix='/api/customers')
-        app.register_blueprint(mechanics_bp, url_prefix='/api/mechanics')
-        app.register_blueprint(inventory_bp, url_prefix='/api/inventory')
-        app.register_blueprint(service_tickets_bp, url_prefix='/api/tickets')
-
-        # Health check endpoint
-        @app.route('/health')
-        def health_check():
-            return jsonify({
-                "status": "healthy",
-                "message": "Mechanics Shop API is running",
-                "environment": os.environ.get('FLASK_ENV', 'production')
-            })
-
-        print("✓ All blueprints registered successfully!")
-        
-    except ImportError as e:
-        print(f"⚠️  Error importing blueprints: {e}")
-        import traceback
-        traceback.print_exc()

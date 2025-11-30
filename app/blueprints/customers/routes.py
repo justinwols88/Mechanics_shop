@@ -1,119 +1,262 @@
 """
-Customer Routes
+Customer Routes with Consistent Authentication & Error Handling
 """
 from flask import Blueprint, request, jsonify
 from app.models.customer import Customer
+from app.models.service_ticket import ServiceTicket
+from app.utils.auth import token_required, mechanic_token_required
 from app import db
 
 customers_bp = Blueprint('customers', __name__)
 
-# Remove '/customers' from routes since it's in the url_prefix
-@customers_bp.route('/', methods=['POST'])
-def create_customer():
-    """Create a new customer"""
-    data = request.get_json()
+@customers_bp.route('/register', methods=['POST'])
+def register_customer():
+    """Create a new customer - No auth required"""
+    try:
+        if not request.is_json:
+            return jsonify({
+                "success": False,
+                "error": "Missing JSON in request"
+            }), 400
 
-    # Validate required fields
-    required_fields = ['first_name', 'last_name', 'email', 'password']
-    for field in required_fields:
-        if not data.get(field):
-            return jsonify({"error": f"{field} is required"}), 400
+        data = request.get_json()
 
-    # Check if email already exists
-    if Customer.query.filter_by(email=data['email']).first():
-        return jsonify({"error": "Customer with this email already exists"}), 409
+        # Validate required fields
+        required_fields = ['first_name', 'last_name', 'email', 'password']
+        missing_fields = [field for field in required_fields if not data.get(field)]
+        
+        if missing_fields:
+            return jsonify({
+                "success": False,
+                "error": f"Missing required fields: {', '.join(missing_fields)}"
+            }), 400
 
-    # Create customer
-    customer = Customer(
-        first_name=data['first_name'],
-        last_name=data['last_name'],
-        email=data['email']
-    )
-    customer.set_password(data['password'])
+        # Check if email already exists
+        if Customer.query.filter_by(email=data['email']).first():
+            return jsonify({
+                "success": False,
+                "error": "Customer with this email already exists"
+            }), 409
 
-    db.session.add(customer)
-    db.session.commit()
+        # Create customer
+        customer = Customer(
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            email=data['email'],
+            phone=data.get('phone'),
+            address=data.get('address')
+        )
+        customer.set_password(data['password'])
 
-    return jsonify(customer.to_dict()), 201
+        db.session.add(customer)
+        db.session.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Customer registered successfully",
+            "customer": customer.to_dict()
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500
 
 @customers_bp.route('/', methods=['GET'])
-def get_customers():
-    """Get all customers with pagination"""
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+@mechanic_token_required  # Only mechanics can view all customers
+def get_all_customers(current_mechanic_id):
+    """Get all customers with pagination - Mechanic auth required"""
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
 
-    customers = Customer.query.paginate(
-        page=page, per_page=per_page, error_out=False
-    )
+        # Validate pagination parameters
+        if page < 1 or per_page < 1 or per_page > 100:
+            return jsonify({
+                "success": False,
+                "error": "Invalid pagination parameters"
+            }), 400
 
-    return jsonify({
-        'customers': [customer.to_dict() for customer in customers.items],
-        'total': customers.total,
-        'pages': customers.pages,
-        'current_page': page
-    }), 200
+        customers = Customer.query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+
+        return jsonify({
+            "success": True,
+            "data": {
+                "customers": [customer.to_dict() for customer in customers.items],
+                "total": customers.total,
+                "pages": customers.pages,
+                "current_page": page,
+                "per_page": per_page
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500
 
 @customers_bp.route('/<int:customer_id>', methods=['GET'])
-def get_customer(customer_id):
-    """Get a specific customer by ID"""
-    customer = db.session.get(Customer, customer_id)
-    if not customer:
-        return jsonify({"error": "Customer not found"}), 404
+@token_required  # Customers can only view their own profile
+def get_customer(current_customer_id, customer_id):
+    """Get a specific customer by ID - Customer auth required"""
+    try:
+        # Customers can only access their own data
+        if current_customer_id != customer_id:
+            return jsonify({
+                "success": False,
+                "error": "Unauthorized access"
+            }), 403
 
-    return jsonify(customer.to_dict()), 200
+        customer = db.session.get(Customer, customer_id)
+        if not customer:
+            return jsonify({
+                "success": False,
+                "error": "Customer not found"
+            }), 404
+
+        return jsonify({
+            "success": True,
+            "data": customer.to_dict()
+        }), 200
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500
 
 @customers_bp.route('/<int:customer_id>', methods=['PUT'])
-def update_customer(customer_id):
-    """Update a customer"""
-    customer = db.session.get(Customer, customer_id)
-    if not customer:
-        return jsonify({"error": "Customer not found"}), 404
+@token_required
+def update_customer(current_customer_id, customer_id):
+    """Update a customer - Customer auth required (own profile only)"""
+    try:
+        # Customers can only update their own data
+        if current_customer_id != customer_id:
+            return jsonify({
+                "success": False,
+                "error": "Unauthorized to update this customer"
+            }), 403
 
-    data = request.get_json()
+        if not request.is_json:
+            return jsonify({
+                "success": False,
+                "error": "Missing JSON in request"
+            }), 400
 
-    # Update fields if provided
-    if 'first_name' in data:
-        customer.first_name = data['first_name']
-    if 'last_name' in data:
-        customer.last_name = data['last_name']
-    if 'email' in data and data['email'] != customer.email:
-        # Check if new email is already taken
-        existing = Customer.query.filter_by(email=data['email']).first()
-        if existing and existing.id != customer.id:
-            return jsonify({"error": "Email already taken"}), 409
-        customer.email = data['email']
-    if 'phone' in data:
-        customer.phone = data['phone']
-    if 'address' in data:
-        customer.address = data['address']
+        customer = db.session.get(Customer, customer_id)
+        if not customer:
+            return jsonify({
+                "success": False,
+                "error": "Customer not found"
+            }), 404
 
-    db.session.commit()
+        data = request.get_json()
 
-    return jsonify(customer.to_dict()), 200
+        # Update fields if provided
+        updatable_fields = ['first_name', 'last_name', 'phone', 'address']
+        for field in updatable_fields:
+            if field in data:
+                setattr(customer, field, data[field])
+
+        # Special handling for email (unique constraint)
+        if 'email' in data and data['email'] != customer.email:
+            existing_customer = Customer.query.filter_by(email=data['email']).first()
+            if existing_customer and existing_customer.id != customer.id:
+                return jsonify({
+                    "success": False,
+                    "error": "Email already taken"
+                }), 409
+            customer.email = data['email']
+
+        # Special handling for password
+        if 'password' in data:
+            customer.set_password(data['password'])
+
+        db.session.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Customer updated successfully",
+            "data": customer.to_dict()
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500
 
 @customers_bp.route('/<int:customer_id>', methods=['DELETE'])
-def delete_customer(customer_id):
-    """Delete a customer"""
-    customer = db.session.get(Customer, customer_id)
-    if not customer:
-        return jsonify({"error": "Customer not found"}), 404
+@token_required
+def delete_customer(current_customer_id, customer_id):
+    """Delete a customer - Customer auth required (own profile only)"""
+    try:
+        # Customers can only delete their own account
+        if current_customer_id != customer_id:
+            return jsonify({
+                "success": False,
+                "error": "Unauthorized to delete this customer"
+            }), 403
 
-    db.session.delete(customer)
-    db.session.commit()
+        customer = db.session.get(Customer, customer_id)
+        if not customer:
+            return jsonify({
+                "success": False,
+                "error": "Customer not found"
+            }), 404
 
-    return jsonify({"message": "Customer deleted successfully"}), 200
+        db.session.delete(customer)
+        db.session.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Customer deleted successfully"
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500
 
 @customers_bp.route('/me/tickets', methods=['GET'])
-def get_my_tickets():
-    """Get the current customer's service tickets"""
-    # Check for authentication
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return jsonify({"error": "Authentication required"}), 401
+@token_required
+def get_my_tickets(current_customer_id):
+    """Get the current customer's service tickets - Customer auth required"""
+    try:
+        customer = db.session.get(Customer, current_customer_id)
+        if not customer:
+            return jsonify({
+                "success": False,
+                "error": "Customer not found"
+            }), 404
 
-    # For now, return an empty array since we don't have full ticket implementation
-    # In a real implementation, you would:
-    # 1. Validate the JWT token
-    # 2. Get the customer ID from the token
-    # 3. Query the service_tickets table for that customer
-    return jsonify({"tickets": []}), 200
+        # Get customer's tickets with proper error handling
+        tickets = ServiceTicket.query.filter_by(customer_id=current_customer_id).all()
+        
+        return jsonify({
+            "success": True,
+            "data": {
+                "tickets": [ticket.to_dict() for ticket in tickets],
+                "count": len(tickets)
+            }
+        }), 200
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": "Internal server error",
+            "details": str(e)
+        }), 500

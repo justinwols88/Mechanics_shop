@@ -1,5 +1,5 @@
 """
-Service Ticket Model
+Service Ticket Model with Fixed Relationships
 """
 from app import db
 
@@ -20,8 +20,8 @@ class ServiceTicket(db.Model):
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(),
                           onupdate=db.func.current_timestamp())
 
-    # Relationships
-    customer = db.relationship('Customer', backref=db.backref('tickets', lazy=True))
+    # Fixed relationships
+    customer = db.relationship('Customer', backref=db.backref('service_tickets', lazy=True))
 
     def to_dict(self):
         """Convert to dictionary"""
