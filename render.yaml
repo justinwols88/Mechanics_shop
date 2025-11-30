@@ -3,12 +3,22 @@ services:
     name: mechanics-shop-api
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: cd /opt/render/project/src && gunicorn flask_app:app
+    buildCommand: |
+      pip install -r requirements.txt
+      python -c "from app import create_app, db; app = create_app(); app.app_context().push(); db.create_all()"
+    startCommand: gunicorn flask_app:app
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: mechanic_shop_db_bhhl
+          name: mechanic_shop_db
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
+      - key: FLASK_ENV
+        value: production
+
+databases:
+  - name: mechanic_shop_db
+    plan: free
+    databaseName: mechanics_shop
+    user: mechanics_user

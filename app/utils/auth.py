@@ -1,5 +1,5 @@
 """
-Enhanced Authentication utilities for Mechanics Shop API
+Authentication utilities for Mechanics Shop API - UPDATED FOR PRODUCTION
 """
 import os
 from functools import wraps
@@ -7,8 +7,10 @@ from flask import request, jsonify
 import jwt
 from datetime import datetime, timezone
 
-# Use environment variable with fallback
+# Use environment variable with fallback for CI/CD and production
 SECRET_KEY = os.environ.get("SECRET_KEY") or "super-secret-key-change-in-production"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def token_required(f):
     """Decorator for customer token authentication"""

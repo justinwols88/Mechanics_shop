@@ -1,5 +1,5 @@
 """
-Configuration settings for the Flask application
+Configuration settings for the Flask application - UPDATED FOR PRODUCTION
 """
 import os
 from datetime import timedelta
@@ -38,9 +38,9 @@ class TestingConfig(Config):
     WTF_CSRF_ENABLED = False
 
 class ProductionConfig(Config):
-    """Production configuration"""
+    """Production configuration - UPDATED"""
     DEBUG = False
     TESTING = False
-    # Use PostgreSQL from environment variable
+    # Use PostgreSQL from environment variable - Render provides DATABASE_URL
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///app.db'
     CACHE_TYPE = "SimpleCache"
