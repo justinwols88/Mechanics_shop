@@ -1,7 +1,9 @@
 """
-Application Factory Pattern with Blueprint Structure
+Application Factory Pattern with Blueprint Structure - Fixed Health Endpoint
 """
-from flask import Flask
+from flask import Flask, jsonify
+from sqlalchemy import text
+from datetime import datetime, timezone
 from config import Config
 from app.extensions import db, jwt, ma, migrate, limiter, cache
 
@@ -31,16 +33,24 @@ def create_app(config_class=Config):
     app.register_blueprint(service_tickets_bp, url_prefix='/tickets')
     app.register_blueprint(inventory_bp, url_prefix='/inventory')
 
-    # Health check endpoint
+    # Fixed health check endpoint
     @app.route('/health')
     def health_check():
-        return {
+        """Health check endpoint with proper structure"""
+        try:
+            # Test database connection
+            db.session.execute(text('SELECT 1'))
+            database_status = 'healthy'
+        except Exception as e:
+            database_status = 'unhealthy'
+            
+        return jsonify({
             "status": "healthy",
-            "timestamp": "2023-01-15T10:30:00Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "services": {
-                "database": "healthy",
+                "database": database_status,
                 "api": "healthy"
             }
-        }
+        })
 
     return app

@@ -1,35 +1,58 @@
 """
-Shared configuration for tests
+Pytest configuration and fixtures
 """
 import pytest
-import os
-import sys
+from app import create_app, db
+from app.models.customer import Customer
+from app.models.mechanic import Mechanic
+from app.models.inventory import Inventory
+from config import TestingConfig
 
-# Add parent directory to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Set test environment variables if not already set
-if 'FLASK_ENV' not in os.environ:
-    os.environ['FLASK_ENV'] = 'testing'
-
-if 'SECRET_KEY' not in os.environ:
-    os.environ['SECRET_KEY'] = 'test-secret-key'
-
-if 'DATABASE_URL' not in os.environ:
-    os.environ['DATABASE_URL'] = 'sqlite:///test.db'
-
-@pytest.fixture(scope='session')
+@pytest.fixture
 def app():
-    """Create app for testing"""
-    try:
-        from app import create_app
-        app = create_app()
-        app.config['TESTING'] = True
-        return app
-    except ImportError as e:
-        pytest.skip(f"App creation skipped: {e}")
+    """Create application for testing"""
+    app = create_app(TestingConfig)
+    
+    with app.app_context():
+        db.create_all()
+        
+        # Create test data
+        customer = Customer(
+            first_name="Test",
+            last_name="Customer",
+            email="test@example.com"
+        )
+        customer.set_password("password123")
+        db.session.add(customer)
+        
+        mechanic = Mechanic(
+            first_name="Test",
+            last_name="Mechanic", 
+            email="mechanic@example.com"
+        )
+        mechanic.set_password("mechanic123")
+        db.session.add(mechanic)
+        
+        inventory = Inventory(
+            part_name="Test Part",
+            part_number="TEST-001",
+            price=29.99,
+            quantity=10
+        )
+        db.session.add(inventory)
+        
+        db.session.commit()
+        
+        yield app
+        
+        db.drop_all()
 
-@pytest.fixture(scope='session')
+@pytest.fixture
 def client(app):
     """Create test client"""
     return app.test_client()
+
+@pytest.fixture
+def runner(app):
+    """Create CLI runner"""
+    return app.test_cli_runner()
