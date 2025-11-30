@@ -100,22 +100,6 @@
         },
         {
           "name": "Register Mechanic",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('mechanicId', response.data.mechanic.id);",
-                  "    console.log('Mechanic ID set:', response.data.mechanic.id);",
-                  "}"
-                ],
-                "type": "text/javascript",
-                "id": "c9f5a3b0-3cd7-4e8e-9e86-f17cd7edd90a"
-              }
-            }
-          ],
           "id": "e6b2e87e-b7d5-494b-8c8a-cfe7fb44e818",
           "request": {
             "method": "POST",
@@ -123,11 +107,20 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"email\": \"jane.smith@mechanicshop.com\",\n  \"password\": \"mechanic123\",\n  \"specialization\": \"Brake Systems\",\n  \"years_experience\": 5,\n  \"hourly_rate\": 45.0\n}"
+              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"email\": \"jane.smith@mechanicshop.com\",\n  \"password\": \"SecretPass123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/mechanics/register",
@@ -951,43 +944,43 @@
   ],
   "variable": [
     {
-      "id": "67092bad-d457-44be-9cdd-cca326995db2",
+      "id": "8226a7ff-6c17-4f5a-b5f3-fdd1bbb91a72",
       "key": "baseUrl",
       "value": "http://127.0.0.1:5000",
       "type": "string"
     },
     {
-      "id": "c100d099-0962-4565-a7f1-efb2591a1c7b",
+      "id": "f3bc2d3f-ceaa-4d09-9be6-9234c247cf24",
       "key": "customerToken",
       "value": "",
       "type": "string"
     },
     {
-      "id": "870e021a-8172-4380-b130-3fdd8c81f9d5",
+      "id": "b085db58-c46c-4045-bae1-5d50178b5095",
       "key": "mechanicToken",
       "value": "",
       "type": "string"
     },
     {
-      "id": "1da0eb66-6780-47c1-91ca-1fe4ec2895bf",
+      "id": "7bf4e807-28b9-43c1-81f2-4b70c2390c2b",
       "key": "customerId",
       "value": "",
       "type": "string"
     },
     {
-      "id": "7b4a5605-bfa2-4feb-b543-bf0e97937ed1",
+      "id": "588a1f57-0b45-409c-bc60-f08a8764fb3a",
       "key": "mechanicId",
       "value": "",
       "type": "string"
     },
     {
-      "id": "5391ea8d-db76-4c75-b15c-d45922a82d36",
+      "id": "2a1fba5b-00c8-4cf5-9acb-02273ec50ae6",
       "key": "ticketId",
       "value": "",
       "type": "string"
     },
     {
-      "id": "2a9b9898-8cb8-4e38-8032-1c02cd8b992a",
+      "id": "1d86bac8-055e-477a-b4e3-0360f465f418",
       "key": "inventoryId",
       "value": "",
       "type": "string"
