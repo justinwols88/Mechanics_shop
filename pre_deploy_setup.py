@@ -5,6 +5,7 @@ Pre-deploy database setup script for Render
 import os
 import sys
 import traceback
+from sqlalchemy import text
 
 def setup_database():
     print("🚀 Starting pre-deploy database setup...")
@@ -22,7 +23,7 @@ def setup_database():
         with app.app_context():
             # Test database connection
             print("🔌 Testing database connection...")
-            db.session.execute('SELECT 1')
+            db.session.execute(text('SELECT 1'))
             print("✅ Database connection successful")
             
             # Create tables
