@@ -38,10 +38,9 @@ def create_app(config_class=Config):
     def health_check():
         """Health check endpoint with proper structure"""
         try:
-            # Test database connection
             db.session.execute(text('SELECT 1'))
             database_status = 'healthy'
-        except Exception as e:
+        except Exception:
             database_status = 'unhealthy'
             
         return jsonify({

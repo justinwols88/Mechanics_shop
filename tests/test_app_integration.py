@@ -1,6 +1,7 @@
 """
 Integration tests for Mechanics Shop API - FINAL WORKING VERSION
 """
+from flask import app
 import pytest
 from app import create_app
 from config import TestingConfig, ProductionConfig
@@ -45,7 +46,7 @@ def test_blueprint_endpoints():
 def test_app_config():
     """Test application configuration"""
     app = create_app(TestingConfig)
-    assert app.config['TESTING'] == True
+    assert app.config['TESTING'] is True
     assert 'sqlite://' in app.config['SQLALCHEMY_DATABASE_URI']
 
 def test_database_connection():
@@ -89,5 +90,5 @@ def test_production_config():
     """Test production configuration"""
     from config import ProductionConfig
     app = create_app(ProductionConfig)
-    assert app.config['DEBUG'] == False
-    assert app.config['TESTING'] == False
+    assert app.config['DEBUG'] is False
+    assert app.config['TESTING'] is False

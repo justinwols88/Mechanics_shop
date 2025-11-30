@@ -41,7 +41,8 @@ class Mechanic(db.Model):
                 'type': 'mechanic'
             }
             return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-        except Exception as e:
+        
+        except Exception:  # ← Remove the 'e' variable
             # Fallback if timezone issues occur
             payload = {
                 'mechanic_id': self.id,
@@ -50,7 +51,7 @@ class Mechanic(db.Model):
                 'type': 'mechanic'
             }
             return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-
+        
     def to_dict(self):
         """Convert to dictionary"""
         return {

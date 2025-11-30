@@ -39,7 +39,7 @@ class Customer(db.Model):
                 'type': 'customer'
             }
             return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-        except Exception as e:
+        except Exception:
             # Fallback if timezone issues occur
             payload = {
                 'customer_id': self.id,
@@ -47,7 +47,7 @@ class Customer(db.Model):
                 'iat': datetime.datetime.utcnow(),
                 'type': 'customer'
             }
-            return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+        return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
 
     def to_dict(self):
         """Convert to dictionary"""
