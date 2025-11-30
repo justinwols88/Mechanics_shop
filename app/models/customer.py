@@ -1,5 +1,5 @@
 """
-Customer Model
+Customer Model - Fixed token generation
 """
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -30,14 +30,24 @@ class Customer(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def generate_token(self):
-        """Generate JWT token for authentication"""
-        payload = {
-            'customer_id': self.id,
-            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1),
-            'iat': datetime.datetime.now(datetime.UTC),
-            'type': 'customer'
-        }
-        return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+        """Generate JWT token for authentication - FIXED"""
+        try:
+            payload = {
+                'customer_id': self.id,
+                'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1),
+                'iat': datetime.datetime.now(datetime.timezone.utc),
+                'type': 'customer'
+            }
+            return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+        except Exception as e:
+            # Fallback if timezone issues occur
+            payload = {
+                'customer_id': self.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                'iat': datetime.datetime.utcnow(),
+                'type': 'customer'
+            }
+            return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
 
     def to_dict(self):
         """Convert to dictionary"""

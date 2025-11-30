@@ -1,5 +1,5 @@
 """
-Authentication Routes with Enhanced Error Handling
+Authentication Routes - Fixed error handling
 """
 from flask import Blueprint, request, jsonify
 from app.models.customer import Customer
@@ -12,7 +12,7 @@ auth_bp = Blueprint('auth', __name__)
 def customer_login():
     """Customer login endpoint with comprehensive error handling"""
     try:
-        # Validate request
+        # Validate request has JSON
         if not request.is_json:
             return jsonify({
                 "success": False,
@@ -22,7 +22,13 @@ def customer_login():
         data = request.get_json()
 
         # Validate required fields
-        if not data or not data.get('email') or not data.get('password'):
+        if not data:
+            return jsonify({
+                "success": False,
+                "error": "No data provided"
+            }), 400
+
+        if not data.get('email') or not data.get('password'):
             return jsonify({
                 "success": False,
                 "error": "Email and password are required"
@@ -64,7 +70,7 @@ def customer_login():
 def mechanic_login():
     """Mechanic login endpoint with comprehensive error handling"""
     try:
-        # Validate request
+        # Validate request has JSON
         if not request.is_json:
             return jsonify({
                 "success": False,
@@ -74,7 +80,13 @@ def mechanic_login():
         data = request.get_json()
 
         # Validate required fields
-        if not data or not data.get('email') or not data.get('password'):
+        if not data:
+            return jsonify({
+                "success": False,
+                "error": "No data provided"
+            }), 400
+
+        if not data.get('email') or not data.get('password'):
             return jsonify({
                 "success": False,
                 "error": "Email and password are required"
