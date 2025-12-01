@@ -10,10 +10,14 @@ info:
     name: "MIT"
     url: "https://opensource.org/licenses/MIT"
 
+schemes:
+  - https
+  - http
+
 servers:
   - url: "http://127.0.0.1:5000"
     description: "Development server"
-  - url: "https://api.mechanicshop.com"
+  - url: "https://mechanics-shop-revised-refactored-final.onrender.com"
     description: "Production server"
 
 components:
