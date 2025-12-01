@@ -6,19 +6,10 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_caching import Cache
 from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager
 
 db = SQLAlchemy()
-jwt = JWTManager()
 ma = Marshmallow()
 migrate = Migrate()
-
-# Fix for SQLAlchemyAutoSchema import without assigning to Marshmallow instance
-try:
-    from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-except ImportError:
-    SQLAlchemyAutoSchema = None
-    print("Warning: marshmallow_sqlalchemy not installed")
 
 # Initialize limiter with MEMORY storage for testing
 limiter = Limiter(
@@ -32,7 +23,5 @@ limiter = Limiter(
 # Use SimpleCache for testing
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
-# Explicitly define public exports and include SQLAlchemyAutoSchema if available
+# Explicitly define public exports
 __all__ = ['db', 'ma', 'migrate', 'limiter', 'cache']
-if SQLAlchemyAutoSchema is not None:
-    __all__.append('SQLAlchemyAutoSchema')

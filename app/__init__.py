@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from sqlalchemy import text
 from datetime import datetime, timezone
 from config import Config
-from app.extensions import db, jwt, ma, migrate, limiter, cache
+from app.extensions import db, ma, migrate, limiter, cache
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -13,8 +13,7 @@ def create_app(config_class=Config):
 
     # Initialize extensions
     db.init_app(app)
-    jwt.init_app(app)
-    ma.init_app(app)
+    ma.init_app(app)  # Removed jwt.init_app(app)
     migrate.init_app(app, db)
     limiter.init_app(app)
     cache.init_app(app)
