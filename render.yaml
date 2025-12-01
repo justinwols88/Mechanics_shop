@@ -5,39 +5,7 @@ services:
     plan: free
     buildCommand: pip install -r requirements.txt
     preDeployCommand: |
-      cd /opt/render/project/src && python -c "
-      import os, sys, traceback
-      sys.path.append('/opt/render/project/src')
-      
-      print('🚀 Starting pre-deploy database setup...')
-      
-      try:
-          from app import create_app, db
-          from config import ProductionConfig
-          
-          app = create_app(ProductionConfig)
-          
-          with app.app_context():
-              # Test database connection
-              db.session.execute('SELECT 1')
-              print('✅ Database connection successful')
-              
-              # Create all tables
-              db.create_all()
-              print('✅ Database tables created/verified')
-              
-              # List created tables
-              from sqlalchemy import inspect
-              inspector = inspect(db.engine)
-              tables = inspector.get_table_names()
-              print(f'📋 Found {len(tables)} tables: {tables}')
-              
-      except Exception as e:
-          print(f'❌ Pre-deploy setup failed: {e}')
-          traceback.print_exc()
-          # Don't fail the deploy for database issues
-          print('⚠️ Continuing deployment despite database issues...')
-      "
+      cd /opt/render/project/src && python render_migrate.py
     startCommand: gunicorn flask_app:app
     envVars:
       - key: DATABASE_URL
