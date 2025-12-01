@@ -21,7 +21,7 @@ def create_app(config_class=Config):
 
     # ========== SWAGGER UI CONFIGURATION ==========
     SWAGGER_URL = '/docs'  # URL for accessing Swagger UI
-    API_URL = '/swagger.yaml'  # URL for your Swagger specification file
+    API_URL = '/static/swagger.yaml'  # URL for your Swagger specification file
     
     # Create Swagger UI blueprint
     swaggerui_blueprint = get_swaggerui_blueprint(
