@@ -28,27 +28,15 @@ class Customer(db.Model):
     def check_password(self, password):
         """Check hashed password"""
         return check_password_hash(self.password_hash, password)
-# In both customer.py and mechanic.py, update the generate_token method:
-def generate_token(self):
-    """Generate JWT token for authentication - USING PyJWT"""
-    try:
+    def generate_token(self):
+        """Generate JWT token for authentication - USING PyJWT"""
         payload = {
-            'customer_id': self.id,  # or 'mechanic_id' for mechanic
+            'customer_id': self.id,
             'exp': datetime.now(timezone.utc) + timedelta(days=1),
             'iat': datetime.now(timezone.utc),
-            'type': 'customer'  # or 'mechanic'
+            'type': 'customer'
         }
         return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-    except Exception:
-        # Fallback if timezone issues occur
-        payload = {
-            'customer_id': self.id,  # or 'mechanic_id'
-            'exp': datetime.utcnow() + timedelta(days=1),
-            'iat': datetime.utcnow(),
-            'type': 'customer'  # or 'mechanic'
-        }
-        return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-
 
     def to_dict(self):
         """Convert to dictionary"""
