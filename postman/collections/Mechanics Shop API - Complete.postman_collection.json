@@ -115,7 +115,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"first_name\": \"Jane\",\n  \"last_name\": \"Smith\",\n  \"email\": \"jane.smith@mechanicshop.com\",\n  \"password\": \"SecretPass123!\"\n}",
+              "raw": "{\n  \"firstName\": \"{{firstName}}\",\n  \"lastName\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"phone\": \"{{phone}}\",\n  \"licenseNumber\": \"{{licenseNumber}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -944,46 +944,39 @@
   ],
   "variable": [
     {
-      "id": "8226a7ff-6c17-4f5a-b5f3-fdd1bbb91a72",
+      "id": "35e57045-a6ea-41f5-8a70-0ec0e90dcf35",
       "key": "baseUrl",
-      "value": "http://127.0.0.1:5000",
-      "type": "string"
+      "value": "https://mechanics-shop-revised-refactored-final.onrender.com"
     },
     {
-      "id": "f3bc2d3f-ceaa-4d09-9be6-9234c247cf24",
+      "id": "500f0302-ec53-4f64-b630-71673c176a62",
       "key": "customerToken",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "b085db58-c46c-4045-bae1-5d50178b5095",
+      "id": "f8f92315-fc1d-472e-8884-b3fdbd1ef777",
       "key": "mechanicToken",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "7bf4e807-28b9-43c1-81f2-4b70c2390c2b",
+      "id": "8a69b36b-0d0b-4b81-a6ac-754ec2125d78",
       "key": "customerId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "588a1f57-0b45-409c-bc60-f08a8764fb3a",
+      "id": "bde75302-df85-421e-a58f-0d40411dd68c",
       "key": "mechanicId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "2a1fba5b-00c8-4cf5-9acb-02273ec50ae6",
+      "id": "4eaee7a4-4bcf-408a-9109-6be4f7dbc247",
       "key": "ticketId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "1d86bac8-055e-477a-b4e3-0360f465f418",
+      "id": "8ec8b809-a21b-4b22-ba16-ebaa6c925acb",
       "key": "inventoryId",
-      "value": "",
-      "type": "string"
+      "value": ""
     }
   ]
 }
