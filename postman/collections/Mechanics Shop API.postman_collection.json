@@ -1,0 +1,3423 @@
+{
+  "info": {
+    "_postman_id": "081d26a3-fbf8-40c6-9944-0df36888419e",
+    "name": "Mechanics Shop API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "⚙️ System",
+      "item": [
+        {
+          "name": "Health Check",
+          "id": "d88ece9e-2be5-4cbb-9e29-3e21bb736401",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "13a1e5bc-7c0e-4af5-9dc2-ad75ad0ec121",
+              "name": "Health Check",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:30:15 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "89"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e0cb6e6e751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "9ab82c83-2bab-40ba"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:35:02.481Z",
+              "body": "{\n    \"services\": {\n        \"api\": \"healthy\",\n        \"database\": \"healthy\"\n    },\n    \"status\": \"healthy\",\n    \"timestamp\": \"2025-12-01T07:30:14.993452+00:00\"\n}"
+            }
+          ]
+        }
+      ],
+      "id": "f168cf1e-cce8-4b97-a4e0-7ada32e5ee26"
+    },
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Customer Login",
+          "id": "dfa50803-be64-407c-8257-69c65dd6907b",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/customer/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "customer",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "08ed8ec4-3312-405e-8759-f3577995e465",
+              "name": "Customer Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"john.doe3@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/customer/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "customer",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:33:46 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "326"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e5f46f90751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "8573079f-f376-4e3d"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:34:58.619Z",
+              "body": "{\n    \"customer\": {\n        \"address\": \"123 Main St, City\",\n        \"created_at\": \"2025-12-01T07:30:39.284798\",\n        \"email\": \"john.doe3@example.com\",\n        \"first_name\": \"John\",\n        \"id\": 4,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1234567890\"\n    },\n    \"message\": \"Login successful\",\n    \"success\": true,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6NCwiZXhwIjoxNzY0NjYwODI2LCJpYXQiOjE3NjQ1NzQ0MjYsInR5cGUiOiJjdXN0b21lciJ9.DFJAd43dzgta1aaoZmrjuiZoTzaeDd5olK012pwMwIU\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mechanic Login",
+          "id": "d66e8a62-1ef9-49bf-acb4-ed62042cfe3a",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"mechanic@example.com\",\n    \"password\": \"mechanic123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/mechanic/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "mechanic",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "865cc01e-eb2a-4b11-a536-cc4f6b3616d0",
+              "name": "Mechanic Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"jane.smith@shop.com\",\n    \"password\": \"mechanic123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/mechanic/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "mechanic",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:34:38 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "347"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e7368ae0751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "610c1b19-69b2-424d"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:34:49.454Z",
+              "body": "{\n    \"mechanic\": {\n        \"created_at\": \"2025-12-01T07:33:07.258079\",\n        \"email\": \"jane.smith@shop.com\",\n        \"first_name\": \"Jane\",\n        \"hourly_rate\": 45,\n        \"id\": 4,\n        \"is_active\": true,\n        \"last_name\": \"Smith\",\n        \"specialization\": \"Engine Repair\",\n        \"years_experience\": 5\n    },\n    \"message\": \"Login successful\",\n    \"success\": true,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZWNoYW5pY19pZCI6NCwiZXhwIjoxNzY0NjYwODc3LCJpYXQiOjE3NjQ1NzQ0NzcsInR5cGUiOiJtZWNoYW5pYyJ9.8wxxXq2lLBh_SKtOrMdjmRhoN3n61DIMihDE1eZRnns\"\n}"
+            }
+          ]
+        }
+      ],
+      "id": "93494dfc-2634-48ca-9298-dcf09e1fef73"
+    },
+    {
+      "name": "👤 Customers",
+      "item": [
+        {
+          "name": "Register Customer",
+          "id": "1dd78436-146f-4298-93b4-e3857a22a006",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St, City\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "register"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c48be8b8-6845-478c-9fd0-b43a89adc3c9",
+              "name": "Register Customer",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe3@example.com\",\n    \"password\": \"password123\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St, City\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/customers/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:30:39 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "181"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e1636df7751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "29fc8746-f731-4467"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:30:59.991Z",
+              "body": "{\n    \"customer\": {\n        \"address\": \"123 Main St, City\",\n        \"created_at\": \"2025-12-01T07:30:39.284798\",\n        \"email\": \"john.doe3@example.com\",\n        \"first_name\": \"John\",\n        \"id\": 4,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1234567890\"\n    },\n    \"message\": \"Customer registered successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Customers (Mechanic Auth)",
+          "id": "f0ac40e6-615e-435c-8739-4d09d7dfb6f7",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/?page=1&per_page=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5d9f756a-c58c-46c2-a174-28f3afa37dec",
+              "name": "Get All Customers (Mechanic Auth)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/customers/?page=1&per_page=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "customers",
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "uuid": "6df41c46-4c28-4e22-b305-a86851d3687b"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "10",
+                      "uuid": "5b100e0c-50c6-4cd1-88fd-6905f41a3776"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:35:17 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "299"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e82f9aa7751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "91181eae-b3c3-4b69"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:35:20.857Z",
+              "body": "{\n    \"data\": {\n        \"current_page\": 1,\n        \"customers\": [\n            {\n                \"address\": \"123 Main St, City, State\",\n                \"created_at\": \"2025-12-01T03:23:27.252857\",\n                \"email\": \"john.doe2@example.com\",\n                \"first_name\": \"John\",\n                \"id\": 2,\n                \"last_name\": \"Doe\",\n                \"phone\": \"+1234567890\"\n            },\n            {\n                \"address\": \"456 Updated Street, City, State\",\n                \"created_at\": \"2025-12-01T03:11:19.522369\",\n                \"email\": \"john.doe@example.com\",\n                \"first_name\": \"John Updated\",\n                \"id\": 1,\n                \"last_name\": \"Doe\",\n                \"phone\": \"+1987654321\"\n            },\n            {\n                \"address\": \"123 Main St, City, State\",\n                \"created_at\": \"2025-12-01T06:46:15.479632\",\n                \"email\": \"john.doe11@example.com\",\n                \"first_name\": \"John\",\n                \"id\": 3,\n                \"last_name\": \"Doe\",\n                \"phone\": \"+1234567890\"\n            },\n            {\n                \"address\": \"123 Main St, City\",\n                \"created_at\": \"2025-12-01T07:30:39.284798\",\n                \"email\": \"john.doe3@example.com\",\n                \"first_name\": \"John\",\n                \"id\": 4,\n                \"last_name\": \"Doe\",\n                \"phone\": \"+1234567890\"\n            }\n        ],\n        \"pages\": 1,\n        \"per_page\": 10,\n        \"total\": 4\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Profile",
+          "id": "ce9ad5a0-345a-4344-ab4b-8965db03bda8",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "{{customer_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5c8f898a-285c-4dfe-bcf7-9920d5ee8d92",
+              "name": "Get My Profile",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/customers/{{customer_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "{{customer_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:35:59 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "161"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e9331c37751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "cf263f90-5342-4d28"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:36:00.931Z",
+              "body": "{\n    \"data\": {\n        \"address\": \"123 Main St, City\",\n        \"created_at\": \"2025-12-01T07:30:39.284798\",\n        \"email\": \"john.doe3@example.com\",\n        \"first_name\": \"John\",\n        \"id\": 4,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1234567890\"\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update My Profile",
+          "id": "da2071cf-44ce-45aa-86be-4e22bceaf64f",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"John Updated\",\n    \"phone\": \"+1987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "{{customer_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5d08e875-42ed-4655-b4df-f5c46ae7b860",
+              "name": "Update My Profile",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"John Updated\",\n    \"phone\": \"+1987654321\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/customers/{{customer_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "{{customer_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:36:08 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "192"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e96f0b74751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "611d520e-dd6f-4883"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:36:10.486Z",
+              "body": "{\n    \"data\": {\n        \"address\": \"123 Main St, City\",\n        \"created_at\": \"2025-12-01T07:30:39.284798\",\n        \"email\": \"john.doe3@example.com\",\n        \"first_name\": \"John Updated\",\n        \"id\": 4,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1987654321\"\n    },\n    \"message\": \"Customer updated successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete My Account",
+          "id": "9eb6cc48-8326-49f4-bf2c-588c23c20b19",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/{{customer_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "{{customer_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "668ac066-0c2c-4788-8c1e-0a86eccece99",
+              "name": "Delete My Account",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/customers/{{customer_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "{{customer_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:47:19 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "59"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f9ccce07751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "ee9ec2ce-b084-44d3"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:47:20.605Z",
+              "body": "{\n    \"message\": \"Customer deactivated successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Tickets",
+          "id": "c7202cd6-f95b-4cb7-8ade-07651b5e5ad9",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/me/tickets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "me",
+                "tickets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "525ece50-3230-4f3a-bbc6-fed27697f268",
+              "name": "Get My Tickets",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/customers/me/tickets",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "me",
+                    "tickets"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:38:19 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "50"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70ec9fde0e751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "4cc8e0bb-b8e3-48cc"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:38:26.589Z",
+              "body": "{\n    \"data\": {\n        \"count\": 0,\n        \"tickets\": []\n    },\n    \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "id": "a3b95876-b61e-445c-af5c-15e6bc4d0d9b"
+    },
+    {
+      "name": "🔧 Mechanics",
+      "item": [
+        {
+          "name": "Register Mechanic",
+          "id": "930cb9f2-8e84-4f08-986a-da61971b51e8",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"first_name\": \"Jane\",\n    \"last_name\": \"Smith\",\n    \"email\": \"jane.smith@shop.com\",\n    \"password\": \"mechanic123\",\n    \"specialization\": \"Engine Repair\",\n    \"years_experience\": 5,\n    \"hourly_rate\": 45.0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/mechanics/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "register"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "134140d0-bed4-4c47-ab6d-ebbebe958a67",
+              "name": "Register Mechanic",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"first_name\": \"Jane\",\n    \"last_name\": \"Smith\",\n    \"email\": \"jane.smith@shop.com\",\n    \"password\": \"mechanic123\",\n    \"specialization\": \"Engine Repair\",\n    \"years_experience\": 5,\n    \"hourly_rate\": 45.0\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/mechanics/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:33:07 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "203"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70e5001ccf751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "cc886eb2-97e7-4692"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:33:09.197Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:33:07.258079\",\n        \"email\": \"jane.smith@shop.com\",\n        \"first_name\": \"Jane\",\n        \"hourly_rate\": 45,\n        \"id\": 4,\n        \"is_active\": true,\n        \"last_name\": \"Smith\",\n        \"specialization\": \"Engine Repair\",\n        \"years_experience\": 5\n    },\n    \"message\": \"Mechanic created successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Mechanics",
+          "id": "87e10a82-6b04-46a4-9901-d113ea2b110e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mechanics/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "8ef962f0-49a4-499a-800e-5eb9bc7abe07",
+              "name": "Get All Mechanics",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/mechanics/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:38:36 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "304"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70ed0b0e35751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "aa23f663-3020-48b8"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:38:38.524Z",
+              "body": "{\n    \"data\": {\n        \"count\": 4,\n        \"mechanics\": [\n            {\n                \"created_at\": \"2025-12-01T03:23:47.479041\",\n                \"email\": \"john.doe2@email.com\",\n                \"first_name\": \"john\",\n                \"hourly_rate\": 0,\n                \"id\": 2,\n                \"is_active\": true,\n                \"last_name\": \"Doe\",\n                \"specialization\": null,\n                \"years_experience\": 0\n            },\n            {\n                \"created_at\": \"2025-12-01T03:26:11.948554\",\n                \"email\": \"john.doe5@email.com\",\n                \"first_name\": \"john\",\n                \"hourly_rate\": 0,\n                \"id\": 3,\n                \"is_active\": true,\n                \"last_name\": \"Doe\",\n                \"specialization\": null,\n                \"years_experience\": 0\n            },\n            {\n                \"created_at\": \"2025-12-01T03:13:20.846034\",\n                \"email\": \"john.doe@email.com\",\n                \"first_name\": \"john\",\n                \"hourly_rate\": 50,\n                \"id\": 1,\n                \"is_active\": true,\n                \"last_name\": \"Doe\",\n                \"specialization\": \"Advanced Brake Systems\",\n                \"years_experience\": 6\n            },\n            {\n                \"created_at\": \"2025-12-01T07:33:07.258079\",\n                \"email\": \"jane.smith@shop.com\",\n                \"first_name\": \"Jane\",\n                \"hourly_rate\": 45,\n                \"id\": 4,\n                \"is_active\": true,\n                \"last_name\": \"Smith\",\n                \"specialization\": \"Engine Repair\",\n                \"years_experience\": 5\n            }\n        ]\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Mechanic by ID",
+          "id": "f2ce83d3-0930-45f1-85fe-d3046989cef6",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanic_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4506061a-1ee2-417d-a236-4ee012929bd7",
+              "name": "Get Mechanic by ID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "{{mechanic_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:38:45 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "179"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70ed43de73751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "2c9bff90-00d5-43dd"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:38:47.306Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T03:13:20.846034\",\n        \"email\": \"john.doe@email.com\",\n        \"first_name\": \"john\",\n        \"hourly_rate\": 50,\n        \"id\": 1,\n        \"is_active\": true,\n        \"last_name\": \"Doe\",\n        \"specialization\": \"Advanced Brake Systems\",\n        \"years_experience\": 6\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Mechanic Profile",
+          "id": "6ae5babe-7469-4c42-bc59-4c60b2a193cb",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"specialization\": \"Brake Specialist\",\n    \"hourly_rate\": 50.0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanic_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5abd32f4-de72-444c-a8e8-8dd9dbf1b35b",
+              "name": "Update Mechanic Profile",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"specialization\": \"Brake Specialist\",\n    \"hourly_rate\": 50.0\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "{{mechanic_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:39:23 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "205"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70ee2caf6e751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "62cca5e6-2691-4f24"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:39:24.670Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:33:07.258079\",\n        \"email\": \"jane.smith@shop.com\",\n        \"first_name\": \"Jane\",\n        \"hourly_rate\": 50,\n        \"id\": 4,\n        \"is_active\": true,\n        \"last_name\": \"Smith\",\n        \"specialization\": \"Brake Specialist\",\n        \"years_experience\": 5\n    },\n    \"message\": \"Mechanic updated successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Mechanic Account",
+          "id": "57f659e8-1fea-4174-a127-b3267791e065",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanic_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "843ac5a3-2e31-4588-a05b-1a46bc15ceab",
+              "name": "Delete Mechanic Account",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/mechanics/{{mechanic_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "{{mechanic_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:47:02 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "55"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f96379d0751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "61227a85-9009-4b36"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:47:03.761Z",
+              "body": "{\n    \"message\": \"Mechanic deleted successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Mechanics Ranking",
+          "id": "8dee479d-b36a-459c-9e8c-ce38f746dfe5",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mechanics/ranking",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "ranking"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "aa1a5588-83b6-4a21-b3a7-1036869e6102",
+              "name": "Get Mechanics Ranking",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/mechanics/ranking",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "ranking"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:39:34 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "201"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70ee749a39751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "00a03842-188e-4f5e"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:39:36.380Z",
+              "body": "{\n    \"data\": {\n        \"ranking\": [\n            {\n                \"email\": \"john.doe@email.com\",\n                \"id\": 1,\n                \"name\": \"john Doe\",\n                \"specialization\": \"Advanced Brake Systems\",\n                \"ticket_count\": 1,\n                \"years_experience\": 6\n            },\n            {\n                \"email\": \"john.doe2@email.com\",\n                \"id\": 2,\n                \"name\": \"john Doe\",\n                \"specialization\": null,\n                \"ticket_count\": 0,\n                \"years_experience\": 0\n            },\n            {\n                \"email\": \"john.doe5@email.com\",\n                \"id\": 3,\n                \"name\": \"john Doe\",\n                \"specialization\": null,\n                \"ticket_count\": 0,\n                \"years_experience\": 0\n            },\n            {\n                \"email\": \"jane.smith@shop.com\",\n                \"id\": 4,\n                \"name\": \"Jane Smith\",\n                \"specialization\": \"Brake Specialist\",\n                \"ticket_count\": 0,\n                \"years_experience\": 5\n            }\n        ]\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Mechanic's Tickets",
+          "id": "9ac25f8e-8ba7-47e3-812f-b80870964d6d",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mechanics/{{mechanic_id}}/tickets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mechanics",
+                "{{mechanic_id}}",
+                "tickets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "cd25fc8a-71a3-4a17-8d6f-8e2606fc212b",
+              "name": "Get Mechanic's Tickets",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/mechanics/{{mechanic_id}}/tickets",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "{{mechanic_id}}",
+                    "tickets"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:39:43 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "62"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70eeaf2c8e751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "113e0d32-e5dd-464f"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:39:45.491Z",
+              "body": "{\n    \"data\": {\n        \"count\": 0,\n        \"mechanic_id\": 4,\n        \"tickets\": []\n    },\n    \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "id": "d469ca32-f8e9-4acc-9f7c-50e8bb51a8d1"
+    },
+    {
+      "name": "🎫 Service Tickets",
+      "item": [
+        {
+          "name": "Create Service Ticket",
+          "id": "0c21345e-335a-4b66-a156-9a60a3f3666f",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"vehicle_info\": \"Toyota Camry 2020\",\n    \"issue_description\": \"Brakes making noise, needs inspection\",\n    \"priority\": \"high\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b7a5c4a7-5cca-43cf-9198-0e2d335aa33b",
+              "name": "Create Service Ticket",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"vehicle_info\": \"Toyota Camry 2020\",\n    \"issue_description\": \"Brakes making noise, needs inspection\",\n    \"priority\": \"high\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/tickets/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    ""
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:39:55 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "244"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70eefa18e7751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "dcab5e6f-ccd1-438b"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:39:57.721Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:39:55.878043\",\n        \"customer_id\": 4,\n        \"estimated_hours\": 0,\n        \"id\": 6,\n        \"inventory\": [],\n        \"issue_description\": \"Brakes making noise, needs inspection\",\n        \"mechanics\": [],\n        \"priority\": \"high\",\n        \"status\": \"open\",\n        \"total_cost\": 0,\n        \"updated_at\": \"2025-12-01T07:39:55.878043\",\n        \"vehicle_info\": \"Toyota Camry 2020\"\n    },\n    \"message\": \"Service ticket created successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Tickets (Mechanic Only)",
+          "id": "8dcc31b4-6594-4e2f-bcfe-ca8cdb348ad3",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "c287cede-5728-4505-acf2-30e8f0122339",
+              "name": "Get All Tickets (Mechanic Only)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/tickets/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:40:04 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "657"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70ef316a47751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "e7655890-7c4e-447d"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:40:06.481Z",
+              "body": "{\n    \"data\": {\n        \"count\": 4,\n        \"tickets\": [\n            {\n                \"created_at\": \"2025-12-01T03:31:29.294481\",\n                \"customer_id\": 1,\n                \"estimated_hours\": 3,\n                \"id\": 1,\n                \"inventory\": [],\n                \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n                \"mechanics\": [\n                    {\n                        \"created_at\": \"2025-12-01T03:13:20.846034\",\n                        \"email\": \"john.doe@email.com\",\n                        \"first_name\": \"john\",\n                        \"hourly_rate\": 50,\n                        \"id\": 1,\n                        \"is_active\": true,\n                        \"last_name\": \"Doe\",\n                        \"specialization\": \"Advanced Brake Systems\",\n                        \"years_experience\": 6\n                    }\n                ],\n                \"priority\": \"high\",\n                \"status\": \"open\",\n                \"total_cost\": 0,\n                \"updated_at\": \"2025-12-01T03:31:29.294481\",\n                \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\"\n            },\n            {\n                \"created_at\": \"2025-12-01T03:31:50.899855\",\n                \"customer_id\": 1,\n                \"estimated_hours\": 3,\n                \"id\": 2,\n                \"inventory\": [\n                    {\n                        \"category\": \"Brakes\",\n                        \"created_at\": \"2025-12-01T06:41:23.157042\",\n                        \"description\": \"Premium ceramic brake pads for sedans and SUVs. Low dust and noise.\",\n                        \"id\": 4,\n                        \"min_stock_level\": 5,\n                        \"part_name\": \"Brake Pads - Premium Ceramic\",\n                        \"part_number\": \"BP-PREM-001\",\n                        \"price\": 49.99,\n                        \"quantity\": 23,\n                        \"supplier\": \"AutoParts Inc\",\n                        \"updated_at\": \"2025-12-01T06:43:33.280359\"\n                    }\n                ],\n                \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n                \"mechanics\": [],\n                \"priority\": \"high\",\n                \"status\": \"open\",\n                \"total_cost\": 99.98,\n                \"updated_at\": \"2025-12-01T06:43:33.280359\",\n                \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\"\n            },\n            {\n                \"created_at\": \"2025-12-01T06:57:30.320976\",\n                \"customer_id\": 1,\n                \"estimated_hours\": 3,\n                \"id\": 5,\n                \"inventory\": [],\n                \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n                \"mechanics\": [],\n                \"priority\": \"high\",\n                \"status\": \"open\",\n                \"total_cost\": 0,\n                \"updated_at\": \"2025-12-01T06:57:30.320976\",\n                \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\"\n            },\n            {\n                \"created_at\": \"2025-12-01T07:39:55.878043\",\n                \"customer_id\": 4,\n                \"estimated_hours\": 0,\n                \"id\": 6,\n                \"inventory\": [],\n                \"issue_description\": \"Brakes making noise, needs inspection\",\n                \"mechanics\": [],\n                \"priority\": \"high\",\n                \"status\": \"open\",\n                \"total_cost\": 0,\n                \"updated_at\": \"2025-12-01T07:39:55.878043\",\n                \"vehicle_info\": \"Toyota Camry 2020\"\n            }\n        ]\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Ticket by ID",
+          "id": "3af81614-29fe-47c8-b695-a07324a0018f",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/{{ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "{{ticket_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ff3a5f60-8fa7-4ecb-b1d7-1cb7967b00dc",
+              "name": "Get Ticket by ID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/tickets/{{ticket_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{ticket_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:40:40 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "219"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f013296b751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "995e3a5e-9149-4883"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:40:43.048Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:39:55.878043\",\n        \"customer_id\": 4,\n        \"estimated_hours\": 0,\n        \"id\": 6,\n        \"inventory\": [],\n        \"issue_description\": \"Brakes making noise, needs inspection\",\n        \"mechanics\": [],\n        \"priority\": \"high\",\n        \"status\": \"open\",\n        \"total_cost\": 0,\n        \"updated_at\": \"2025-12-01T07:39:55.878043\",\n        \"vehicle_info\": \"Toyota Camry 2020\"\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Ticket",
+          "id": "5be866a3-f3b9-475e-a1b7-72d039ded5dc",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"in_progress\",\n    \"estimated_hours\": 2.5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/{{ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "{{ticket_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "3be5cfd0-f457-4d41-8e41-b5aa76c6d901",
+              "name": "Update Ticket",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"status\": \"in_progress\",\n    \"estimated_hours\": 2.5\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/tickets/{{ticket_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{ticket_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:40:52 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "256"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f05c8965751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "ae192d4f-9607-4f47"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:40:55.787Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:39:55.878043\",\n        \"customer_id\": 4,\n        \"estimated_hours\": 2.5,\n        \"id\": 6,\n        \"inventory\": [],\n        \"issue_description\": \"Brakes making noise, needs inspection\",\n        \"mechanics\": [],\n        \"priority\": \"high\",\n        \"status\": \"in_progress\",\n        \"total_cost\": 0,\n        \"updated_at\": \"2025-12-01T07:40:52.593600\",\n        \"vehicle_info\": \"Toyota Camry 2020\"\n    },\n    \"message\": \"Service ticket updated successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Ticket (Mechanic Only)",
+          "id": "517a0378-5ebd-44b6-8bb9-9d6575b4938c",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/{{ticket_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "{{ticket_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e0f2601f-104b-4c24-9b2b-0b957fa47579",
+              "name": "Delete Ticket (Mechanic Only)",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/tickets/{{ticket_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{ticket_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:41:05 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "55"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f0aadf9b751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "fe1c445a-cc4f-4d4b"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:41:06.458Z",
+              "body": "{\n    \"message\": \"Service ticket deleted successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Tickets",
+          "id": "de6722d6-6241-483b-b451-8c618fbed49f",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/my-tickets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "my-tickets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "b51165fc-5dd0-4a97-bc17-afef03da9976",
+              "name": "Get My Tickets",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/tickets/my-tickets",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "my-tickets"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:41:18 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "50"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f0fc7f2e751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "565636aa-08bd-4c26"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:41:20.510Z",
+              "body": "{\n    \"data\": {\n        \"count\": 0,\n        \"tickets\": []\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Assign Mechanic to Ticket",
+          "id": "1dd25b00-12d4-418c-bdde-6206d9444abc",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"mechanic_id\": \"{{mechanic_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/{{ticket_id}}/assign-mechanic",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "{{ticket_id}}",
+                "assign-mechanic"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "4892d6df-b723-4c27-8f2b-e75d8bda3b70",
+              "name": "Assign Mechanic to Ticket",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"mechanic_id\": \"{{mechanic_id}}\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/tickets/{{ticket_id}}/assign-mechanic",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{ticket_id}}",
+                    "assign-mechanic"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:44:10 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "356"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f533bb27751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "c88038a4-d02c-483d"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:44:12.977Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:43:58.838874\",\n        \"customer_id\": 4,\n        \"estimated_hours\": 0,\n        \"id\": 7,\n        \"inventory\": [],\n        \"issue_description\": \"Brakes making noise, needs inspection\",\n        \"mechanics\": [\n            {\n                \"created_at\": \"2025-12-01T07:33:07.258079\",\n                \"email\": \"jane.smith@shop.com\",\n                \"first_name\": \"Jane\",\n                \"hourly_rate\": 50,\n                \"id\": 4,\n                \"is_active\": true,\n                \"last_name\": \"Smith\",\n                \"specialization\": \"Brake Specialist\",\n                \"years_experience\": 5\n            }\n        ],\n        \"priority\": \"high\",\n        \"status\": \"open\",\n        \"total_cost\": 0,\n        \"updated_at\": \"2025-12-01T07:43:58.838874\",\n        \"vehicle_info\": \"Toyota Camry 2020\"\n    },\n    \"message\": \"Mechanic Jane Smith assigned to ticket\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add Part to Ticket",
+          "id": "9b16f8c2-18fe-4c78-b9e2-6c176983a5a3",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"part_id\": {{inventory_id}},\n    \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/{{ticket_id}}/add-part",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tickets",
+                "{{ticket_id}}",
+                "add-part"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1c25fcb4-57d6-4051-89ff-3891c45fba1c",
+              "name": "Add Part to Ticket",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"part_id\": {{inventory_id}},\n    \"quantity\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/tickets/{{ticket_id}}/add-part",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "{{ticket_id}}",
+                    "add-part"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:45:12 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "489"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f6b1ac30751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "e94b127f-f837-465f"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:45:13.570Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T07:43:58.838874\",\n        \"customer_id\": 4,\n        \"estimated_hours\": 0,\n        \"id\": 7,\n        \"inventory\": [\n            {\n                \"category\": \"Brakes\",\n                \"created_at\": \"2025-12-01T07:44:33.076143\",\n                \"description\": \"Premium ceramic brake pads\",\n                \"id\": 5,\n                \"min_stock_level\": 5,\n                \"part_name\": \"Brake Pads\",\n                \"part_number\": \"BP-2020\",\n                \"price\": 49.99,\n                \"quantity\": 23,\n                \"supplier\": \"AutoParts Inc.\",\n                \"updated_at\": \"2025-12-01T07:45:11.969520\"\n            }\n        ],\n        \"issue_description\": \"Brakes making noise, needs inspection\",\n        \"mechanics\": [\n            {\n                \"created_at\": \"2025-12-01T07:33:07.258079\",\n                \"email\": \"jane.smith@shop.com\",\n                \"first_name\": \"Jane\",\n                \"hourly_rate\": 50,\n                \"id\": 4,\n                \"is_active\": true,\n                \"last_name\": \"Smith\",\n                \"specialization\": \"Brake Specialist\",\n                \"years_experience\": 5\n            }\n        ],\n        \"priority\": \"high\",\n        \"status\": \"open\",\n        \"total_cost\": 99.98,\n        \"updated_at\": \"2025-12-01T07:45:11.969520\",\n        \"vehicle_info\": \"Toyota Camry 2020\"\n    },\n    \"message\": \"Part Brake Pads added to ticket\",\n    \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "id": "9c9f3e0a-eaff-4e93-8832-c6c3955786d1"
+    },
+    {
+      "name": "📦 Inventory",
+      "item": [
+        {
+          "name": "Get All Inventory",
+          "id": "753f8c59-1257-4afd-9ab6-a3211f49a13f",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "1f94a8db-0068-41b9-a258-7586f072d950",
+              "name": "Get All Inventory",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/inventory/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "inventory",
+                    ""
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:44:45 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "318"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f60c5dd8751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "c249c109-4c92-4e3f"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:44:47.171Z",
+              "body": "{\n    \"data\": {\n        \"count\": 2,\n        \"inventory\": [\n            {\n                \"category\": \"Brakes\",\n                \"created_at\": \"2025-12-01T06:41:23.157042\",\n                \"description\": \"Premium ceramic brake pads for sedans and SUVs. Low dust and noise.\",\n                \"id\": 4,\n                \"min_stock_level\": 5,\n                \"part_name\": \"Brake Pads - Premium Ceramic\",\n                \"part_number\": \"BP-PREM-001\",\n                \"price\": 49.99,\n                \"quantity\": 23,\n                \"supplier\": \"AutoParts Inc\",\n                \"updated_at\": \"2025-12-01T06:43:33.280359\"\n            },\n            {\n                \"category\": \"Brakes\",\n                \"created_at\": \"2025-12-01T07:44:33.076143\",\n                \"description\": \"Premium ceramic brake pads\",\n                \"id\": 5,\n                \"min_stock_level\": 5,\n                \"part_name\": \"Brake Pads\",\n                \"part_number\": \"BP-2020\",\n                \"price\": 49.99,\n                \"quantity\": 25,\n                \"supplier\": \"AutoParts Inc.\",\n                \"updated_at\": \"2025-12-01T07:44:33.076143\"\n            }\n        ]\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Inventory Item",
+          "id": "886c9239-ebce-40de-8fbd-d37df9dbcf9d",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"part_name\": \"Brake Pads\",\n    \"part_number\": \"BP-2020\",\n    \"description\": \"Premium ceramic brake pads\",\n    \"quantity\": 25,\n    \"price\": 49.99,\n    \"category\": \"Brakes\",\n    \"supplier\": \"AutoParts Inc.\",\n    \"min_stock_level\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/inventory/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "860d235f-635b-44ef-9544-559d61c6b033",
+              "name": "Create Inventory Item",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"part_name\": \"Brake Pads\",\n    \"part_number\": \"BP-2020\",\n    \"description\": \"Premium ceramic brake pads\",\n    \"quantity\": 25,\n    \"price\": 49.99,\n    \"category\": \"Brakes\",\n    \"supplier\": \"AutoParts Inc.\",\n    \"min_stock_level\": 5\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/inventory/",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "inventory",
+                    ""
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:44:33 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "235"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f5be9f1a751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "c163e1dd-15cc-4d3d"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:44:34.753Z",
+              "body": "{\n    \"data\": {\n        \"category\": \"Brakes\",\n        \"created_at\": \"2025-12-01T07:44:33.076143\",\n        \"description\": \"Premium ceramic brake pads\",\n        \"id\": 5,\n        \"min_stock_level\": 5,\n        \"part_name\": \"Brake Pads\",\n        \"part_number\": \"BP-2020\",\n        \"price\": 49.99,\n        \"quantity\": 25,\n        \"supplier\": \"AutoParts Inc.\",\n        \"updated_at\": \"2025-12-01T07:44:33.076143\"\n    },\n    \"message\": \"Inventory item created successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Inventory Item",
+          "id": "a7e7acfa-9ccf-452e-9c4d-c357f0f6e8cb",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory/{{inventory_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventory_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "16eaad0b-0d2c-4f9a-9ba6-9d468875a400",
+              "name": "Get Inventory Item",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/inventory/{{inventory_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "inventory",
+                    "{{inventory_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:45:51 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "214"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f7a99f85751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "2490bd6a-21ae-4ae6"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:45:53.996Z",
+              "body": "{\n    \"data\": {\n        \"category\": \"Brakes\",\n        \"created_at\": \"2025-12-01T07:44:33.076143\",\n        \"description\": \"Premium ceramic brake pads\",\n        \"id\": 5,\n        \"min_stock_level\": 5,\n        \"part_name\": \"Brake Pads\",\n        \"part_number\": \"BP-2020\",\n        \"price\": 49.99,\n        \"quantity\": 23,\n        \"supplier\": \"AutoParts Inc.\",\n        \"updated_at\": \"2025-12-01T07:45:11.969520\"\n    },\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Inventory Item",
+          "id": "6b56959d-2e78-43d8-9ba4-52aca80da5ab",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"quantity\": 30,\n    \"price\": 54.99\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/inventory/{{inventory_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventory_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "0899096e-03d7-4d82-9cbf-3c319af7f7fa",
+              "name": "Update Inventory Item",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"quantity\": 30,\n    \"price\": 54.99\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/inventory/{{inventory_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "inventory",
+                    "{{inventory_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:46:09 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "242"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f8168aaa751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "ccce6b00-186e-43b9"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:46:11.144Z",
+              "body": "{\n    \"data\": {\n        \"category\": \"Brakes\",\n        \"created_at\": \"2025-12-01T07:44:33.076143\",\n        \"description\": \"Premium ceramic brake pads\",\n        \"id\": 5,\n        \"min_stock_level\": 5,\n        \"part_name\": \"Brake Pads\",\n        \"part_number\": \"BP-2020\",\n        \"price\": 54.99,\n        \"quantity\": 30,\n        \"supplier\": \"AutoParts Inc.\",\n        \"updated_at\": \"2025-12-01T07:46:09.069605\"\n    },\n    \"message\": \"Inventory item updated successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Inventory Item",
+          "id": "aef696b9-6090-4e22-9f06-4ff76d39a02b",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/inventory/{{inventory_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventory_id}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9c5ffc94-429f-4a94-a1b3-275bbecf1853",
+              "name": "Delete Inventory Item",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/inventory/{{inventory_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "inventory",
+                    "{{inventory_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:46:47 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f907883a751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "5b02b14a-a2d1-491f"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:46:49.005Z",
+              "body": "{\n    \"message\": \"Inventory item deleted successfully\",\n    \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Archive Inventory Item",
+          "id": "73786cc3-b066-402b-9a68-42a5a53e6d98",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mechanic_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/inventory/{{inventory_id}}/archive",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory",
+                "{{inventory_id}}",
+                "archive"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "66f921ad-7559-440f-abab-c8fd8c89f944",
+              "name": "Archive Inventory Item",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanic_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/inventory/{{inventory_id}}/archive",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "inventory",
+                    "{{inventory_id}}",
+                    "archive"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 07:46:28 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "247"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a70f88e2987751e-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "0c78e2e0-60b3-45ee"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "cookie": [],
+              "responseTime": "2025-12-01T07:46:31.772Z",
+              "body": "{\n    \"data\": {\n        \"category\": \"Brakes\",\n        \"created_at\": \"2025-12-01T07:44:33.076143\",\n        \"description\": \"Premium ceramic brake pads\",\n        \"id\": 5,\n        \"min_stock_level\": 5,\n        \"part_name\": \"Brake Pads\",\n        \"part_number\": \"BP-2020\",\n        \"price\": 54.99,\n        \"quantity\": 0,\n        \"supplier\": \"AutoParts Inc.\",\n        \"updated_at\": \"2025-12-01T07:46:28.231724\"\n    },\n    \"message\": \"Inventory item archived (quantity set to 0)\",\n    \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "id": "8def4b6f-6a55-440c-a448-7e9e1e238350"
+    }
+  ],
+  "variable": [
+    {
+      "id": "937a2ad4-eb16-4925-a666-ab03a20610be",
+      "key": "base_url",
+      "value": "http://127.0.0.1:5000",
+      "type": "string"
+    },
+    {
+      "id": "4e6ba045-909e-4d07-b868-925bab13dd57",
+      "key": "customer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "2e5b7109-b9e8-4a39-a387-66e5c3afe688",
+      "key": "mechanic_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "ae9789b0-ad5e-4b62-86f6-ab7c51d6e438",
+      "key": "customer_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "3d9267f1-e97d-4b55-839b-60acc29c3ee8",
+      "key": "mechanic_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "8247216b-5ce5-47c3-a5b0-293840566586",
+      "key": "ticket_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "id": "17be4b9d-0f33-4dd4-a968-5443e81dfddd",
+      "key": "inventory_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

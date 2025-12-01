@@ -137,7 +137,7 @@ def update_mechanic(current_mechanic_id, mechanic_id):
         data = request.get_json()
         
         # Update fields if provided
-        updatable_fields = ['first_name', 'last_name', 'specialization', 
+        updatable_fields = ['first_name', 'last_name', 'specialization',
                            'years_experience', 'hourly_rate', 'is_active']
         for field in updatable_fields:
             if field in data:

@@ -7,7 +7,9 @@
     "environments": [
       "..\\postman\\environments\\Mechanic Shop Environment.postman_environment.json"
     ],
-    "specs": [],
+    "specs": [
+      "../postman/specs/new-specification.yaml"
+    ],
     "flows": [],
     "globals": []
   }
