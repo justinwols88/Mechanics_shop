@@ -50,7 +50,92 @@
                 "register"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "3eb4d5cb-ad5f-4722-92c3-3dc31d91b607",
+              "name": "Register Customer",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Main St, City, State\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/customers/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:11:19 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "185"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f65829a6f4f73-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "72db632c-aa29-486f"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:23:01.084Z",
+              "body": "{\n    \"customer\": {\n        \"address\": \"123 Main St, City, State\",\n        \"created_at\": \"2025-12-01T03:11:19.522369\",\n        \"email\": \"john.doe@example.com\",\n        \"first_name\": \"John\",\n        \"id\": 1,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1234567890\"\n    },\n    \"message\": \"Customer registered successfully\",\n    \"success\": true\n}"
+            }
+          ]
         },
         {
           "name": "Customer Login",
@@ -96,7 +181,93 @@
                 "login"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "047a2e11-798f-4aa8-8c5e-6a7b3e4ea294",
+              "name": "Customer Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/customer/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "customer",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:16:29 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "330"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f6d158ac82672-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "51f763dd-06ad-4dfb"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:22:38.066Z",
+              "body": "{\n    \"customer\": {\n        \"address\": \"123 Main St, City, State\",\n        \"created_at\": \"2025-12-01T03:11:19.522369\",\n        \"email\": \"john.doe@example.com\",\n        \"first_name\": \"John\",\n        \"id\": 1,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1234567890\"\n    },\n    \"message\": \"Login successful\",\n    \"success\": true,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6MSwiZXhwIjoxNzY0NjQ1Mzg5LCJpYXQiOjE3NjQ1NTg5ODksInR5cGUiOiJjdXN0b21lciJ9.VSQhFPmF7c0F1I45JAoj6KUvv2y5OAL7KirCbmi-f98\"\n}"
+            }
+          ]
         },
         {
           "name": "Register Mechanic",
@@ -132,7 +303,101 @@
                 "register"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "cac0803d-51c7-4445-be0d-f518b8db31db",
+              "name": "Register Mechanic",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"john\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe2@email.com\",\n  \"password\": \"password123\",\n  \"phone\": \"206-123-1234\",\n  \"license_Number\": \"321231546\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/mechanics/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "mechanics",
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:23:47 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "191"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f77c5885e6818-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "3b2c18cd-58da-4787"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:23:51.200Z",
+              "body": "{\n    \"data\": {\n        \"created_at\": \"2025-12-01T03:23:47.479041\",\n        \"email\": \"john.doe2@email.com\",\n        \"first_name\": \"john\",\n        \"hourly_rate\": 0,\n        \"id\": 2,\n        \"is_active\": true,\n        \"last_name\": \"Doe\",\n        \"specialization\": null,\n        \"years_experience\": 0\n    },\n    \"message\": \"Mechanic created successfully\",\n    \"success\": true\n}"
+            }
+          ]
         },
         {
           "name": "Mechanic Login",
@@ -178,7 +443,93 @@
                 "login"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "73207e1b-8b14-4803-9897-ae583bc3f3e0",
+              "name": "Mechanic Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"john.doe@email.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/mechanic/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "mechanic",
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:17:34 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "335"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f6ea78e4f2672-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "20fbf7e8-66bc-4e84"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:22:11.011Z",
+              "body": "{\n    \"mechanic\": {\n        \"created_at\": \"2025-12-01T03:13:20.846034\",\n        \"email\": \"john.doe@email.com\",\n        \"first_name\": \"john\",\n        \"hourly_rate\": 0,\n        \"id\": 1,\n        \"is_active\": true,\n        \"last_name\": \"Doe\",\n        \"specialization\": null,\n        \"years_experience\": 0\n    },\n    \"message\": \"Login successful\",\n    \"success\": true,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZWNoYW5pY19pZCI6MSwiZXhwIjoxNzY0NjQ1NDU0LCJpYXQiOjE3NjQ1NTkwNTQsInR5cGUiOiJtZWNoYW5pYyJ9.wfCgnWgMXLTER4hFqJYzaPrMrkE_7Q0A6IbcVznNJIA\"\n}"
+            }
+          ]
         }
       ],
       "id": "e58fac03-c61a-4805-8d1d-e36293796406"
@@ -217,7 +568,98 @@
                 }
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "f4e8a84c-9e61-4303-b91a-d6f8904680e5",
+              "name": "Get All Customers (Paginated)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{mechanicToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/customers/?page=1&per_page=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "customers",
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:26:26 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "227"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f7ba83ed97652-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "7a386c3f-0b40-4f80"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:26:31.665Z",
+              "body": "{\n    \"data\": {\n        \"current_page\": 1,\n        \"customers\": [\n            {\n                \"address\": \"123 Main St, City, State\",\n                \"created_at\": \"2025-12-01T03:11:19.522369\",\n                \"email\": \"john.doe@example.com\",\n                \"first_name\": \"John\",\n                \"id\": 1,\n                \"last_name\": \"Doe\",\n                \"phone\": \"+1234567890\"\n            },\n            {\n                \"address\": \"123 Main St, City, State\",\n                \"created_at\": \"2025-12-01T03:23:27.252857\",\n                \"email\": \"john.doe2@example.com\",\n                \"first_name\": \"John\",\n                \"id\": 2,\n                \"last_name\": \"Doe\",\n                \"phone\": \"+1234567890\"\n            }\n        ],\n        \"pages\": 1,\n        \"per_page\": 10,\n        \"total\": 2\n    },\n    \"success\": true\n}"
+            }
+          ]
         },
         {
           "name": "Get Customer by ID",
@@ -240,7 +682,88 @@
                 "{{customerId}}"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "23c93627-50fd-4188-9914-161591ba2ba0",
+              "name": "Get Customer by ID",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/customers/{{customerId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "{{customerId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:21:11 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "164"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f73f79d546818-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "4d391299-1675-4f83"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:21:16.774Z",
+              "body": "{\n    \"data\": {\n        \"address\": \"123 Main St, City, State\",\n        \"created_at\": \"2025-12-01T03:11:19.522369\",\n        \"email\": \"john.doe@example.com\",\n        \"first_name\": \"John\",\n        \"id\": 1,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1234567890\"\n    },\n    \"success\": true\n}"
+            }
+          ]
         },
         {
           "name": "Update Customer Profile",
@@ -271,7 +794,96 @@
                 "{{customerId}}"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "49510bdf-ae23-44da-85e5-3ab709000965",
+              "name": "Update Customer Profile",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customerToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"first_name\": \"John Updated\",\n  \"phone\": \"+1987654321\",\n  \"address\": \"456 Updated Street, City, State\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/customers/{{customerId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "{{customerId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:26:54 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "195"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f7c585bd77652-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "ede9a448-ec9b-4679"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:26:58.250Z",
+              "body": "{\n    \"data\": {\n        \"address\": \"456 Updated Street, City, State\",\n        \"created_at\": \"2025-12-01T03:11:19.522369\",\n        \"email\": \"john.doe@example.com\",\n        \"first_name\": \"John Updated\",\n        \"id\": 1,\n        \"last_name\": \"Doe\",\n        \"phone\": \"+1987654321\"\n    },\n    \"message\": \"Customer updated successfully\",\n    \"success\": true\n}"
+            }
+          ]
         },
         {
           "name": "Get My Service Tickets",
@@ -295,7 +907,89 @@
                 "tickets"
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "c4925f04-6caa-4975-9670-2b242d71b36c",
+              "name": "Get My Service Tickets",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customerToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/customers/me/tickets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "customers",
+                    "me",
+                    "tickets"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:32:03 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "299"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f83df4ee07652-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "0f641457-feae-453a"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:32:07.332Z",
+              "body": "{\n    \"data\": {\n        \"count\": 2,\n        \"tickets\": [\n            {\n                \"created_at\": \"2025-12-01T03:31:29.294481\",\n                \"customer_id\": 1,\n                \"estimated_hours\": 3,\n                \"id\": 1,\n                \"inventory\": [],\n                \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n                \"mechanics\": [],\n                \"priority\": \"high\",\n                \"status\": \"open\",\n                \"total_cost\": 0,\n                \"updated_at\": \"2025-12-01T03:31:29.294481\",\n                \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\"\n            },\n            {\n                \"created_at\": \"2025-12-01T03:31:50.899855\",\n                \"customer_id\": 1,\n                \"estimated_hours\": 3,\n                \"id\": 2,\n                \"inventory\": [],\n                \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n                \"mechanics\": [],\n                \"priority\": \"high\",\n                \"status\": \"open\",\n                \"total_cost\": 0,\n                \"updated_at\": \"2025-12-01T03:31:50.899855\",\n                \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\"\n            }\n        ]\n    },\n    \"success\": true\n}"
+            }
+          ]
         },
         {
           "name": "Delete Customer Account",
@@ -517,7 +1211,96 @@
                 ""
               ]
             }
-          }
+          },
+          "response": [
+            {
+              "id": "3e0dc2c9-368b-4d5f-ad42-d7167415ab2a",
+              "name": "Create Service Ticket",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customerToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_id\": \"1\",\n  \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\",\n  \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n  \"priority\": \"high\",\n  \"estimated_hours\": 3.0\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/tickets/tickets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "tickets",
+                    "tickets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "_postman_previewtype": "html",
+              "header": [
+                {
+                  "key": "Date",
+                  "value": "Mon, 01 Dec 2025 03:31:29 GMT"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "240"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "CF-RAY",
+                  "value": "9a6f830bdaed7652-SEA"
+                },
+                {
+                  "key": "Content-Encoding",
+                  "value": "br"
+                },
+                {
+                  "key": "rndr-id",
+                  "value": "3da74dba-07d9-49e3"
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "x-render-origin-server",
+                  "value": "gunicorn"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "Server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "alt-svc",
+                  "value": "h3=\":443\"; ma=86400"
+                }
+              ],
+              "responseTime": "2025-12-01T03:31:35.491Z",
+              "body": "{\n    \"created_at\": \"2025-12-01T03:31:29.294481\",\n    \"customer_id\": 1,\n    \"estimated_hours\": 3,\n    \"id\": 1,\n    \"inventory\": [],\n    \"issue_description\": \"Brakes making grinding noise and need replacement. Also need oil change.\",\n    \"mechanics\": [],\n    \"priority\": \"high\",\n    \"status\": \"open\",\n    \"total_cost\": 0,\n    \"updated_at\": \"2025-12-01T03:31:29.294481\",\n    \"vehicle_info\": \"Toyota Camry 2020 - VIN: 1HGCM82633A123456\"\n}"
+            }
+          ]
         },
         {
           "name": "Get All Service Tickets",
@@ -944,37 +1727,37 @@
   ],
   "variable": [
     {
-      "id": "35e57045-a6ea-41f5-8a70-0ec0e90dcf35",
+      "id": "ba23d729-31f4-4332-9a2c-a35df51ab54f",
       "key": "baseUrl",
       "value": "https://mechanics-shop-revised-refactored-final.onrender.com"
     },
     {
-      "id": "500f0302-ec53-4f64-b630-71673c176a62",
+      "id": "94aa4116-12a6-4627-ad4b-ee5e820673fb",
       "key": "customerToken",
       "value": ""
     },
     {
-      "id": "f8f92315-fc1d-472e-8884-b3fdbd1ef777",
+      "id": "d5482f69-7659-43f5-93a4-23790e56846a",
       "key": "mechanicToken",
       "value": ""
     },
     {
-      "id": "8a69b36b-0d0b-4b81-a6ac-754ec2125d78",
+      "id": "de13960f-f4ac-484e-b6eb-c97903308012",
       "key": "customerId",
       "value": ""
     },
     {
-      "id": "bde75302-df85-421e-a58f-0d40411dd68c",
+      "id": "debd4331-a86f-4752-b63d-4ef480b4db5e",
       "key": "mechanicId",
       "value": ""
     },
     {
-      "id": "4eaee7a4-4bcf-408a-9109-6be4f7dbc247",
+      "id": "0d258ada-0a22-4e36-9da8-cdc351de20b5",
       "key": "ticketId",
       "value": ""
     },
     {
-      "id": "8ec8b809-a21b-4b22-ba16-ebaa6c925acb",
+      "id": "23ef80a7-7d94-4572-9a1f-bac4192b696d",
       "key": "inventoryId",
       "value": ""
     }
