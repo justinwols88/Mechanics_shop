@@ -20,7 +20,7 @@ class Customer(db.Model):
     phone = db.Column(db.String(20))
     address = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    is_active = db.Column(db.Boolean, default=True)
+    
 
     def set_password(self, password):
         """Set hashed password"""
