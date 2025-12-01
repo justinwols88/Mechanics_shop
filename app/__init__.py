@@ -19,7 +19,7 @@ def create_app(config_class=Config):
     limiter.init_app(app)
     cache.init_app(app)
 
-     # ========== SWAGGER UI CONFIGURATION ==========
+    # ========== SWAGGER UI CONFIGURATION ==========
     SWAGGER_URL = '/docs'  # URL for accessing Swagger UI
     API_URL = '/swagger.yaml'  # URL for your Swagger specification file
     
