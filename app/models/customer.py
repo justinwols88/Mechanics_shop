@@ -4,7 +4,7 @@ Customer Model - Fixed token generation
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-import datetime
+from datetime import datetime, timezone, timedelta
 from config import Config
 
 class Customer(db.Model):
@@ -28,26 +28,27 @@ class Customer(db.Model):
     def check_password(self, password):
         """Check hashed password"""
         return check_password_hash(self.password_hash, password)
-
-    def generate_token(self):
-        """Generate JWT token for authentication - FIXED"""
-        try:
-            payload = {
-                'customer_id': self.id,
-                'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1),
-                'iat': datetime.datetime.now(datetime.timezone.utc),
-                'type': 'customer'
-            }
-            return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
-        except Exception:
-            # Fallback if timezone issues occur
-            payload = {
-                'customer_id': self.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
-                'iat': datetime.datetime.utcnow(),
-                'type': 'customer'
-            }
+# In both customer.py and mechanic.py, update the generate_token method:
+def generate_token(self):
+    """Generate JWT token for authentication - USING PyJWT"""
+    try:
+        payload = {
+            'customer_id': self.id,  # or 'mechanic_id' for mechanic
+            'exp': datetime.now(timezone.utc) + timedelta(days=1),
+            'iat': datetime.now(timezone.utc),
+            'type': 'customer'  # or 'mechanic'
+        }
         return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+    except Exception:
+        # Fallback if timezone issues occur
+        payload = {
+            'customer_id': self.id,  # or 'mechanic_id'
+            'exp': datetime.utcnow() + timedelta(days=1),
+            'iat': datetime.utcnow(),
+            'type': 'customer'  # or 'mechanic'
+        }
+        return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+
 
     def to_dict(self):
         """Convert to dictionary"""

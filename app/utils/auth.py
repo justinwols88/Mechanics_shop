@@ -1,13 +1,13 @@
 """
-Authentication utilities for Mechanics Shop API - UPDATED FOR PRODUCTION
+Authentication utilities for Mechanics Shop API - FIXED for PyJWT
 """
 import os
 from functools import wraps
 from flask import request, jsonify
-import jwt
+import jwt  # Using PyJWT instead of python-jose
 from datetime import datetime, timezone
 
-# Use environment variable with fallback for CI/CD and production
+# Use environment variable with fallback
 SECRET_KEY = os.environ.get("SECRET_KEY") or "super-secret-key-change-in-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -47,7 +47,7 @@ def token_required(f):
         token = parts[1]
 
         try:
-            # Decode token
+            # Decode token using PyJWT
             data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             
             # Check token type
@@ -120,18 +120,18 @@ def mechanic_token_required(f):
         token = parts[1]
 
         try:
-            # Decode token
+            # Decode token using PyJWT
             data = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             
             # Check token type and role
-            if data.get('type') != 'mechanic' and data.get('role') != 'mechanic':
+            if data.get('type') != 'mechanic':
                 return jsonify({
                     "success": False,
                     "error": "Invalid token type",
                     "message": "Mechanic token required"
                 }), 403
                 
-            mechanic_id = data.get('mechanic_id') or data.get('mechanic_id')
+            mechanic_id = data.get('mechanic_id')
             
         except jwt.ExpiredSignatureError:
             return jsonify({
