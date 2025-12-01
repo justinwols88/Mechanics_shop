@@ -69,8 +69,3 @@ class Mechanic(db.Model):
     def __repr__(self):
         return f'<Mechanic {self.email}>'
     
-# Junction tables for many-to-many relationships
-service_mechanic = db.Table('service_mechanic',
-    db.Column('service_ticket_id', db.Integer, db.ForeignKey('service_ticket.id')),
-    db.Column('mechanic_id', db.Integer, db.ForeignKey('mechanic.id'))
-)

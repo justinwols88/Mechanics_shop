@@ -40,8 +40,5 @@ class Inventory(db.Model):
     def __repr__(self):
         return f'<Inventory {self.part_name}>'
     
-ticket_inventory = db.Table('ticket_inventory',
-    db.Column('service_ticket_id', db.Integer, db.ForeignKey('service_ticket.id')),
-    db.Column('inventory_id', db.Integer, db.ForeignKey('inventory.id'))
 )
 
