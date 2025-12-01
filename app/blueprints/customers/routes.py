@@ -199,9 +199,8 @@ def update_customer(current_customer_id, customer_id):
 @customers_bp.route('/<int:customer_id>', methods=['DELETE'])
 @token_required
 def delete_customer(current_customer_id, customer_id):
-    """Delete a customer - Customer auth required (own profile only)"""
+    """Soft delete a customer"""
     try:
-        # Customers can only delete their own account
         if current_customer_id != customer_id:
             return jsonify({
                 "success": False,
@@ -215,12 +214,13 @@ def delete_customer(current_customer_id, customer_id):
                 "error": "Customer not found"
             }), 404
 
-        db.session.delete(customer)
+        # Soft delete - mark as inactive instead of hard delete
+        customer.is_active = False
         db.session.commit()
 
         return jsonify({
             "success": True,
-            "message": "Customer deleted successfully"
+            "message": "Customer deactivated successfully"
         }), 200
         
     except Exception as e:

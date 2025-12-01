@@ -9,7 +9,7 @@ class ServiceTicket(db.Model):
     __tablename__ = 'service_ticket'
 
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id', ondelete='CASCADE'), nullable=False)
     vehicle_info = db.Column(db.String(200), nullable=False)
     issue_description = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(50), default='open')

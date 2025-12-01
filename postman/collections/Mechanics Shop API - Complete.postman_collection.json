@@ -1727,37 +1727,37 @@
   ],
   "variable": [
     {
-      "id": "ba23d729-31f4-4332-9a2c-a35df51ab54f",
+      "id": "4df1a5c9-8200-44dd-88c6-c744cec2bbe2",
       "key": "baseUrl",
       "value": "https://mechanics-shop-revised-refactored-final.onrender.com"
     },
     {
-      "id": "94aa4116-12a6-4627-ad4b-ee5e820673fb",
+      "id": "2063c9f4-1a88-446e-bdb5-222fbd2f9104",
       "key": "customerToken",
       "value": ""
     },
     {
-      "id": "d5482f69-7659-43f5-93a4-23790e56846a",
+      "id": "1bb45965-3dcb-43b0-ab11-f1e72dfeba68",
       "key": "mechanicToken",
       "value": ""
     },
     {
-      "id": "de13960f-f4ac-484e-b6eb-c97903308012",
+      "id": "5ce6a294-e36f-49f1-b064-2110827b5c50",
       "key": "customerId",
       "value": ""
     },
     {
-      "id": "debd4331-a86f-4752-b63d-4ef480b4db5e",
+      "id": "4986bad8-fd0c-45cd-afee-ec5a7d30bb6e",
       "key": "mechanicId",
       "value": ""
     },
     {
-      "id": "0d258ada-0a22-4e36-9da8-cdc351de20b5",
+      "id": "5c690381-09fc-4856-9f23-d871f656de77",
       "key": "ticketId",
       "value": ""
     },
     {
-      "id": "23ef80a7-7d94-4572-9a1f-bac4192b696d",
+      "id": "65f42e5c-24c9-4dc3-8eff-54da96c173ba",
       "key": "inventoryId",
       "value": ""
     }

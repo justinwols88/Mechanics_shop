@@ -5,7 +5,10 @@ services:
     plan: free
     buildCommand: pip install -r requirements.txt
     preDeployCommand: |
-      cd /opt/render/project/src && python render_migrate.py
+      cd /opt/render/project/src && 
+      echo "🚀 Running database cleanup..." &&
+      python cleanup_database.py &&
+      echo "✅ Cleanup completed"
     startCommand: gunicorn flask_app:app
     envVars:
       - key: DATABASE_URL
