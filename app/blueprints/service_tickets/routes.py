@@ -10,7 +10,7 @@ from app import db
 
 service_tickets_bp = Blueprint('service_tickets', __name__)
 
-@service_tickets_bp.route('/service_tickets', methods=['POST'])
+@service_tickets_bp.route('/tickets', methods=['POST'])
 def create_service_ticket():
     """Create a new service ticket"""
     data = request.get_json()
@@ -41,7 +41,7 @@ def create_service_ticket():
     
     return jsonify(ticket.to_dict()), 201
 
-@service_tickets_bp.route('/service_tickets', methods=['GET'])
+@service_tickets_bp.route('/tickets', methods=['GET'])
 def get_all_service_tickets():
     """Get all service tickets with optional filtering"""
     status = request.args.get('status')
@@ -61,7 +61,7 @@ def get_all_service_tickets():
         'count': len(tickets)
     }), 200
 
-@service_tickets_bp.route('/service_tickets/<int:ticket_id>', methods=['GET'])
+@service_tickets_bp.route('/tickets/<int:ticket_id>', methods=['GET'])
 def get_service_ticket(ticket_id):
     """Get a specific service ticket by ID"""
     ticket = db.session.get(ServiceTicket, ticket_id)
@@ -70,7 +70,7 @@ def get_service_ticket(ticket_id):
     
     return jsonify(ticket.to_dict()), 200
 
-@service_tickets_bp.route('/service_tickets/<int:ticket_id>', methods=['PUT'])
+@service_tickets_bp.route('/tickets/<int:ticket_id>', methods=['PUT'])
 def update_service_ticket(ticket_id):
     """Update a service ticket"""
     ticket = db.session.get(ServiceTicket, ticket_id)
@@ -91,7 +91,7 @@ def update_service_ticket(ticket_id):
     
     return jsonify(ticket.to_dict()), 200
 
-@service_tickets_bp.route('/service_tickets/<int:ticket_id>', methods=['DELETE'])
+@service_tickets_bp.route('/tickets/<int:ticket_id>', methods=['DELETE'])
 def delete_service_ticket(ticket_id):
     """Delete a service ticket"""
     ticket = db.session.get(ServiceTicket, ticket_id)
@@ -103,7 +103,7 @@ def delete_service_ticket(ticket_id):
     
     return jsonify({"message": "Service ticket deleted successfully"}), 200
 
-@service_tickets_bp.route('/service_tickets/customer/<int:customer_id>', methods=['GET'])
+@service_tickets_bp.route('/tickets/customer/<int:customer_id>', methods=['GET'])
 def get_customer_tickets(customer_id):
     """Get all service tickets for a customer"""
     # Check if customer exists
@@ -119,7 +119,7 @@ def get_customer_tickets(customer_id):
         'count': len(tickets)
     }), 200
 
-@service_tickets_bp.route('/service_tickets/<int:ticket_id>/assign-mechanic', methods=['POST'])
+@service_tickets_bp.route('/tickets/<int:ticket_id>/assign-mechanic', methods=['POST'])
 def assign_mechanic_to_ticket(ticket_id):
     """Assign a mechanic to a service ticket"""
     ticket = db.session.get(ServiceTicket, ticket_id)
@@ -136,8 +136,19 @@ def assign_mechanic_to_ticket(ticket_id):
     if not mechanic:
         return jsonify({"error": "Mechanic not found"}), 404
     
-    # Add mechanic to ticket
-    if mechanic not in ticket.mechanics:
+    # Add mechanic to ticket (handle dynamic relationship collections)
+    # Determine if mechanic is already assigned without using Python's `in` on relationship property
+    if hasattr(ticket.mechanics, 'filter_by'):
+        already_assigned = ticket.mechanics.filter_by(id=mechanic.id).first() is not None
+    else:
+        # Safely handle non-iterable relationship property for type checkers/runtime
+        _mechs = getattr(ticket, 'mechanics', [])
+        try:
+            _mechs_iter = list(_mechs)
+        except TypeError:
+            _mechs_iter = []
+        already_assigned = any(m.id == mechanic.id for m in _mechs_iter)
+    if not already_assigned:
         ticket.mechanics.append(mechanic)
         db.session.commit()
     
@@ -163,8 +174,19 @@ def remove_mechanic_from_ticket(ticket_id):
     if not mechanic:
         return jsonify({"error": "Mechanic not found"}), 404
     
-    # Remove mechanic from ticket
-    if mechanic in ticket.mechanics:
+    # Remove mechanic from ticket (handle dynamic relationship collections)
+    # Determine if mechanic is assigned without using Python's `in` on relationship property
+    if hasattr(ticket.mechanics, 'filter_by'):
+        assigned = ticket.mechanics.filter_by(id=mechanic.id).first() is not None
+    else:
+        # Safely handle non-iterable relationship property for type checkers/runtime
+        _mechs = getattr(ticket, 'mechanics', [])
+        try:
+            _mechs_iter = list(_mechs)
+        except TypeError:
+            _mechs_iter = []
+        assigned = any(m.id == mechanic.id for m in _mechs_iter)
+    if assigned:
         ticket.mechanics.remove(mechanic)
         db.session.commit()
     
@@ -191,8 +213,19 @@ def add_part_to_ticket(ticket_id):
     if not part:
         return jsonify({"error": "Inventory part not found"}), 404
     
-    # Add part to ticket (you might want to track quantity in a separate table)
-    if part not in ticket.inventory:
+    # Add part to ticket (handle dynamic relationship collections; consider tracking quantity separately)
+    # Determine if part is already added without using Python's `in` on relationship property
+    if hasattr(ticket.inventory, 'filter_by'):
+        already_added = ticket.inventory.filter_by(id=part.id).first() is not None
+    else:
+        # Safely handle non-iterable relationship property for type checkers/runtime
+        _inv = getattr(ticket, 'inventory', [])
+        try:
+            _inv_iter = list(_inv)
+        except TypeError:
+            _inv_iter = []
+        already_added = any(p.id == part.id for p in _inv_iter)
+    if not already_added:
         ticket.inventory.append(part)
         
         # Update ticket cost
